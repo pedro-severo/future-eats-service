@@ -22,3 +22,7 @@ if (process.env.NODE_ENV !== 'test') {
         }
     })
 }
+
+// TODO: finish signup endpoint
+// TODO: eslint and prettier setup
+// TODO: add PR template

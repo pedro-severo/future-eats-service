@@ -1,4 +1,4 @@
-import e, { RequestHandler } from "express"
+import { RequestHandler } from "express"
 import { StatusCodes } from "http-status-codes"
 import { plainToClass } from 'class-transformer';
 import { ValidationError, validate } from "class-validator";
@@ -22,14 +22,13 @@ export const signupHandler: RequestHandler = async (req, res) => {
             })       
         }
         const id = generateId()
-        const hashManager = new HashManager()
-        const encryptedPassword = hashManager.hash(password)
+        const encryptedPassword =  new HashManager().hash(password)
         const newUser = new User(id, name, email, encryptedPassword, false, cpf)
         const useCase = Container.get(SignupUseCase)
         const response = await useCase.execute(newUser)
         const authenticator = new AuthenticatorManager()
         const token = authenticator.generateToken({id})        
-        return res.status(StatusCodes.CREATED).json({...response, token})       
+        return res.status(StatusCodes.CREATED).json({ user: { ...response }, token})       
     } catch (err) {
         if (err.message === "Error: This email is already registered.") {
             return res.status(StatusCodes.CONFLICT).json({ message: err.message })
