@@ -8,7 +8,7 @@ export abstract class Database {
 
     constructor() {
         initializeApp({
-            credential: cert(serviceAccount)
+            credential: cert(serviceAccount),
         });
         this.db = getFirestore().collection(this.getCollectionName());
     }
@@ -19,11 +19,20 @@ export abstract class Database {
         try {
             const { id } = itemToAdd;
             await this.db.doc(id).set({
-                ...itemToAdd
+                ...itemToAdd,
             });
             return itemToAdd;
         } catch (e) {
-            throw new Error("Error in insert query.");
+            throw new Error('Error in insert query.');
+        }
+    }
+
+    async checkDataExistence(field: string, value: any): Promise<boolean> {
+        try {
+            const snapshot = await this.db.where(`${field}`, '==', value).get();
+            return !snapshot.empty;
+        } catch (e) {
+            throw new Error('Error in checkDataExistence query.');
         }
     }
 }

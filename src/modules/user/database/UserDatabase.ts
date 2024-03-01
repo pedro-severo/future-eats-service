@@ -1,13 +1,12 @@
-import { Service } from "typedi";
-import { UserResponse } from './interfaces/UserResponse';
-import { Database } from "../../../shared/database";
+import { Service } from 'typedi';
+import { Database } from '../../../shared/database';
 
-const usersCollectionName = 'users'
+const usersCollectionName = 'users';
 
 @Service()
 export class UserDatabase extends Database {
     constructor() {
-        super()
+        super();
     }
 
     protected getCollectionName(): string {
@@ -15,7 +14,7 @@ export class UserDatabase extends Database {
     }
 
     async checkUserExistenceByEmail(email: string): Promise<boolean> {
-        const snapshot = await this.db.where('email', '==', email).get()
-        return !snapshot.empty
-    }    
+        const doesUserExist = await this.checkDataExistence('email', email);
+        return doesUserExist;
+    }
 }
