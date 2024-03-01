@@ -27,6 +27,7 @@
     "lint": "eslint ./src",
     "prettier": "prettier ./src --write",
     "precommit": "lint-staged",
+    "prepush": "",
     "prepare": "husky install"
   },
   "devDependencies": {
