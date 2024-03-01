@@ -25,7 +25,10 @@
     "build": "tsc",
     "test": "jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1",
     "lint": "eslint ./src",
-    "prettier": "prettier ./src --write"
+    "prettier": "prettier ./src --write",
+    "precommit": "lint-staged",
+    "prepush": "npm test",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -36,7 +39,18 @@
     "@typescript-eslint/parser": "^7.1.0",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.33.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "pretty-quick": "^4.0.0"
+  }, 
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx}": ["prettier ./src --write", "eslint ./src", "git add ."]
+  },
+  "husky": {
+    "hooks": {
+        "pre-commit": "lint-staged && pretty-quick --staged"
+    }
   }
 }
