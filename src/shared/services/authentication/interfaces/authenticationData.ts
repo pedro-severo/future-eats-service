@@ -1,3 +1,3 @@
 export interface authenticationData {
-    id: string
- }
+    id: string;
+}

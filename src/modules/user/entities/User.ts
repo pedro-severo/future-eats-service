@@ -1,31 +1,37 @@
-import { IsBoolean, IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import {
+    IsBoolean,
+    IsEmail,
+    IsNotEmpty,
+    IsString,
+    MinLength,
+} from 'class-validator';
 
 export class User {
     @IsString()
     @IsNotEmpty()
-    private id: string
+    private id: string;
 
     @IsString()
     @IsNotEmpty()
-    private name: string
+    private name: string;
 
     @IsString()
     @IsEmail()
     @IsNotEmpty()
-    private email: string
+    private email: string;
 
     @IsString()
     @IsNotEmpty()
-    private cpf: string
+    private cpf: string;
 
     @IsBoolean()
     @IsNotEmpty()
-    private hasAddress: boolean
+    private hasAddress: boolean;
 
     @IsString()
     @IsNotEmpty()
     @MinLength(6)
-    private password: string
+    private password: string;
 
     constructor(
         id: string,
@@ -33,25 +39,25 @@ export class User {
         email: string,
         password: string,
         hasAddress: boolean,
-        cpf: string   
+        cpf: string
     ) {
-        this.id = id
-        this.name = name
-        this.email = email
-        this.password = password
-        this.cpf = cpf
-        this.hasAddress = hasAddress
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.cpf = cpf;
+        this.hasAddress = hasAddress;
     }
 
     public getUser() {
-        const { id, name, email, password, cpf, hasAddress } = this
+        const { id, name, email, password, cpf, hasAddress } = this;
         return {
-            id, 
+            id,
             name,
             email,
             password,
             cpf,
-            hasAddress
-        }
+            hasAddress,
+        };
     }
 }
