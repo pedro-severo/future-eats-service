@@ -4,13 +4,13 @@ import { getFirestore } from 'firebase-admin/firestore';
 const serviceAccount = require('../../../../future-eats-service-5f069c811a09.json');
 
 export abstract class Database {
-    protected db: FirebaseFirestore.Firestore;
+    protected db: FirebaseFirestore.CollectionReference;
 
     constructor() {
         initializeApp({
             credential: cert(serviceAccount)
         });
-        this.db = getFirestore();
+        this.db = getFirestore().collection(this.getCollectionName());
     }
 
     protected abstract getCollectionName(): string;
@@ -18,7 +18,7 @@ export abstract class Database {
     async insert(itemToAdd: any) {
         try {
             const { id } = itemToAdd;
-            await this.db.collection(this.getCollectionName()).doc(id).set({
+            await this.db.doc(id).set({
                 ...itemToAdd
             });
             return itemToAdd;

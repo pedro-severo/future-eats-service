@@ -31,7 +31,7 @@ export const signupHandler: RequestHandler = async (req, res) => {
         return res.status(StatusCodes.CREATED).json({ user: { ...response }, token})       
     } catch (err) {
         if (err.message === "Error: This email is already registered.") {
-            return res.status(StatusCodes.CONFLICT).json({ message: err.message })
+            return res.status(StatusCodes.BAD_REQUEST).json({ message: err.message })
         }
         res.status(500).json({ message: "Internal Server Error"})    
     }

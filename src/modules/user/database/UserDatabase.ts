@@ -14,13 +14,8 @@ export class UserDatabase extends Database {
         return usersCollectionName;
     }
 
-    async checkUserExistenceById(id: string): Promise<boolean> {
-        // TODO: implement
-        return false
-    }  
-
     async checkUserExistenceByEmail(email: string): Promise<boolean> {
-        // TODO: implement
-        return false
+        const snapshot = await this.db.where('email', '==', email).get()
+        return !snapshot.empty
     }    
 }
