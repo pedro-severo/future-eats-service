@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { AddressInfo } from 'net';
 import { signupHandler } from './modules/user/controller/signupHandler';
+import { inputHandler } from './modules/user/controller/inputHandler';
 
 export const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/user/signup', signupHandler);
+app.post('/user/login', inputHandler);
 
 if (process.env.NODE_ENV !== 'test') {
     const server = app.listen(process.env.PORT || 3003, () => {

@@ -15,7 +15,7 @@ export abstract class Database {
 
     protected abstract getCollectionName(): string;
 
-    async insert(itemToAdd: any) {
+    protected async insert(itemToAdd: any) {
         try {
             const { id } = itemToAdd;
             await this.db.doc(id).set({
@@ -33,6 +33,20 @@ export abstract class Database {
             return !snapshot.empty;
         } catch (e) {
             throw new Error('Error in checkDataExistence query.');
+        }
+    }
+
+    async getDataByField(field: string, value: any): Promise<any> {
+        try {
+            const snapshot = await this.db.where(`${field}`, '==', value).get();
+            const data: any[] = [];
+            snapshot.forEach((doc) => {
+                if (doc.data()) data.push(doc.data());
+            });
+            return data[0];
+        } catch (e) {
+            console.log('🚀 ~ Database ~ getDataByField ~ e:', e);
+            throw new Error('Error in getDataByField query.');
         }
     }
 }

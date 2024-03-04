@@ -16,7 +16,7 @@ export const signupHandler: RequestHandler = async (req, res) => {
         const inputToValidate = plainToClass(SignupInput, req.body);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            return res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Error validating input',
                 errors,
             });
@@ -33,6 +33,7 @@ export const signupHandler: RequestHandler = async (req, res) => {
         );
         const useCase = Container.get(SignupUseCase);
         const response = await useCase.execute(newUser);
+        // TODO: move authentication to use case layer, please
         const authenticator = new AuthenticatorManager();
         const token = authenticator.generateToken({ id });
         return res

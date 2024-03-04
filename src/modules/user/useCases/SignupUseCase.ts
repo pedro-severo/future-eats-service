@@ -1,7 +1,7 @@
 import Container, { Service } from 'typedi';
 import { UserDatabase } from '../database/UserDatabase';
 import { User } from '../entities/User';
-import { UserResponse } from '../database/interfaces/UserResponse';
+import { SignupResponse } from './interfaces/SignupResponse';
 
 @Service()
 export class SignupUseCase {
@@ -11,19 +11,15 @@ export class SignupUseCase {
         this.userDatabase = Container.get(UserDatabase);
     }
 
-    async execute(user: User): Promise<UserResponse> {
+    async execute(user: User): Promise<SignupResponse> {
         try {
-            const { email } = user.getUser();
+            const { email: emailInput } = user.getUser();
             const doesUserExist =
-                await this.userDatabase.checkUserExistenceByEmail(email);
+                await this.userDatabase.checkUserExistenceByEmail(emailInput);
             if (doesUserExist)
                 throw new Error('This email is already registered.');
-            const createdUser = await this.userDatabase.insert(user);
-            const userResponse = {
-                email: createdUser.email,
-                name: createdUser.name,
-            };
-            return userResponse;
+            const { email, name } = await this.userDatabase.createUser(user);
+            return { email, name };
         } catch (err) {
             throw new Error(err);
         }
