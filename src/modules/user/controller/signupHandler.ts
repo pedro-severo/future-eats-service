@@ -8,7 +8,6 @@ import { HashManager } from '../../../shared/services/hash';
 import { User } from '../entities/User';
 import Container from 'typedi';
 import { SignupUseCase } from '../useCases/SignupUseCase';
-import { AuthenticatorManager } from '../../../shared/services/authentication';
 
 export const signupHandler: RequestHandler = async (req, res) => {
     try {
@@ -16,7 +15,7 @@ export const signupHandler: RequestHandler = async (req, res) => {
         const inputToValidate = plainToClass(SignupInput, req.body);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
-            return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            return res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Error validating input',
                 errors,
             });
@@ -33,11 +32,7 @@ export const signupHandler: RequestHandler = async (req, res) => {
         );
         const useCase = Container.get(SignupUseCase);
         const response = await useCase.execute(newUser);
-        const authenticator = new AuthenticatorManager();
-        const token = authenticator.generateToken({ id });
-        return res
-            .status(StatusCodes.CREATED)
-            .json({ user: { ...response }, token });
+        return res.status(StatusCodes.CREATED).json(response);
     } catch (err) {
         if (err.message === 'Error: This email is already registered.') {
             return res

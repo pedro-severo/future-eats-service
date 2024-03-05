@@ -1,29 +1,30 @@
 import Container, { Service } from 'typedi';
 import { UserDatabase } from '../database/UserDatabase';
 import { User } from '../entities/User';
-import { UserResponse } from '../database/interfaces/UserResponse';
+import { SignupResponse } from './interfaces/SignupResponse';
+import { AuthenticatorManager } from '../../../shared/services/authentication';
 
 @Service()
 export class SignupUseCase {
     userDatabase: UserDatabase;
+    authenticator: AuthenticatorManager;
 
     constructor() {
         this.userDatabase = Container.get(UserDatabase);
+        this.authenticator = new AuthenticatorManager();
     }
 
-    async execute(user: User): Promise<UserResponse> {
+    // TODO: "maybe", isolate some stuff in methods
+    async execute(user: User): Promise<SignupResponse> {
         try {
-            const { email } = user.getUser();
+            const { email, name, id } = user.getUser();
             const doesUserExist =
                 await this.userDatabase.checkUserExistenceByEmail(email);
             if (doesUserExist)
                 throw new Error('This email is already registered.');
-            const createdUser = await this.userDatabase.insert(user);
-            const userResponse = {
-                email: createdUser.email,
-                name: createdUser.name,
-            };
-            return userResponse;
+            await this.userDatabase.createUser(user);
+            const token = this.authenticator.generateToken({ id });
+            return { user: { email, name, id }, token };
         } catch (err) {
             throw new Error(err);
         }
