@@ -26,8 +26,7 @@ export class UserDatabase extends Database {
         return mapUserDTOToUserResponse(userDTO);
     }
 
-    async createUser(user: User): Promise<UserResponse> {
-        const userDTO = await this.insert(user);
-        return mapUserDTOToUserResponse(userDTO);
+    async createUser(user: User): Promise<void> {
+        await this.insert(user);
     }
 }

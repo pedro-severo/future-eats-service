@@ -29,7 +29,11 @@ export class LoginUseCase {
             const token =
                 user.id && this.authenticator.generateToken({ id: user.id });
             return {
-                id: user.id as string,
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    id: user.id,
+                },
                 token: token as string,
             };
         } catch (err) {

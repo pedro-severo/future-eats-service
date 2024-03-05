@@ -1,4 +1,8 @@
 export interface SignupResponse {
-    name: string;
-    email: string;
+    user: {
+        name: string;
+        email: string;
+        id: string;
+    };
+    token: string;
 }

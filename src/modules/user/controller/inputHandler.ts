@@ -28,10 +28,6 @@ export const inputHandler: RequestHandler = async (req, res) => {
             return res
                 .status(StatusCodes.UNAUTHORIZED)
                 .json({ message: err.message });
-        } else if (err.message === 'Error: Error in getDataByField query.') {
-            return res
-                .status(StatusCodes.NOT_FOUND)
-                .json({ message: 'User not found' });
         }
         res.status(500).json({ message: 'Internal Server Error' });
     }

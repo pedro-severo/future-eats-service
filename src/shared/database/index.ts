@@ -15,13 +15,12 @@ export abstract class Database {
 
     protected abstract getCollectionName(): string;
 
-    protected async insert(itemToAdd: any) {
+    protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
             await this.db.doc(id).set({
                 ...itemToAdd,
             });
-            return itemToAdd;
         } catch (e) {
             throw new Error('Error in insert query.');
         }
@@ -45,7 +44,6 @@ export abstract class Database {
             });
             return data[0];
         } catch (e) {
-            console.log('🚀 ~ Database ~ getDataByField ~ e:', e);
             throw new Error('Error in getDataByField query.');
         }
     }
