@@ -17,6 +17,7 @@ export class LoginUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
+    // TODO: isolate some stuff in methods
     async execute(input: LoginInput): Promise<LoginResponse> {
         try {
             const { email, password } = input;

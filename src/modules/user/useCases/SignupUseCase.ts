@@ -14,6 +14,7 @@ export class SignupUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
+    // TODO: "maybe", isolate some stuff in methods
     async execute(user: User): Promise<SignupResponse> {
         try {
             const { email, name, id } = user.getUser();
