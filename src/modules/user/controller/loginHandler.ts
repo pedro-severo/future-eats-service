@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import Container from 'typedi';
 import { LoginUseCase } from '../useCases/LoginUseCase';
 
-export const inputHandler: RequestHandler = async (req, res) => {
+export const loginHandler: RequestHandler = async (req, res) => {
     try {
         const inputToValidate = plainToClass(LoginInput, req.body);
         const errors: ValidationError[] = await validate(inputToValidate);

@@ -4,6 +4,7 @@ import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { LoginInput } from '../controller/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
+import { UserResponse } from '../database/interfaces/UserResponse';
 
 @Service()
 export class LoginUseCase {
@@ -29,16 +30,26 @@ export class LoginUseCase {
             if (!isPasswordCorrect) throw new Error('Incorrect password.');
             const token =
                 user.id && this.authenticator.generateToken({ id: user.id });
-            return {
-                user: {
-                    name: user.name,
-                    email: user.email,
-                    id: user.id,
-                },
-                token: token as string,
-            };
+            return this.formatUseCaseResponse(user, token);
         } catch (err) {
             throw new Error(err);
         }
     }
+
+    private formatUseCaseResponse = (
+        user: UserResponse,
+        token: string
+    ): LoginResponse => {
+        return {
+            user: {
+                name: user.name,
+                email: user.email,
+                id: user.id,
+                password: user.password,
+                hasAddress: user.hasAddress,
+                cpf: user.cpf,
+            },
+            token: token as string,
+        };
+    };
 }

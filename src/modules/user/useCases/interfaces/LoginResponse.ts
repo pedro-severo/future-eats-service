@@ -1,8 +1,6 @@
+import { UserResponse } from '../../database/interfaces/UserResponse';
+
 export interface LoginResponse {
-    user: {
-        name: string;
-        email: string;
-        id: string;
-    };
+    user: UserResponse;
     token: string;
 }
