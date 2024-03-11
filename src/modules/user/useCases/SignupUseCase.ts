@@ -14,14 +14,10 @@ export class SignupUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
-    // TODO: "maybe", isolate some stuff in methods
     async execute(user: User): Promise<SignupResponse> {
         try {
             const { email, name, id } = user.getUser();
-            const doesUserExist =
-                await this.userDatabase.checkUserExistenceByEmail(email);
-            if (doesUserExist)
-                throw new Error('This email is already registered.');
+            await this.checkUserExistence(email);
             await this.userDatabase.createUser(user);
             const token = this.authenticator.generateToken({ id });
             return { user: { email, name, id }, token };
@@ -29,4 +25,15 @@ export class SignupUseCase {
             throw new Error(err);
         }
     }
+
+    private checkUserExistence = async (email: string): Promise<void> => {
+        try {
+            const doesUserExist =
+                await this.userDatabase.checkUserExistenceByEmail(email);
+            if (doesUserExist)
+                throw new Error('This email is already registered.');
+        } catch (e) {
+            throw new Error('Failed to try to check user existence.');
+        }
+    };
 }
