@@ -18,23 +18,46 @@ export class LoginUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
-    // TODO: isolate some stuff in methods
     async execute(input: LoginInput): Promise<LoginResponse> {
         try {
             const { email, password } = input;
-            const user = await this.userDatabase.getUserByEmail(email);
-            if (!user) throw new Error('User not found.');
-            const isPasswordCorrect =
-                user.password &&
-                (await this.hashManager.compare(password, user.password));
-            if (!isPasswordCorrect) throw new Error('Incorrect password.');
-            const token =
-                user.id && this.authenticator.generateToken({ id: user.id });
+            const user = await this.checkUserExistence(email);
+            await this.checkPassword(user, password);
+            const token = this.authenticator.generateToken({ id: user.id });
             return this.formatUseCaseResponse(user, token);
         } catch (err) {
             throw new Error(err);
         }
     }
+
+    private checkUserExistence = async (
+        email: string
+    ): Promise<UserResponse> => {
+        try {
+            const user = await this.userDatabase.getUserByEmail(email);
+            if (!user) throw new Error('User not found.');
+            return user;
+        } catch (e) {
+            throw new Error('Failed to try to check user existence.');
+        }
+    };
+
+    private checkPassword = async (
+        user: UserResponse,
+        passwordToCheck: string
+    ): Promise<void> => {
+        try {
+            const isPasswordCorrect =
+                user.password &&
+                (await this.hashManager.compare(
+                    passwordToCheck,
+                    user.password
+                ));
+            if (!isPasswordCorrect) throw new Error('Incorrect password.');
+        } catch (e) {
+            throw new Error('Failed to compare passwords.');
+        }
+    };
 
     private formatUseCaseResponse = (
         user: UserResponse,
