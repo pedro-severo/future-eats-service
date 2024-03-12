@@ -1,0 +1,37 @@
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+input SignupInput {
+    email: String!
+    password: String!
+}
+
+type User {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    hasAddress: Boolean!
+    password: String!
+}
+
+type UserResponse {
+    user: User!
+    token: String!
+}
+
+type UserApiResponse {
+    status: Int!
+    data: UserResponse!
+}
+
+type Query {
+    _empty: String
+}
+
+type Mutation {
+    login(input: LoginInput): UserApiResponse!
+    signup(input: SignupInput): UserApiResponse!
+}
