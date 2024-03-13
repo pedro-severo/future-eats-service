@@ -4,7 +4,9 @@ input LoginInput {
 }
 
 input SignupInput {
+    name: String!
     email: String!
+    cpf: String!
     password: String!
 }
 

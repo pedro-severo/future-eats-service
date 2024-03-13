@@ -4,23 +4,18 @@ import { ValidationError, validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
 import Container from 'typedi';
 import { LoginUseCase } from '../useCases/LoginUseCase';
-import { LoginResponse } from '../useCases/interfaces/LoginResponse';
-
-interface LoginOutput {
-    status: StatusCodes;
-    data: LoginResponse;
-}
+import { LoginOutput } from './outputs';
 
 // TODO: Reface error handling with all endpoint.
-export const loginHandler = async (body: LoginInput): Promise<LoginOutput> => {
+export const loginHandler = async (req: LoginInput): Promise<LoginOutput> => {
     try {
-        const inputToValidate = plainToClass(LoginInput, body);
+        const inputToValidate = plainToClass(LoginInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
             throw new Error('Error validating input.');
         }
         const useCase = Container.get(LoginUseCase);
-        const response: LoginResponse = await useCase.execute(body);
+        const response = await useCase.execute(req);
         return {
             status: StatusCodes.OK,
             data: response,

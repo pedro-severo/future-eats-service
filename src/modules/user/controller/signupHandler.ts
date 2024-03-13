@@ -1,4 +1,3 @@
-import { RequestHandler } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { plainToClass } from 'class-transformer';
 import { ValidationError, validate } from 'class-validator';
@@ -8,37 +7,34 @@ import { HashManager } from '../../../shared/services/hash';
 import { User } from '../entities/User';
 import Container from 'typedi';
 import { SignupUseCase } from '../useCases/SignupUseCase';
+import { SignupOutput } from './outputs';
 
-export const signupHandler: RequestHandler = async (req, res) => {
+export const signupHandler = async (
+    req: SignupInput
+): Promise<SignupOutput> => {
     try {
-        const { name, email, cpf, password } = req.body;
-        const inputToValidate = plainToClass(SignupInput, req.body);
+        const inputToValidate = plainToClass(SignupInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Error validating input',
-                errors,
-            });
+            throw new Error('Error validating input.');
         }
         const id = generateId();
-        const encryptedPassword = new HashManager().hash(password);
-        const newUser = new User(
+        const encryptedPassword = new HashManager().hash(req.password);
+        const user = new User(
             id,
-            name,
-            email,
+            req.name,
+            req.email,
             encryptedPassword,
             false,
-            cpf
+            req.cpf
         );
         const useCase = Container.get(SignupUseCase);
-        const response = await useCase.execute(newUser);
-        return res.status(StatusCodes.CREATED).json(response);
+        const response = await useCase.execute(user);
+        return {
+            status: StatusCodes.OK,
+            data: response,
+        };
     } catch (err) {
-        if (err.message === 'Error: This email is already registered.') {
-            return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json({ message: err.message });
-        }
-        res.status(500).json({ message: 'Internal Server Error' });
+        throw new Error(err);
     }
 };

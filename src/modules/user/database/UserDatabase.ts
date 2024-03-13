@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { Database } from '../../../shared/database';
 import { User } from '../entities/User';
 import { UserResponse } from './interfaces/UserResponse';
-import { mapUserDTOToUserResponse } from './mappers/mapUserDTOToUserResponse';
+import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 
 const usersCollectionName = 'users';
 
@@ -22,8 +22,10 @@ export class UserDatabase extends Database {
     }
 
     async getUserByEmail(email: string): Promise<UserResponse> {
-        const userDTO = await this.getDataByField('email', email);
-        return mapUserDTOToUserResponse(userDTO);
+        const { id, name, password, hasAddress, cpf } =
+            await this.getDataByField('email', email);
+        const user = new User(id, name, email, password, hasAddress, cpf);
+        return mapUserEntityToResponse(user);
     }
 
     async createUser(user: User): Promise<void> {
