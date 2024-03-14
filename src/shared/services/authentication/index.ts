@@ -18,8 +18,7 @@ export class AuthenticatorManager {
                 id: tokenData.id,
             };
         } catch (err) {
-            console.log(err);
-            return null;
+            throw new Error(err.message);
         }
     };
 }

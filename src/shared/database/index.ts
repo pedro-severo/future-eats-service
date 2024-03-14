@@ -22,7 +22,7 @@ export abstract class Database {
                 ...itemToAdd,
             });
         } catch (e) {
-            throw new Error('Error in insert query.');
+            throw new Error(e.message);
         }
     }
 
@@ -31,7 +31,7 @@ export abstract class Database {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
             return !snapshot.empty;
         } catch (e) {
-            throw new Error('Error in checkDataExistence query.');
+            throw new Error(e.message);
         }
     }
 
@@ -44,7 +44,7 @@ export abstract class Database {
             });
             return data[0];
         } catch (e) {
-            throw new Error('Error in getDataByField query.');
+            throw new Error(e.message);
         }
     }
 }
