@@ -36,6 +36,6 @@ export const signupHandler = async (
             data: response,
         };
     } catch (err) {
-        throw new Error(err);
+        throw new Error(err.message);
     }
 };

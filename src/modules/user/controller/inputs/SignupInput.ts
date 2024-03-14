@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsCPF } from 'class-validator-cpf';
 
 export class SignupInput {
     @IsString()
@@ -10,9 +11,7 @@ export class SignupInput {
     @IsNotEmpty()
     email!: string;
 
-    // TODO: Create custom cpf validation
-    @IsString()
-    @IsNotEmpty()
+    @IsCPF({ message: 'Failed to check cpf value' })
     cpf!: string;
 
     @IsString()
