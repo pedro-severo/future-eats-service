@@ -11,7 +11,7 @@ export class SignupInput {
     @IsNotEmpty()
     email!: string;
 
-    @IsCPF({ message: 'Failed to check cpf value' })
+    @IsCPF()
     cpf!: string;
 
     @IsString()
