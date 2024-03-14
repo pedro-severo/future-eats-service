@@ -1,27 +1,46 @@
 import 'reflect-metadata';
+import { merge } from 'lodash';
 import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import { resolvers as userResolvers } from './modules/user/graphql/resolvers';
+import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
-import { AddressInfo } from 'net';
-import { signupHandler } from './modules/user/controller/signupHandler';
-import { loginHandler } from './modules/user/controller/loginHandler';
 
-export const app = express();
+const { ruruHTML } = require('ruru/server');
 
-app.use(express.json());
-app.use(cors());
+const app = express();
 
-app.post('/user/signup', signupHandler);
-app.post('/user/login', loginHandler);
+app.use(
+    cors({
+        allowedHeaders: ['Content-Type'],
+    })
+);
 
-if (process.env.NODE_ENV !== 'test') {
-    const server = app.listen(process.env.PORT || 3003, () => {
-        if (server) {
-            const address = server.address() as AddressInfo;
-            console.log(
-                `Server is running in http://localhost:${address.port}`
-            );
-        } else {
-            console.error(`Failure upon starting server.`);
-        }
+const typesArray = loadFilesSync('./src/**/*.gql');
+
+async function startApolloServer() {
+    const server = new ApolloServer({
+        typeDefs: typesArray,
+        resolvers: merge(userResolvers),
+    });
+
+    await server.start();
+
+    server.applyMiddleware({ app });
+
+    app.get('/', (_req: any, res: any) => {
+        res.type('html');
+        res.end(ruruHTML({ endpoint: '/graphql' }));
+    });
+
+    const PORT = process.env.PORT || 3003;
+    app.listen(PORT, () => {
+        console.log(
+            `Server is running on http://localhost:${PORT}${server.graphqlPath}`
+        );
     });
 }
+
+startApolloServer().catch((err) => {
+    console.error('Error starting Apollo Server:', err);
+});

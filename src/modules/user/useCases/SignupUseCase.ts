@@ -14,13 +14,13 @@ export class SignupUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
-    async execute(user: User): Promise<SignupResponse> {
+    async execute(newUser: User): Promise<SignupResponse> {
         try {
-            const { email, name, id } = user.getUser();
-            await this.checkUserExistence(email);
-            await this.userDatabase.createUser(user);
-            const token = this.authenticator.generateToken({ id });
-            return { user: { email, name, id }, token };
+            const user = newUser.getUser();
+            await this.checkUserExistence(user.email);
+            await this.userDatabase.createUser(newUser);
+            const token = this.authenticator.generateToken({ id: user.id });
+            return { user, token };
         } catch (err) {
             throw new Error(err);
         }
