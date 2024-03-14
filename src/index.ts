@@ -4,10 +4,17 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { resolvers as userResolvers } from './modules/user/graphql/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
+import cors from 'cors';
 
 const { ruruHTML } = require('ruru/server');
 
 const app = express();
+
+app.use(
+    cors({
+        allowedHeaders: ['Content-Type'],
+    })
+);
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 
