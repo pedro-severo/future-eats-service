@@ -26,7 +26,7 @@ export class LoginUseCase {
             const token = this.authenticator.generateToken({ id: user.id });
             return this.formatUseCaseResponse(user, token);
         } catch (err) {
-            throw new Error(err);
+            throw new Error(err.message);
         }
     }
 
@@ -38,7 +38,7 @@ export class LoginUseCase {
             if (!user) throw new Error('User not found.');
             return user;
         } catch (e) {
-            throw new Error('Failed to try to check user existence.');
+            throw new Error(e.message);
         }
     };
 
@@ -55,7 +55,7 @@ export class LoginUseCase {
                 ));
             if (!isPasswordCorrect) throw new Error('Incorrect password.');
         } catch (e) {
-            throw new Error('Failed to compare passwords.');
+            throw new Error(e.message);
         }
     };
 

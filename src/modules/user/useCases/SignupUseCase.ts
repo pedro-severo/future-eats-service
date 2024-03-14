@@ -22,7 +22,7 @@ export class SignupUseCase {
             const token = this.authenticator.generateToken({ id: user.id });
             return { user, token };
         } catch (err) {
-            throw new Error(err);
+            throw new Error(err.message);
         }
     }
 
@@ -33,7 +33,7 @@ export class SignupUseCase {
             if (doesUserExist)
                 throw new Error('This email is already registered.');
         } catch (e) {
-            throw new Error('Failed to try to check user existence.');
+            throw new Error(e.message);
         }
     };
 }

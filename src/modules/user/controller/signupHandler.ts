@@ -17,7 +17,7 @@ export const signupHandler = async (
         const inputToValidate = plainToClass(SignupInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
-            throw new Error('Error validating input.');
+            throw new Error('Failed to validate input.');
         }
         const id = generateId();
         const encryptedPassword = new HashManager().hash(req.password);

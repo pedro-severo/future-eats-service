@@ -12,7 +12,7 @@ export const loginHandler = async (req: LoginInput): Promise<LoginOutput> => {
         const inputToValidate = plainToClass(LoginInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);
         if (errors.length) {
-            throw new Error('Error validating input.');
+            throw new Error('Failed to validate input.');
         }
         const useCase = Container.get(LoginUseCase);
         const response = await useCase.execute(req);
@@ -21,6 +21,6 @@ export const loginHandler = async (req: LoginInput): Promise<LoginOutput> => {
             data: response,
         };
     } catch (err) {
-        throw new Error(err);
+        throw new Error(err.message);
     }
 };
