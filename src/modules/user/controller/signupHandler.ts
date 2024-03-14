@@ -9,6 +9,7 @@ import Container from 'typedi';
 import { SignupUseCase } from '../useCases/SignupUseCase';
 import { SignupOutput } from './outputs';
 
+// TODO: Refa error handling for all endpoints.
 export const signupHandler = async (
     req: SignupInput
 ): Promise<SignupOutput> => {

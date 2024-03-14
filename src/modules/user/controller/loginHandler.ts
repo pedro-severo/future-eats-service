@@ -6,7 +6,7 @@ import Container from 'typedi';
 import { LoginUseCase } from '../useCases/LoginUseCase';
 import { LoginOutput } from './outputs';
 
-// TODO: Reface error handling with all endpoint.
+// TODO: Refa error handling for all endpoints.
 export const loginHandler = async (req: LoginInput): Promise<LoginOutput> => {
     try {
         const inputToValidate = plainToClass(LoginInput, req);
