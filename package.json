@@ -33,6 +33,7 @@
     "start": "NODE_ENV=start nodemon ./src/index.ts",
     "build": "tsc",
     "test": "jest",
+    "testFile": "yarn test -- --findRelatedTests",
     "coverage": "jest test --coverage --watchAll=false --silent",    
     "lint": "eslint ./src",
     "openCoverage": "open coverage/lcov-report/index.html",
