@@ -10,4 +10,11 @@ module.exports = {
         '**/?(*.)+(spec|test).(js|ts)?(x)',
     ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    coverageReporters: ['lcov', 'text-summary'],
+    coverageDirectory: 'coverage',
+    coverageThreshold: {
+        global: {
+            lines: 100,
+        },
+    },
 };

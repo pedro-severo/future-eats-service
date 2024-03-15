@@ -33,8 +33,11 @@
     "start": "NODE_ENV=start nodemon ./src/index.ts",
     "build": "tsc",
     "test": "jest",
+    "coverage": "jest test --coverage --watchAll=false --silent",    
     "lint": "eslint ./src",
+    "openCoverage": "open coverage/lcov-report/index.html",
     "prettier": "prettier ./src --write",
+    "prepush": "yarn coverage",
     "precommit": "lint-staged",
     "prepare": "husky install"
   },
