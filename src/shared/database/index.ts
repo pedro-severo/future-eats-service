@@ -18,6 +18,10 @@ export abstract class Database {
     protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
+            if (!id)
+                throw new Error(
+                    `It was not possible to add this item on database: ${itemToAdd}`
+                );
             await this.db.doc(id).set({
                 ...itemToAdd,
             });
@@ -26,7 +30,29 @@ export abstract class Database {
         }
     }
 
-    async checkDataExistence(field: string, value: any): Promise<boolean> {
+    protected async insertSubCollectionItem(
+        subCollection: string,
+        mainItemId: string,
+        itemToAdd: any
+    ): Promise<void> {
+        try {
+            const { id } = itemToAdd;
+            await this.db
+                .doc(mainItemId)
+                .collection(subCollection)
+                .doc(id)
+                .set({
+                    ...itemToAdd,
+                });
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    protected async checkDataExistenceByField(
+        field: string,
+        value: any
+    ): Promise<boolean> {
         try {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
             return !snapshot.empty;
@@ -35,8 +61,14 @@ export abstract class Database {
         }
     }
 
+    protected async checkDataExistence(id: string): Promise<boolean> {
+        console.log('===> ', (await this.db.doc(id).get()).data());
+        return (await this.db.doc(id).get()).exists;
+    }
+
     async getDataByField(field: string, value: any): Promise<any> {
         try {
+            this.checkDataExistenceByField(field, value);
             const snapshot = await this.db.where(`${field}`, '==', value).get();
             const data: any[] = [];
             snapshot.forEach((doc) => {

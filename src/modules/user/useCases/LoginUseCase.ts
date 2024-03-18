@@ -4,7 +4,8 @@ import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { LoginInput } from '../controller/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
-import { UserResponse } from '../database/interfaces/UserResponse';
+import { mapUserEntityToResponse } from '../database/mappers/mapUserEntityToResponse';
+import { UserResponse } from './interfaces/UserResponse';
 
 @Service()
 export class LoginUseCase {
@@ -21,7 +22,7 @@ export class LoginUseCase {
     async execute(input: LoginInput): Promise<LoginResponse> {
         try {
             const { email, password } = input;
-            const user = await this.checkUserExistence(email);
+            const user = await this.getUserByEmail(email);
             await this.checkPassword(user, password);
             const token = this.authenticator.generateToken({ id: user.id });
             return this.formatUseCaseResponse(user, token);
@@ -30,13 +31,11 @@ export class LoginUseCase {
         }
     }
 
-    private checkUserExistence = async (
-        email: string
-    ): Promise<UserResponse> => {
+    private getUserByEmail = async (email: string): Promise<UserResponse> => {
         try {
             const user = await this.userDatabase.getUserByEmail(email);
             if (!user) throw new Error('User not found.');
-            return user;
+            return mapUserEntityToResponse(user);
         } catch (e) {
             throw new Error(e.message);
         }
@@ -64,14 +63,7 @@ export class LoginUseCase {
         token: string
     ): LoginResponse => {
         return {
-            user: {
-                name: user.name,
-                email: user.email,
-                id: user.id,
-                password: user.password,
-                hasAddress: user.hasAddress,
-                cpf: user.cpf,
-            },
+            user,
             token: token as string,
         };
     };

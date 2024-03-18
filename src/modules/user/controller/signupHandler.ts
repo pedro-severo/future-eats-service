@@ -7,12 +7,13 @@ import { HashManager } from '../../../shared/services/hash';
 import { User } from '../entities/User';
 import Container from 'typedi';
 import { SignupUseCase } from '../useCases/SignupUseCase';
-import { SignupOutput } from './outputs';
+import { Output } from './outputs';
+import { SignupResponse } from '../useCases/interfaces/SignupResponse';
 
-// TODO: Refa error handling for all endpoints.
+// TODO: Refac error handling for all endpoints.
 export const signupHandler = async (
     req: SignupInput
-): Promise<SignupOutput> => {
+): Promise<Output<SignupResponse>> => {
     try {
         const inputToValidate = plainToClass(SignupInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);
@@ -32,7 +33,7 @@ export const signupHandler = async (
         const useCase = Container.get(SignupUseCase);
         const response = await useCase.execute(user);
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.CREATED,
             data: response,
         };
     } catch (err) {

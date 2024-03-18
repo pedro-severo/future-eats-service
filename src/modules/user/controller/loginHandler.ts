@@ -4,10 +4,13 @@ import { ValidationError, validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
 import Container from 'typedi';
 import { LoginUseCase } from '../useCases/LoginUseCase';
-import { LoginOutput } from './outputs';
+import { Output } from './outputs';
+import { LoginResponse } from '../useCases/interfaces/LoginResponse';
 
 // TODO: Refa error handling for all endpoints.
-export const loginHandler = async (req: LoginInput): Promise<LoginOutput> => {
+export const loginHandler = async (
+    req: LoginInput
+): Promise<Output<LoginResponse>> => {
     try {
         const inputToValidate = plainToClass(LoginInput, req);
         const errors: ValidationError[] = await validate(inputToValidate);

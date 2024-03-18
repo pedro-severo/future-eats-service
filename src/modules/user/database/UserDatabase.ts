@@ -1,10 +1,8 @@
 import { Service } from 'typedi';
 import { Database } from '../../../shared/database';
 import { User } from '../entities/User';
-import { UserResponse } from './interfaces/UserResponse';
-import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
-
-const usersCollectionName = 'users';
+import { USER_COLLECTIONS } from './interfaces';
+import { UserAddress } from '../entities/UserAddress';
 
 @Service()
 export class UserDatabase extends Database {
@@ -12,23 +10,36 @@ export class UserDatabase extends Database {
         super();
     }
 
-    protected getCollectionName(): string {
-        return usersCollectionName;
+    protected getCollectionName(): USER_COLLECTIONS {
+        return USER_COLLECTIONS.USER;
     }
 
     async checkUserExistenceByEmail(email: string): Promise<boolean> {
-        const doesUserExist = await this.checkDataExistence('email', email);
-        return doesUserExist;
+        return await this.checkDataExistenceByField('email', email);
     }
 
-    async getUserByEmail(email: string): Promise<UserResponse> {
+    async checkUserExistence(id: string): Promise<boolean> {
+        return await this.checkDataExistence(id);
+    }
+
+    async getUserByEmail(email: string): Promise<User> {
         const { id, name, password, hasAddress, cpf } =
             await this.getDataByField('email', email);
-        const user = new User(id, name, email, password, hasAddress, cpf);
-        return mapUserEntityToResponse(user);
+        return new User(id, name, email, password, hasAddress, cpf);
     }
 
     async createUser(user: User): Promise<void> {
-        await this.insert(user);
+        return await this.insert(user);
+    }
+
+    async registerAddress(
+        userAddress: UserAddress,
+        userId: string
+    ): Promise<void> {
+        return await this.insertSubCollectionItem(
+            USER_COLLECTIONS.USER_ADDRESS,
+            userId,
+            userAddress
+        );
     }
 }

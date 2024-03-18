@@ -10,6 +10,16 @@ input SignupInput {
     password: String!
 }
 
+input RegisterAddressInput {
+    userId: String!
+    city: String!
+    complement: String!
+    state: String!
+    streetName: String!
+    streetNumber: String!
+    zone: String!
+}
+
 type User {
     id: String!
     name: String!
@@ -24,9 +34,24 @@ type UserResponse {
     token: String!
 }
 
+type RegisterAddressResponse {
+    city: String!
+    complement: String!
+    state: String!
+    streetNumber: String!
+    zone: String!
+    streetName: String!
+    id: String!
+}
+
 type UserApiResponse {
     status: Int!
     data: UserResponse!
+}
+
+type RegisterAddressApiResponse {
+    status: Int!
+    data: RegisterAddressResponse!
 }
 
 type Query {
@@ -36,4 +61,5 @@ type Query {
 type Mutation {
     login(input: LoginInput): UserApiResponse!
     signup(input: SignupInput): UserApiResponse!
+    registerAddress(input: RegisterAddressInput): RegisterAddressApiResponse!
 }
