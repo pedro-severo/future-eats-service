@@ -30,6 +30,16 @@ export abstract class Database {
         }
     }
 
+    protected async update(id: string, itemToAdd: any): Promise<void> {
+        try {
+            await this.db.doc(id).update({
+                ...itemToAdd,
+            });
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
     protected async insertSubCollectionItem(
         subCollection: string,
         mainItemId: string,
@@ -62,19 +72,29 @@ export abstract class Database {
     }
 
     protected async checkDataExistence(id: string): Promise<boolean> {
-        console.log('===> ', (await this.db.doc(id).get()).data());
-        return (await this.db.doc(id).get()).exists;
+        try {
+            return (await this.db.doc(id).get()).exists;
+        } catch (e) {
+            throw new Error(e.message);
+        }
     }
 
     async getDataByField(field: string, value: any): Promise<any> {
         try {
-            this.checkDataExistenceByField(field, value);
             const snapshot = await this.db.where(`${field}`, '==', value).get();
             const data: any[] = [];
             snapshot.forEach((doc) => {
                 if (doc.data()) data.push(doc.data());
             });
             return data[0];
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    }
+
+    async getData(id: string): Promise<any> {
+        try {
+            return (await this.db.doc(id).get()).data();
         } catch (e) {
             throw new Error(e.message);
         }

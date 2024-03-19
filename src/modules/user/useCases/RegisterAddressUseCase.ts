@@ -23,6 +23,9 @@ export class RegisterAddressUseCase {
                 throw new Error('Failed to register address.');
             }
             await this.userDatabase.registerAddress(address, userId);
+            await this.userDatabase.updateUserAddressFlag(userId, {
+                hasAddress: true,
+            });
             return mapUserAddressEntityToResponse(address);
         } catch (err) {
             throw new Error(err.message);
