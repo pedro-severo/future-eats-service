@@ -48,10 +48,6 @@ export class UserDatabase extends Database {
         flag: { hasAddress: boolean }
     ): Promise<void> {
         const { hasAddress } = flag;
-        if (hasAddress === undefined) {
-            const user = await this.getData(userId);
-            return await this.update(userId, { hasAddress: user.hasAddress });
-        }
         return await this.update(userId, { hasAddress });
     }
 }
