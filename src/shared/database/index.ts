@@ -79,7 +79,7 @@ export abstract class Database {
         }
     }
 
-    async getDataByField(field: string, value: any): Promise<any> {
+    protected async getDataByField(field: string, value: any): Promise<any> {
         try {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
             const data: any[] = [];
@@ -92,7 +92,7 @@ export abstract class Database {
         }
     }
 
-    async getData(id: string): Promise<any> {
+    protected async getData(id: string): Promise<any> {
         try {
             return (await this.db.doc(id).get()).data();
         } catch (e) {
