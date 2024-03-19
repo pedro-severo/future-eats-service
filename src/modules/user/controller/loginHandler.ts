@@ -20,7 +20,7 @@ export const loginHandler = async (
         const useCase = Container.get(LoginUseCase);
         const response = await useCase.execute(req);
         return {
-            status: StatusCodes.OK,
+            status: StatusCodes.ACCEPTED,
             data: response,
         };
     } catch (err) {

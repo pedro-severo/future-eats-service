@@ -33,10 +33,6 @@ export class User {
     @MinLength(6)
     private password: string;
 
-    // @IsString()
-    // @IsNotEmpty()
-    // private addressId?: string;
-
     constructor(
         id: string,
         name: string,
@@ -44,7 +40,6 @@ export class User {
         password: string,
         hasAddress: boolean,
         cpf: string
-        // addressId?: string
     ) {
         this.id = id;
         this.name = name;
@@ -52,7 +47,6 @@ export class User {
         this.password = password;
         this.cpf = cpf;
         this.hasAddress = hasAddress;
-        // this.addressId = addressId;
     }
 
     public getUser() {
