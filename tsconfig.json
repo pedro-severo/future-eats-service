@@ -17,6 +17,7 @@
         "outDir": "./build",
         "experimentalDecorators": true,
         "useUnknownInCatchVariables": false,
+        "emitDecoratorMetadata": true,
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
