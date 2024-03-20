@@ -1,8 +1,10 @@
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
+import { Service } from 'typedi';
 
 const serviceAccount = require('../../../../future-eats-service-5f069c811a09.json');
 
+@Service()
 export abstract class Database {
     protected db: FirebaseFirestore.CollectionReference;
 

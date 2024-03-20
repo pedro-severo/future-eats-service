@@ -1,28 +1,46 @@
-import { loginHandler } from '../../controller/loginHandler';
-import { signupHandler } from '../../controller/signupHandler';
 import { resolvers } from '../resolvers';
 
-jest.mock('../../controller/loginHandler');
-jest.mock('../../controller/signupHandler');
+const expectedResponse = { status: 'success' };
+
+const mockControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
+
+jest.mock('../useCases/LoginUseCase');
+jest.mock('../useCases/SignupUseCase');
+
+jest.mock('../controllers/LoginController', () => {
+    return {
+        LoginController: jest.fn(() => ({
+            login: mockControllerMethod,
+        })),
+    };
+});
+
+jest.mock('../controllers/SignupController', () => {
+    return {
+        SignupController: jest.fn(() => ({
+            signup: mockControllerMethod,
+        })),
+    };
+});
 
 describe('Mutation Resolvers', () => {
     describe('login', () => {
-        it('should call loginHandler with the correct arguments', async () => {
+        it('should call loginController with the correct arguments', async () => {
             const args = {
                 input: {
                     email: 'test@example.com',
                     password: 'password123',
                 },
             };
-            const expectedResponse = { token: 'some_token' };
-            (loginHandler as jest.Mock).mockResolvedValue(expectedResponse);
             const result = await resolvers.Mutation.login(null, args);
-            expect(loginHandler).toHaveBeenCalledWith({
+            expect(mockControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
             });
             expect(result).toEqual(expectedResponse);
         });
+    });
+    describe('signup', () => {
         it('should call signupHandler with the correct arguments', async () => {
             const args = {
                 input: {
@@ -32,10 +50,8 @@ describe('Mutation Resolvers', () => {
                     cpf: 'cpf123',
                 },
             };
-            const expectedResponse = { token: 'some_token' };
-            (signupHandler as jest.Mock).mockResolvedValue(expectedResponse);
             const result = await resolvers.Mutation.signup(null, args);
-            expect(signupHandler).toHaveBeenCalledWith({
+            expect(mockControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
                 name: 'name123',
