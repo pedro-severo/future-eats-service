@@ -1,4 +1,4 @@
-import { LoginHandler } from './../loginHandler';
+import { LoginController } from '../LoginController';
 import { LoginInput } from '../inputs/LoginInput';
 import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginOutput } from '../outputs';
@@ -26,18 +26,18 @@ const expectedResponse: LoginOutput = {
     },
 };
 
-describe('loginHandler test', () => {
-    let loginHandler: LoginHandler;
+describe('LoginController test', () => {
+    let loginController: LoginController;
     let loginUseCaseMock: LoginUseCase;
     beforeEach(() => {
         loginUseCaseMock = new LoginUseCase();
-        loginHandler = new LoginHandler(loginUseCaseMock);
+        loginController = new LoginController(loginUseCaseMock);
     });
     it('should return a successful response', async () => {
         jest.spyOn(loginUseCaseMock, 'execute').mockResolvedValueOnce(
             expectedResponse.data
         );
-        const result = await loginHandler.login(input);
+        const result = await loginController.login(input);
         expect(result).toEqual(expectedResponse);
     });
     it('should validate input and throw error by missing email property', async () => {
@@ -45,7 +45,7 @@ describe('loginHandler test', () => {
             password: 'password123',
         };
         try {
-            await loginHandler.login(invalidInput as unknown as LoginInput);
+            await loginController.login(invalidInput as unknown as LoginInput);
         } catch (error) {
             expect(error.message).toBe('Failed to validate input.');
         }
@@ -56,7 +56,7 @@ describe('loginHandler test', () => {
             email: 'invalid',
         };
         try {
-            await loginHandler.login(invalidInput as unknown as LoginInput);
+            await loginController.login(invalidInput as unknown as LoginInput);
         } catch (error) {
             expect(error.message).toBe('Failed to validate input.');
             expect(error.cause[0].value).toBe(invalidInput.email);

@@ -2,7 +2,7 @@ import Container, { Service } from 'typedi';
 import { UserDatabase } from '../database/UserDatabase';
 import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
-import { LoginInput } from '../controller/inputs/LoginInput';
+import { LoginInput } from '../controllers/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
 import { UserResponse } from '../database/interfaces/UserResponse';
 

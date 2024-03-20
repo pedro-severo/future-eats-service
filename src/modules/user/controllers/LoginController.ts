@@ -6,9 +6,9 @@ import { LoginUseCase } from '../useCases/LoginUseCase';
 import { LoginOutput } from './outputs';
 import { Service } from 'typedi';
 
-// TODO: Refa error handling for all endpoints.
+// TODO: Refac error handling for all endpoints.
 @Service()
-export class LoginHandler {
+export class LoginController {
     constructor(private useCase: LoginUseCase) {}
 
     async login(req: LoginInput): Promise<LoginOutput> {
