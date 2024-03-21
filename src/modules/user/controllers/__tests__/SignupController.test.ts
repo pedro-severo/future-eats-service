@@ -3,8 +3,10 @@ import { SignupController } from '../SignupController';
 import { SignupOutput } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
 import { SignupInput } from '../inputs/SignupInput';
+import { UserDatabase } from '../../database/UserDatabase';
 
 jest.mock('../../useCases/SignupUseCase');
+jest.mock('../../../../shared/database');
 
 const input: SignupInput = {
     email: 'test@example.com',
@@ -31,8 +33,10 @@ const expectedResponse: SignupOutput = {
 describe('SignupController test', () => {
     let signupController: SignupController;
     let signupUseCaseMock: SignupUseCase;
+    let databaseMock: UserDatabase;
     beforeEach(() => {
-        signupUseCaseMock = new SignupUseCase();
+        databaseMock = new UserDatabase();
+        signupUseCaseMock = new SignupUseCase(databaseMock);
         signupController = new SignupController(signupUseCaseMock);
     });
     it('should return a successful response', async () => {

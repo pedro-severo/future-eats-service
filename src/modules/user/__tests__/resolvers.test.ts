@@ -7,6 +7,16 @@ const mockControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
 jest.mock('../useCases/LoginUseCase');
 jest.mock('../useCases/SignupUseCase');
 
+jest.mock('typedi', () => ({
+    __esModule: true,
+    Service: jest.fn(() => (target: any) => target),
+    Token: jest.fn((name) => ({ name })),
+    default: {
+        get: jest.fn(() => ({})), // Mocking the Container.get method
+        set: jest.fn(() => ({})), // Mocking the Container.set method
+    },
+}));
+
 jest.mock('../controllers/LoginController', () => {
     return {
         LoginController: jest.fn(() => ({

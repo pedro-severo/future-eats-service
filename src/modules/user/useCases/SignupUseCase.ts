@@ -1,4 +1,4 @@
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { UserDatabase } from '../database/UserDatabase';
 import { User } from '../entities/User';
 import { SignupResponse } from './interfaces/SignupResponse';
@@ -6,11 +6,9 @@ import { AuthenticatorManager } from '../../../shared/services/authentication';
 
 @Service()
 export class SignupUseCase {
-    userDatabase: UserDatabase;
     authenticator: AuthenticatorManager;
 
-    constructor() {
-        this.userDatabase = Container.get(UserDatabase);
+    constructor(private userDatabase: UserDatabase) {
         this.authenticator = new AuthenticatorManager();
     }
 
@@ -30,8 +28,10 @@ export class SignupUseCase {
         try {
             const doesUserExist =
                 await this.userDatabase.checkUserExistenceByEmail(email);
-            if (doesUserExist)
+            if (doesUserExist) {
+                console.log('OLAAR');
                 throw new Error('This email is already registered.');
+            }
         } catch (e) {
             throw new Error(e.message);
         }

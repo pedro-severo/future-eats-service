@@ -3,8 +3,10 @@ import { LoginInput } from '../inputs/LoginInput';
 import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginOutput } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
+import { UserDatabase } from '../../database/UserDatabase';
 
 jest.mock('../../useCases/LoginUseCase');
+jest.mock('../../../../shared/database');
 
 const input: LoginInput = {
     email: 'test@example.com',
@@ -29,8 +31,10 @@ const expectedResponse: LoginOutput = {
 describe('LoginController test', () => {
     let loginController: LoginController;
     let loginUseCaseMock: LoginUseCase;
+    let databaseMock: UserDatabase;
     beforeEach(() => {
-        loginUseCaseMock = new LoginUseCase();
+        databaseMock = new UserDatabase();
+        loginUseCaseMock = new LoginUseCase(databaseMock);
         loginController = new LoginController(loginUseCaseMock);
     });
     it('should return a successful response', async () => {
