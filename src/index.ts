@@ -1,8 +1,9 @@
 import 'reflect-metadata';
+import './shared/dependencies/index';
 import { merge } from 'lodash';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { resolvers as userResolvers } from './modules/user/graphql/resolvers';
+import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
 

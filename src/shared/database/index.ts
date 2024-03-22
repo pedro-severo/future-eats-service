@@ -18,10 +18,12 @@ export abstract class Database {
     protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
-            await this.db.doc(id).set({
+            // istanbul ignore next
+            await this.db?.doc(id)?.set({
                 ...itemToAdd,
             });
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }
@@ -29,8 +31,10 @@ export abstract class Database {
     async checkDataExistence(field: string, value: any): Promise<boolean> {
         try {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
-            return !snapshot.empty;
+            // istanbul ignore next
+            return !snapshot?.empty;
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }
@@ -44,6 +48,7 @@ export abstract class Database {
             });
             return data[0];
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }

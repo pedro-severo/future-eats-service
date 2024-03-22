@@ -1,16 +1,14 @@
-import Container, { Service } from 'typedi';
-import { UserDatabase } from '../database/UserDatabase';
+import { Service } from 'typedi';
+import { UserRepository } from '../repository/UserRepository';
 import { User } from '../entities/User';
 import { SignupResponse } from './interfaces/SignupResponse';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 
 @Service()
 export class SignupUseCase {
-    userDatabase: UserDatabase;
     authenticator: AuthenticatorManager;
 
-    constructor() {
-        this.userDatabase = Container.get(UserDatabase);
+    constructor(private userDatabase: UserRepository) {
         this.authenticator = new AuthenticatorManager();
     }
 

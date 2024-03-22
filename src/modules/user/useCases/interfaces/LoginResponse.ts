@@ -1,4 +1,4 @@
-import { UserResponse } from '../../database/interfaces/UserResponse';
+import { UserResponse } from '../../repository/interfaces/UserResponse';
 
 export interface LoginResponse {
     user: UserResponse;

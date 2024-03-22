@@ -1,19 +1,17 @@
-import Container, { Service } from 'typedi';
-import { UserDatabase } from '../database/UserDatabase';
+import { Service } from 'typedi';
 import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
-import { LoginInput } from '../controller/inputs/LoginInput';
+import { LoginInput } from '../controllers/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
-import { UserResponse } from '../database/interfaces/UserResponse';
+import { UserResponse } from '../repository/interfaces/UserResponse';
+import { UserRepository } from '../repository/UserRepository';
 
 @Service()
 export class LoginUseCase {
-    userDatabase: UserDatabase;
     hashManager: HashManager;
     authenticator: AuthenticatorManager;
 
-    constructor() {
-        this.userDatabase = Container.get(UserDatabase);
+    constructor(private userDatabase: UserRepository) {
         this.hashManager = new HashManager();
         this.authenticator = new AuthenticatorManager();
     }
