@@ -23,6 +23,7 @@ export class LoginUseCase {
             const user = await this.getUserByEmail(email);
             await this.checkPassword(user, password);
             const token = this.authenticator.generateToken({ id: user.id });
+            // TODO: call mapFunction here... see registerAddress endpoint
             return this.formatUseCaseResponse(user, token);
         } catch (err) {
             throw new Error(err.message);

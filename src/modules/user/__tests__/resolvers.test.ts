@@ -4,9 +4,6 @@ const expectedResponse = { status: 'success' };
 
 const mockControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
 
-jest.mock('../useCases/LoginUseCase');
-jest.mock('../useCases/SignupUseCase');
-
 jest.mock('typedi', () => ({
     __esModule: true,
     Service: jest.fn(() => (target: any) => target),
@@ -29,6 +26,14 @@ jest.mock('../controllers/SignupController', () => {
     return {
         SignupController: jest.fn(() => ({
             signup: mockControllerMethod,
+        })),
+    };
+});
+
+jest.mock('../controllers/RegisterAddressController', () => {
+    return {
+        RegisterAddressController: jest.fn(() => ({
+            registerAddress: mockControllerMethod,
         })),
     };
 });
@@ -66,6 +71,32 @@ describe('Mutation Resolvers', () => {
                 password: 'password123',
                 name: 'name123',
                 cpf: 'cpf123',
+            });
+            expect(result).toEqual(expectedResponse);
+        });
+    });
+    describe('registerAddress', () => {
+        it('should call registerAddress with the correct arguments', async () => {
+            const args = {
+                input: {
+                    userId: 'userId',
+                    city: 'Lisbon',
+                    complement: '1D',
+                    state: 'MG',
+                    streetNumber: '123',
+                    streetName: 'Guajajaras',
+                    zone: 'Barreiro',
+                },
+            };
+            const result = await resolvers.Mutation.registerAddress(null, args);
+            expect(mockControllerMethod).toHaveBeenCalledWith({
+                userId: 'userId',
+                city: 'Lisbon',
+                complement: '1D',
+                state: 'MG',
+                streetNumber: '123',
+                streetName: 'Guajajaras',
+                zone: 'Barreiro',
             });
             expect(result).toEqual(expectedResponse);
         });

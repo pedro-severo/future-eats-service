@@ -1,16 +1,12 @@
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 import { UserAddress } from '../entities/UserAddress';
 import { RegisterAddressResponse } from './interfaces/RegisterAddressResponse';
-import { UserRepository } from '../repository/UserRepository';
 import { mapUserAddressEntityToResponse } from '../repository/mappers/mapUserAddressEntityToResponse';
+import { UserRepository } from '../repository/UserRepository';
 
 @Service()
 export class RegisterAddressUseCase {
-    userRepository: UserRepository;
-
-    constructor() {
-        this.userRepository = Container.get(UserRepository);
-    }
+    constructor(private userRepository: UserRepository) {}
 
     async execute(
         address: UserAddress,

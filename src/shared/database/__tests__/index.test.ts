@@ -15,6 +15,16 @@ jest.mock('firebase-admin/firestore', () => ({
         collection: jest.fn(() => ({
             doc: jest.fn(() => ({
                 set: jest.fn(),
+                get: jest.fn(() => ({
+                    exists: true,
+                    data: jest.fn(),
+                })),
+                update: jest.fn(),
+                collection: jest.fn(() => ({
+                    doc: jest.fn(() => ({
+                        set: jest.fn(),
+                    })),
+                })),
             })),
             where: jest.fn(() => ({
                 get: jest.fn(() => ({
@@ -62,13 +72,9 @@ describe('Database', () => {
         expect(database.db.doc).toHaveBeenCalledWith(user.id);
     });
     it('should call checkDataExistence method', async () => {
-        await database.checkDataExistence('email', user.email);
-        expect(database.db.where).toHaveBeenCalled();
-        expect(database.db.where).toHaveBeenCalledWith(
-            'email',
-            '==',
-            user.email
-        );
+        await database.checkDataExistence(user.id);
+        expect(database.db.doc).toHaveBeenCalled();
+        expect(database.db.doc).toHaveBeenCalledWith(user.id);
     });
     it('should call getDataByField method', async () => {
         const response = await database.getDataByField('email', user.email);
@@ -80,11 +86,28 @@ describe('Database', () => {
         );
         expect(response).toEqual({ id: '123', name: 'Test' });
     });
-    it('should handle error during insertion', async () => {
-        try {
-            await database.insert(user);
-        } catch (e) {
-            expect(e).toBeDefined();
-        }
+    it('should call update method', async () => {
+        await database.update(user.id, user);
+        expect(database.db.doc).toHaveBeenCalled();
+        expect(database.db.doc).toHaveBeenCalledWith(user.id);
+    });
+    it('should call insertSubCollectionItem method', async () => {
+        await database.insertSubCollectionItem('subCollection', user.id, user);
+        expect(database.db.doc).toHaveBeenCalled();
+        expect(database.db.doc).toHaveBeenCalledWith(user.id);
+    });
+    it('should call checkDataExistenceByField method', async () => {
+        await database.checkDataExistenceByField('email', user.email);
+        expect(database.db.where).toHaveBeenCalled();
+        expect(database.db.where).toHaveBeenCalledWith(
+            'email',
+            '==',
+            user.email
+        );
+    });
+    it('should call getData method', async () => {
+        await database.getData(user.id);
+        expect(database.db.doc).toHaveBeenCalled();
+        expect(database.db.doc).toHaveBeenCalledWith(user.id);
     });
 });

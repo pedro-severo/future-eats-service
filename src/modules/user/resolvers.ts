@@ -5,10 +5,11 @@ import { LoginController } from './controllers/LoginController';
 import { SignupController } from './controllers/SignupController';
 import {
     LoginUseCaseToken,
+    RegisterAddressUseCaseToken,
     SignupUseCaseToken,
 } from '../../shared/dependencies/index';
 import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput';
-import { registerAddressHandler } from './controllers/registerAddressHandler';
+import { RegisterAddressController } from './controllers/RegisterAddressController';
 
 export const resolvers = {
     Mutation: {
@@ -32,6 +33,9 @@ export const resolvers = {
             _parent: any,
             args: { input: RegisterAddressInput }
         ) => {
+            const registerAddressController = new RegisterAddressController(
+                Container.get(RegisterAddressUseCaseToken)
+            );
             const {
                 userId,
                 city,
@@ -41,7 +45,7 @@ export const resolvers = {
                 streetNumber,
                 zone,
             } = JSON.parse(JSON.stringify(args)).input;
-            return registerAddressHandler({
+            return registerAddressController.registerAddress({
                 userId,
                 city,
                 complement,
