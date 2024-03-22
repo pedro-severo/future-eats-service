@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Database } from '../../../../shared/database';
 import { UserRepository } from '../UserRepository';
 
@@ -17,29 +19,21 @@ describe('UserRepository test', () => {
     const mockInsert = jest.fn();
     beforeEach(() => {
         userRepository = new UserRepository();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         jest.spyOn(Database.prototype, 'checkDataExistence').mockImplementation(
             (field, email: string) => {
                 return email == user.email;
             }
         );
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         jest.spyOn(Database.prototype, 'checkDataExistence').mockImplementation(
             (field, email: string) => {
                 return email == user.email;
             }
         );
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         jest.spyOn(Database.prototype, 'getDataByField').mockImplementation(
             () => {
                 return user;
             }
         );
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         jest.spyOn(Database.prototype, 'insert').mockImplementation((user) => {
             mockInsert(user);
         });
