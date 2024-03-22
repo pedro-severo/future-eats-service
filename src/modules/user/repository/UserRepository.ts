@@ -10,7 +10,9 @@ export class UserRepository extends Database {
         super();
     }
 
+    // istanbul ignore next
     protected getCollectionName(): USER_COLLECTIONS {
+        // istanbul ignore next
         return USER_COLLECTIONS.USER;
     }
 

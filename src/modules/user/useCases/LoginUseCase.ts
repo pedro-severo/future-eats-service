@@ -3,7 +3,7 @@ import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { LoginInput } from '../controllers/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
-import { mapUserEntityToResponse } from '../database/mappers/mapUserEntityToResponse';
+import { mapUserEntityToResponse } from '../repository/mappers/mapUserEntityToResponse';
 import { UserResponse } from './interfaces/UserResponse';
 import { UserRepository } from '../repository/UserRepository';
 
