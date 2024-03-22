@@ -61,8 +61,8 @@ describe('RegisterAddressUseCase test', () => {
         });
     });
     it('should run execute method correctly', async () => {
-        // @ts-expect-error expect a class, I'm injecting a object with the same props
         const response = await registerAddressUseCase.execute(
+            // @ts-expect-error expect a class, I'm injecting a object with the same props
             input,
             input.userId
         );
