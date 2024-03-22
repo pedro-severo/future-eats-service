@@ -20,7 +20,7 @@ export class RegisterAddressController {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);
             if (errors.length) {
-                throw new Error('Failed to validate input.');
+                throw new Error('Failed to validate input.', { cause: errors });
             }
             const id = generateId();
             const userAddress = new UserAddress(
@@ -41,7 +41,7 @@ export class RegisterAddressController {
                 data: response,
             };
         } catch (err) {
-            throw new Error(err.message);
+            throw new Error(err.message, { cause: err.cause });
         }
     }
 }
