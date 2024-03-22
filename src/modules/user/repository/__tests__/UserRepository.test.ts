@@ -52,8 +52,6 @@ describe('UserRepository test', () => {
         expect(userResponse).toEqual(user);
     });
     it('should call createUser correctly', async () => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-expect-error
         await userRepository.createUser(user);
         expect(mockInsert).toHaveBeenCalled();
         expect(mockInsert).toHaveBeenCalledWith(user);

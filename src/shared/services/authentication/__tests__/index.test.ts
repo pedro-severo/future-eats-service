@@ -17,7 +17,7 @@ describe('AuthenticatorManager class test', () => {
         const data = authenticatorManager.getTokenData(token);
         expect(id).toBe(data?.id);
     });
-    it('', () => {
+    it('should return a error by invalid input', () => {
         try {
             const invalidInput = undefined;
             authenticatorManager.getTokenData(

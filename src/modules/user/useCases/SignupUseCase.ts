@@ -28,9 +28,8 @@ export class SignupUseCase {
         try {
             const doesUserExist =
                 await this.userDatabase.checkUserExistenceByEmail(email);
-            if (doesUserExist) {
+            if (doesUserExist)
                 throw new Error('This email is already registered.');
-            }
         } catch (e) {
             throw new Error(e.message);
         }
