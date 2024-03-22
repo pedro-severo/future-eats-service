@@ -8,7 +8,7 @@ export class HashManager {
         return result;
     };
 
-    compare = (plainText: string, databasePassword: string) => {
+    compare = (plainText: string, databasePassword: string): boolean => {
         const result = bcrypt.compareSync(plainText, databasePassword);
         return result;
     };

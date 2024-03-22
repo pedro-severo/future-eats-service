@@ -5,7 +5,7 @@ import { USER_COLLECTIONS } from './interfaces';
 import { UserAddress } from '../entities/UserAddress';
 
 @Service()
-export class UserDatabase extends Database {
+export class UserRepository extends Database {
     constructor() {
         super();
     }

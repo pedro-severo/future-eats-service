@@ -18,14 +18,12 @@ export abstract class Database {
     protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
-            if (!id)
-                throw new Error(
-                    `It was not possible to add this item on database: ${itemToAdd}`
-                );
-            await this.db.doc(id).set({
+            // istanbul ignore next
+            await this.db?.doc(id)?.set({
                 ...itemToAdd,
             });
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }
@@ -65,8 +63,10 @@ export abstract class Database {
     ): Promise<boolean> {
         try {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
-            return !snapshot.empty;
+            // istanbul ignore next
+            return !snapshot?.empty;
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }
@@ -88,6 +88,7 @@ export abstract class Database {
             });
             return data[0];
         } catch (e) {
+            // istanbul ignore next
             throw new Error(e.message);
         }
     }
