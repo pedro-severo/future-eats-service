@@ -1,7 +1,7 @@
 import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { LoginInput } from '../../controllers/inputs/LoginInput';
-import { UserResponse } from '../../database/interfaces/UserResponse';
+import { UserResponse } from '../../repository/interfaces/UserResponse';
 
 const input: LoginInput = {
     email: 'test@example.com',

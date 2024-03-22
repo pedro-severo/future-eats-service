@@ -3,7 +3,7 @@ import { LoginInput } from '../inputs/LoginInput';
 import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginOutput } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
-import { UserDatabase } from '../../database/UserDatabase';
+import { UserRepository } from '../../repository/UserRepository';
 
 jest.mock('../../useCases/LoginUseCase');
 jest.mock('../../../../shared/database');
@@ -31,9 +31,9 @@ const expectedResponse: LoginOutput = {
 describe('LoginController test', () => {
     let loginController: LoginController;
     let loginUseCaseMock: LoginUseCase;
-    let databaseMock: UserDatabase;
+    let databaseMock: UserRepository;
     beforeEach(() => {
-        databaseMock = new UserDatabase();
+        databaseMock = new UserRepository();
         loginUseCaseMock = new LoginUseCase(databaseMock);
         loginController = new LoginController(loginUseCaseMock);
     });

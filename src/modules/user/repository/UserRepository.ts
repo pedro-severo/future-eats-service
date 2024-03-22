@@ -7,12 +7,14 @@ import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 const usersCollectionName = 'users';
 
 @Service()
-export class UserDatabase extends Database {
+export class UserRepository extends Database {
     constructor() {
         super();
     }
 
+    // istanbul ignore next
     protected getCollectionName(): string {
+        // istanbul ignore next
         return usersCollectionName;
     }
 

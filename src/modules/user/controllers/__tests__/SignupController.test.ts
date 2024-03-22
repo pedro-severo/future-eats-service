@@ -3,7 +3,7 @@ import { SignupController } from '../SignupController';
 import { SignupOutput } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
 import { SignupInput } from '../inputs/SignupInput';
-import { UserDatabase } from '../../database/UserDatabase';
+import { UserRepository } from '../../repository/UserRepository';
 
 jest.mock('../../useCases/SignupUseCase');
 jest.mock('../../../../shared/database');
@@ -33,9 +33,9 @@ const expectedResponse: SignupOutput = {
 describe('SignupController test', () => {
     let signupController: SignupController;
     let signupUseCaseMock: SignupUseCase;
-    let databaseMock: UserDatabase;
+    let databaseMock: UserRepository;
     beforeEach(() => {
-        databaseMock = new UserDatabase();
+        databaseMock = new UserRepository();
         signupUseCaseMock = new SignupUseCase(databaseMock);
         signupController = new SignupController(signupUseCaseMock);
     });

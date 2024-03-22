@@ -3,15 +3,15 @@ import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { LoginInput } from '../controllers/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
-import { UserResponse } from '../database/interfaces/UserResponse';
-import { UserDatabase } from '../database/UserDatabase';
+import { UserResponse } from '../repository/interfaces/UserResponse';
+import { UserRepository } from '../repository/UserRepository';
 
 @Service()
 export class LoginUseCase {
     hashManager: HashManager;
     authenticator: AuthenticatorManager;
 
-    constructor(private userDatabase: UserDatabase) {
+    constructor(private userDatabase: UserRepository) {
         this.hashManager = new HashManager();
         this.authenticator = new AuthenticatorManager();
     }

@@ -18,7 +18,7 @@ export abstract class Database {
     protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
-            await this.db.doc(id).set({
+            await this.db?.doc(id)?.set({
                 ...itemToAdd,
             });
         } catch (e) {
@@ -29,7 +29,7 @@ export abstract class Database {
     async checkDataExistence(field: string, value: any): Promise<boolean> {
         try {
             const snapshot = await this.db.where(`${field}`, '==', value).get();
-            return !snapshot.empty;
+            return !snapshot?.empty;
         } catch (e) {
             throw new Error(e.message);
         }
