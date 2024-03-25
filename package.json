@@ -34,7 +34,7 @@
     "build": "tsc",
     "test": "jest",
     "testFile": "yarn test -- --findRelatedTests",
-    "coverage": "jest test --coverage --watchAll=false --silent",    
+    "coverage": "jest test --coverage --watchAll=false --silent",
     "lint": "eslint ./src",
     "openCoverage": "open coverage/lcov-report/index.html",
     "prettier": "prettier ./src --write",
