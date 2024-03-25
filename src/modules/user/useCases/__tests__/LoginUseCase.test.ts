@@ -3,6 +3,17 @@ import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { LoginInput } from '../../controllers/inputs/LoginInput';
 import { UserResponse } from '../../repository/interfaces/UserResponse';
 
+jest.mock('../../repository/mappers/mapUserEntityToResponse', () => ({
+    mapUserEntityToResponse: jest.fn().mockResolvedValue({
+        name: 'Test User',
+        email: 'test@example.com',
+        id: '123456789',
+        password: 'hashedPassword',
+        hasAddress: false,
+        cpf: '12345678901',
+    }),
+}));
+
 const input: LoginInput = {
     email: 'test@example.com',
     password: 'password123',

@@ -28,9 +28,51 @@ export abstract class Database {
         }
     }
 
-    async checkDataExistence(field: string, value: any): Promise<boolean> {
+    protected async update(id: string, itemToAdd: any): Promise<void> {
         try {
-            const snapshot = await this.db.where(`${field}`, '==', value).get();
+            // istanbul ignore next
+            await this.db?.doc(id)?.update({
+                ...itemToAdd,
+            });
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
+    protected async insertSubCollectionItem(
+        subCollection: string,
+        mainItemId: string,
+        itemToAdd: any
+    ): Promise<void> {
+        try {
+            const { id } = itemToAdd;
+            await this.db
+                // istanbul ignore next
+                ?.doc(mainItemId)
+                // istanbul ignore next
+                ?.collection(subCollection)
+                // istanbul ignore next
+                ?.doc(id)
+                // istanbul ignore next
+                ?.set({
+                    ...itemToAdd,
+                });
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
+    protected async checkDataExistenceByField(
+        field: string,
+        value: any
+    ): Promise<boolean> {
+        try {
+            // istanbul ignore next
+            const snapshot = await this.db
+                ?.where(`${field}`, '==', value)
+                ?.get();
             // istanbul ignore next
             return !snapshot?.empty;
         } catch (e) {
@@ -39,14 +81,39 @@ export abstract class Database {
         }
     }
 
-    async getDataByField(field: string, value: any): Promise<any> {
+    protected async checkDataExistence(id: string): Promise<boolean> {
         try {
-            const snapshot = await this.db.where(`${field}`, '==', value).get();
+            // istanbul ignore next
+            return (await this.db?.doc(id)?.get())?.exists;
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
+    protected async getDataByField(field: string, value: any): Promise<any> {
+        try {
+            // istanbul ignore next
+            const snapshot = await this.db
+                ?.where(`${field}`, '==', value)
+                ?.get();
             const data: any[] = [];
-            snapshot.forEach((doc) => {
-                if (doc.data()) data.push(doc.data());
+            // istanbul ignore next
+            snapshot?.forEach((doc) => {
+                // istanbul ignore next
+                if (doc?.data()) data.push(doc.data());
             });
             return data[0];
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
+    protected async getData(id: string): Promise<any> {
+        try {
+            // istanbul ignore next
+            return (await this.db?.doc(id)?.get())?.data();
         } catch (e) {
             // istanbul ignore next
             throw new Error(e.message);

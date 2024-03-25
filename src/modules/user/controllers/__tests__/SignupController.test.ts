@@ -1,9 +1,10 @@
 import { SignupUseCase } from './../../useCases/SignupUseCase';
 import { SignupController } from '../SignupController';
-import { SignupOutput } from '../outputs';
+import { Output } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
 import { SignupInput } from '../inputs/SignupInput';
 import { UserRepository } from '../../repository/UserRepository';
+import { SignupResponse } from '../../useCases/interfaces/SignupResponse';
 
 jest.mock('../../useCases/SignupUseCase');
 jest.mock('../../../../shared/database');
@@ -15,7 +16,7 @@ const input: SignupInput = {
     name: 'Name',
 };
 
-const expectedResponse: SignupOutput = {
+const expectedResponse: Output<SignupResponse> = {
     status: StatusCodes.OK,
     data: {
         user: {

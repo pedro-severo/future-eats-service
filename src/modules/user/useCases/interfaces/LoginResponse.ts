@@ -1,4 +1,4 @@
-import { UserResponse } from '../../repository/interfaces/UserResponse';
+import { UserResponse } from './UserResponse';
 
 export interface LoginResponse {
     user: UserResponse;

@@ -5,8 +5,11 @@ import { LoginController } from './controllers/LoginController';
 import { SignupController } from './controllers/SignupController';
 import {
     LoginUseCaseToken,
+    RegisterAddressUseCaseToken,
     SignupUseCaseToken,
 } from '../../shared/dependencies/index';
+import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput';
+import { RegisterAddressController } from './controllers/RegisterAddressController';
 
 export const resolvers = {
     Mutation: {
@@ -25,6 +28,32 @@ export const resolvers = {
                 JSON.stringify(args)
             ).input;
             return signupController.signup({ name, cpf, email, password });
+        },
+        registerAddress: async (
+            _parent: any,
+            args: { input: RegisterAddressInput }
+        ) => {
+            const registerAddressController = new RegisterAddressController(
+                Container.get(RegisterAddressUseCaseToken)
+            );
+            const {
+                userId,
+                city,
+                complement,
+                state,
+                streetName,
+                streetNumber,
+                zone,
+            } = JSON.parse(JSON.stringify(args)).input;
+            return registerAddressController.registerAddress({
+                userId,
+                city,
+                complement,
+                state,
+                streetName,
+                streetNumber,
+                zone,
+            });
         },
     },
 };

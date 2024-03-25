@@ -6,15 +6,16 @@ import { generateId } from '../../../shared/services/uuid';
 import { HashManager } from '../../../shared/services/hash';
 import { User } from '../entities/User';
 import { SignupUseCase } from '../useCases/SignupUseCase';
-import { SignupOutput } from './outputs';
+import { Output } from './outputs';
 import { Service } from 'typedi';
+import { SignupResponse } from '../useCases/interfaces/SignupResponse';
 
 // TODO: Refac error handling for all endpoints.
 @Service()
 export class SignupController {
     constructor(private useCase: SignupUseCase) {}
 
-    async signup(req: SignupInput): Promise<SignupOutput> {
+    async signup(req: SignupInput): Promise<Output<SignupResponse>> {
         try {
             const inputToValidate = plainToClass(SignupInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);

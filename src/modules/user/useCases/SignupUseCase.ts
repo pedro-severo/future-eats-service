@@ -18,6 +18,7 @@ export class SignupUseCase {
             await this.checkUserExistence(user.email);
             await this.userDatabase.createUser(newUser);
             const token = this.authenticator.generateToken({ id: user.id });
+            // TODO: call mapFunction here... see registerAddress endpoint
             return { user, token };
         } catch (err) {
             throw new Error(err.message);

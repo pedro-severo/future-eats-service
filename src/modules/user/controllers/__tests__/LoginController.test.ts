@@ -1,9 +1,10 @@
+import { Output } from './../outputs/index';
 import { LoginController } from '../LoginController';
 import { LoginInput } from '../inputs/LoginInput';
 import { LoginUseCase } from '../../useCases/LoginUseCase';
-import { LoginOutput } from '../outputs';
 import { StatusCodes } from 'http-status-codes';
 import { UserRepository } from '../../repository/UserRepository';
+import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 
 jest.mock('../../useCases/LoginUseCase');
 jest.mock('../../../../shared/database');
@@ -13,7 +14,7 @@ const input: LoginInput = {
     password: 'password123',
 };
 
-const expectedResponse: LoginOutput = {
+const expectedResponse: Output<LoginResponse> = {
     status: StatusCodes.OK,
     data: {
         user: {
