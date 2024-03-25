@@ -8,7 +8,7 @@ import { AuthenticatorManager } from '../../../shared/services/authentication';
 export class SignupUseCase {
     authenticator: AuthenticatorManager;
 
-    constructor(private userDatabase: UserRepository) {
+    constructor(private userRepository: UserRepository) {
         this.authenticator = new AuthenticatorManager();
     }
 
@@ -16,9 +16,8 @@ export class SignupUseCase {
         try {
             const user = newUser.getUser();
             await this.checkUserExistence(user.email);
-            await this.userDatabase.createUser(newUser);
+            await this.userRepository.createUser(newUser);
             const token = this.authenticator.generateToken({ id: user.id });
-            // TODO: call mapFunction here... see registerAddress endpoint
             return { user, token };
         } catch (err) {
             throw new Error(err.message);
@@ -28,7 +27,7 @@ export class SignupUseCase {
     private checkUserExistence = async (email: string): Promise<void> => {
         try {
             const doesUserExist =
-                await this.userDatabase.checkUserExistenceByEmail(email);
+                await this.userRepository.checkUserExistenceByEmail(email);
             if (doesUserExist)
                 throw new Error('This email is already registered.');
         } catch (e) {
