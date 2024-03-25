@@ -12,7 +12,7 @@ export class LoginUseCase {
     hashManager: HashManager;
     authenticator: AuthenticatorManager;
 
-    constructor(private userDatabase: UserRepository) {
+    constructor(private userRepository: UserRepository) {
         this.hashManager = new HashManager();
         this.authenticator = new AuthenticatorManager();
     }
@@ -23,7 +23,6 @@ export class LoginUseCase {
             const user = await this.getUserByEmail(email);
             await this.checkPassword(user, password);
             const token = this.authenticator.generateToken({ id: user.id });
-            // TODO: call mapFunction here... see registerAddress endpoint
             return this.formatUseCaseResponse(user, token);
         } catch (err) {
             throw new Error(err.message);
@@ -32,7 +31,7 @@ export class LoginUseCase {
 
     private getUserByEmail = async (email: string): Promise<UserResponse> => {
         try {
-            const user = await this.userDatabase.getUserByEmail(email);
+            const user = await this.userRepository.getUserByEmail(email);
             if (!user) throw new Error('User not found.');
             return mapUserEntityToResponse(user);
         } catch (e) {
