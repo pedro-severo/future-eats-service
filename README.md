@@ -60,16 +60,15 @@ Before you begin, make sure you have the following installed:
    
    Paste http://localhost:3003/ on browser to open graphql api and to consume queries and mutations of application
 
-
 <br>
 
 ### Another coomands:
 
 TODO: list all comands of the project
 
-## A brief description of the project choices 
-
 <br>
+
+## A brief description of the project choices 
 
 ### Main technologies used
 
