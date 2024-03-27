@@ -69,6 +69,8 @@ TODO: list all comands of the project
 
 ## A brief description of the project choices 
 
+<br>
+
 ### Main technologies used
 
 - [Node](https://nodejs.org/en)
