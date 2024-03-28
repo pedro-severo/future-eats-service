@@ -1,4 +1,4 @@
 export enum USER_COLLECTIONS {
-    USER = 'users',
+    USERS = 'users',
     USER_ADDRESS = 'user-address',
 }

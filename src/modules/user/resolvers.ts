@@ -4,18 +4,22 @@ import { SignupInput } from './controllers/inputs/SignupInput';
 import { LoginController } from './controllers/LoginController';
 import { SignupController } from './controllers/SignupController';
 import {
-    LoginUseCaseToken,
     RegisterAddressUseCaseToken,
     SignupUseCaseToken,
 } from '../../shared/dependencies/index';
 import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput';
 import { RegisterAddressController } from './controllers/RegisterAddressController';
+import { LoginUseCase } from './useCases/LoginUseCase';
 
 export const resolvers = {
     Mutation: {
-        login: async (_parent: any, args: { input: LoginInput }) => {
+        login: async (
+            _parent: any,
+            args: { input: LoginInput },
+            context: any
+        ) => {
             const loginController = new LoginController(
-                Container.get(LoginUseCaseToken)
+                new LoginUseCase(Container.get(context.databaseContext))
             );
             const { email, password } = JSON.parse(JSON.stringify(args)).input;
             return loginController.login({ email, password });

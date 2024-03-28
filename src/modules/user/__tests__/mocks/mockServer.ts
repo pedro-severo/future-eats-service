@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import './shared/dependencies/index';
+import '../../../../shared/dependencies/index';
 import { merge } from 'lodash';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
-import { UserRepositoryToken } from './shared/dependencies/index';
+import { resolvers } from '../../resolvers';
+import { UserRepositoryTestToken } from '../../../../shared/dependencies';
 
 const { ruruHTML } = require('ruru/server');
 
@@ -20,11 +20,11 @@ app.use(
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 
-async function startApolloServer() {
+export async function startApolloTestServer() {
     const server = new ApolloServer({
         typeDefs: typesArray,
-        resolvers: merge(userResolvers),
-        context: { databaseContext: UserRepositoryToken },
+        resolvers: merge(resolvers),
+        context: { databaseContext: UserRepositoryTestToken },
     });
 
     await server.start();
@@ -36,7 +36,7 @@ async function startApolloServer() {
         res.end(ruruHTML({ endpoint: '/graphql' }));
     });
 
-    const PORT = process.env.PORT || 3003;
+    const PORT = process.env.PORT || 3004;
     app.listen(PORT, () => {
         console.log(
             `Server is running on http://localhost:${PORT}${server.graphqlPath}`
@@ -44,6 +44,6 @@ async function startApolloServer() {
     });
 }
 
-startApolloServer().catch((err) => {
+startApolloTestServer().catch((err) => {
     console.error('Error starting Apollo Server:', err);
 });

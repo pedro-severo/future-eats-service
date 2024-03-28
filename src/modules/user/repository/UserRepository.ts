@@ -1,19 +1,19 @@
 import { Service } from 'typedi';
-import { Database } from '../../../shared/database';
+import { Database, DatabaseContext } from '../../../shared/database';
 import { User } from '../entities/User';
 import { USER_COLLECTIONS } from './interfaces';
 import { UserAddress } from '../entities/UserAddress';
 
 @Service()
 export class UserRepository extends Database {
-    constructor() {
-        super();
+    constructor(databaseContext: DatabaseContext) {
+        super(databaseContext.getContext());
     }
 
     // istanbul ignore next
     protected getCollectionName(): USER_COLLECTIONS {
         // istanbul ignore next
-        return USER_COLLECTIONS.USER;
+        return USER_COLLECTIONS.USERS;
     }
 
     async checkUserExistenceByEmail(email: string): Promise<boolean> {
