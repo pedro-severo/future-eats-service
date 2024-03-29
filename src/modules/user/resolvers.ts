@@ -3,13 +3,11 @@ import { LoginInput } from './controllers/inputs/LoginInput';
 import { SignupInput } from './controllers/inputs/SignupInput';
 import { LoginController } from './controllers/LoginController';
 import { SignupController } from './controllers/SignupController';
-import {
-    RegisterAddressUseCaseToken,
-    SignupUseCaseToken,
-} from '../../shared/dependencies/index';
+import { RegisterAddressUseCaseToken } from '../../shared/dependencies/index';
 import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput';
 import { RegisterAddressController } from './controllers/RegisterAddressController';
 import { LoginUseCase } from './useCases/LoginUseCase';
+import { SignupUseCase } from './useCases/SignupUseCase';
 
 export const resolvers = {
     Mutation: {
@@ -24,9 +22,13 @@ export const resolvers = {
             const { email, password } = JSON.parse(JSON.stringify(args)).input;
             return loginController.login({ email, password });
         },
-        signup: async (_parent: any, args: { input: SignupInput }) => {
+        signup: async (
+            _parent: any,
+            args: { input: SignupInput },
+            context: any
+        ) => {
             const signupController = new SignupController(
-                Container.get(SignupUseCaseToken)
+                new SignupUseCase(Container.get(context.databaseContext))
             );
             const { name, cpf, email, password } = JSON.parse(
                 JSON.stringify(args)

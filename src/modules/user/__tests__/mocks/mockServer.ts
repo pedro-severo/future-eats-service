@@ -8,6 +8,8 @@ import cors from 'cors';
 import { resolvers } from '../../resolvers';
 import { UserRepositoryTestToken } from '../../../../shared/dependencies';
 
+// TODO: try to remove this from __tests__ folder
+
 const { ruruHTML } = require('ruru/server');
 
 const app = express();
@@ -20,12 +22,18 @@ app.use(
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 
+export const server = new ApolloServer({
+    typeDefs: typesArray,
+    resolvers: merge(resolvers),
+    context: { databaseContext: UserRepositoryTestToken },
+});
+
 export async function startApolloTestServer() {
-    const server = new ApolloServer({
-        typeDefs: typesArray,
-        resolvers: merge(resolvers),
-        context: { databaseContext: UserRepositoryTestToken },
-    });
+    // const server = new ApolloServer({
+    //     typeDefs: typesArray,
+    //     resolvers: merge(resolvers),
+    //     context: { databaseContext: UserRepositoryTestToken },
+    // });
 
     await server.start();
 
@@ -43,7 +51,3 @@ export async function startApolloTestServer() {
         );
     });
 }
-
-startApolloTestServer().catch((err) => {
-    console.error('Error starting Apollo Server:', err);
-});
