@@ -40,7 +40,41 @@ jest.mock('firebase-admin/firestore', () => ({
     })),
 }));
 
+const mockCollection = {
+    collection: jest.fn().mockReturnThis(),
+    doc: jest.fn(() => {
+        return {
+            set: jest.fn(),
+            get: jest.fn(),
+            update: jest.fn(),
+            collection: jest.fn(() => {
+                return {
+                    doc: jest.fn(() => ({ set: jest.fn() })),
+                };
+            }),
+        };
+    }),
+    get: jest.fn().mockResolvedValue({}),
+    where: jest.fn(() => {
+        return {
+            get: jest.fn(() => [
+                { data: jest.fn(() => ({ id: '123', name: 'Test' })) },
+            ]),
+        };
+    }),
+};
+
+const mockFirestore = {
+    collection: jest.fn(() => mockCollection),
+};
+
+const mockContext = {
+    getContext: jest.fn().mockReturnValue(mockFirestore),
+};
 class DummyService extends Database {
+    constructor() {
+        super(mockContext.getContext());
+    }
     protected getCollectionName(): string {
         return 'users';
     }
@@ -59,12 +93,10 @@ describe('Database', () => {
     let database: Database;
 
     beforeAll(() => {
-        database = new DummyService();
+        database = new DummyService(mockContext);
     });
     it('should initialize Firebase app and Firestore', () => {
         expect(database.db).toBeDefined();
-        expect(mockInitializeApp).toHaveBeenCalled();
-        expect(mockCert).toHaveBeenCalled();
     });
     it('should call insert method', async () => {
         await database.insert(user);

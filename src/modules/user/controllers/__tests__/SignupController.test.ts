@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { SignupInput } from '../inputs/SignupInput';
 import { UserRepository } from '../../repository/UserRepository';
 import { SignupResponse } from '../../useCases/interfaces/SignupResponse';
+import { DatabaseTestContext } from '../../../../shared/database/context';
 
 jest.mock('../../useCases/SignupUseCase');
 jest.mock('../../../../shared/database');
@@ -34,10 +35,12 @@ const expectedResponse: Output<SignupResponse> = {
 describe('SignupController test', () => {
     let signupController: SignupController;
     let signupUseCaseMock: SignupUseCase;
-    let databaseMock: UserRepository;
+    let repositoryMock: UserRepository;
+    let databaseMock: DatabaseTestContext;
     beforeEach(() => {
-        databaseMock = new UserRepository();
-        signupUseCaseMock = new SignupUseCase(databaseMock);
+        databaseMock = new DatabaseTestContext();
+        repositoryMock = new UserRepository(databaseMock);
+        signupUseCaseMock = new SignupUseCase(repositoryMock);
         signupController = new SignupController(signupUseCaseMock);
     });
     it('should return a successful response', async () => {
