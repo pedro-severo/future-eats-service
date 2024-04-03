@@ -5,7 +5,7 @@ import * as firebaseTesting from '@firebase/testing';
 const projectId = 'future-eats-service';
 
 describe('Integration tests', () => {
-    // TODO: See how to up mock database before run this file
+    // TODO: Finish tests
     // TODO: Clean code everybody on project, not just here
     // TODO: Finish integration tests
     beforeAll(async () => {
