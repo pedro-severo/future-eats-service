@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
-import { Database, DatabaseContext } from '../../../shared/database';
+import { Database } from '../../../shared/database';
+import { DatabaseContext } from '../../../shared/database/context';
 import { User } from '../entities/User';
 import { USER_COLLECTIONS } from './interfaces';
 import { UserAddress } from '../entities/UserAddress';

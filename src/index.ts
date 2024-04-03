@@ -6,7 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
-import { UserRepositoryToken } from './shared/dependencies/index';
+import { UserDatabaseToken } from './shared/dependencies/index';
 
 const { ruruHTML } = require('ruru/server');
 
@@ -24,7 +24,8 @@ async function startApolloServer() {
     const server = new ApolloServer({
         typeDefs: typesArray,
         resolvers: merge(userResolvers),
-        context: { databaseContext: UserRepositoryToken },
+        // TODO: isolate object outside index.ts file
+        context: { userDatabaseContext: UserDatabaseToken },
     });
 
     await server.start();

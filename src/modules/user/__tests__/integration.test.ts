@@ -36,6 +36,7 @@ describe('Integration tests', () => {
                 }
             `,
         });
+        console.log('🚀 ~ beforeAll ~ result:', result);
         expect(typeof result?.data?.signup?.data?.token).toBe('string');
         expect(typeof result?.data?.signup?.data?.user.password).toBe('string');
         expect(typeof result?.data?.signup?.data?.user.id).toBe('string');

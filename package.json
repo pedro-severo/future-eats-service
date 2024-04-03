@@ -37,7 +37,7 @@
     "test": "concurrently \"yarn firebase\" \"yarn test:run\"",    
     "test:run": "jest --runInBand --detectOpenHandles --forceExit && yarn test:shutdown",
     "test:shutdown": "pkill -f 'firebase emulators:start'",
-    "testFile": "yarn test -- --findRelatedTests",
+    "testFile": "jest -- --findRelatedTests",
     "coverage": "jest test --coverage --watchAll=false --silent",
     "lint": "eslint ./src",
     "openCoverage": "open coverage/lcov-report/index.html",

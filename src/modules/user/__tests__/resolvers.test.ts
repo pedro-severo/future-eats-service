@@ -1,3 +1,4 @@
+import { UserDatabaseToken } from '../../../shared/dependencies';
 import { resolvers } from '../resolvers';
 
 const expectedResponse = { status: 'success' };
@@ -38,6 +39,14 @@ jest.mock('../controllers/RegisterAddressController', () => {
     };
 });
 
+jest.mock('../repository/UserRepository', () => {
+    return {
+        UserRepository: jest.fn(() => ({
+            constructor: jest.fn(),
+        })),
+    };
+});
+
 describe('Mutation Resolvers', () => {
     describe('login', () => {
         it('should call loginController with the correct arguments', async () => {
@@ -47,7 +56,9 @@ describe('Mutation Resolvers', () => {
                     password: 'password123',
                 },
             };
-            const result = await resolvers.Mutation.login(null, args);
+            const result = await resolvers.Mutation.login(null, args, {
+                userDatabaseContext: UserDatabaseToken,
+            });
             expect(mockControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
@@ -65,7 +76,9 @@ describe('Mutation Resolvers', () => {
                     cpf: 'cpf123',
                 },
             };
-            const result = await resolvers.Mutation.signup(null, args);
+            const result = await resolvers.Mutation.signup(null, args, {
+                userDatabaseContext: UserDatabaseToken,
+            });
             expect(mockControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
