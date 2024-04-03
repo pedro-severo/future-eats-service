@@ -1,12 +1,12 @@
 import 'reflect-metadata';
-import '../../../../shared/dependencies/index';
+import '../../../shared/dependencies/index';
 import { merge } from 'lodash';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
-import { resolvers } from '../../resolvers';
-import { UserDatabaseTestToken } from '../../../../shared/dependencies/index';
+import { resolvers } from '../resolvers';
+import { UserDatabaseTestToken } from '../../../shared/dependencies/index';
 
 const app = express();
 

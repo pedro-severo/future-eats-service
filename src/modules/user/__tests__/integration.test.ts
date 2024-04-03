@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-express';
-import { server } from './mocks/mockServer';
+import { server } from '../mocks/mockServer';
 import * as firebaseTesting from '@firebase/testing';
 
 const projectId = 'future-eats-service';
