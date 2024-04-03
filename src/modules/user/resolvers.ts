@@ -29,7 +29,6 @@ export const resolvers = {
             args: { input: SignupInput },
             context: IDatabaseContext
         ) => {
-            console.log('🚀 ~ context:', context);
             const signupController = new SignupController(
                 // @ts-expect-error impossible undefined
                 new SignupUseCase(Container.get(context.userDatabaseContext))

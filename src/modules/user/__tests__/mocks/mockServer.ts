@@ -21,5 +21,5 @@ const typesArray = loadFilesSync('./src/**/*.gql');
 export const server = new ApolloServer({
     typeDefs: typesArray,
     resolvers: merge(resolvers),
-    context: { databaseContext: UserDatabaseTestToken },
+    context: { userDatabaseContext: UserDatabaseTestToken },
 });
