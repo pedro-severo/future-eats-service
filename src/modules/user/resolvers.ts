@@ -44,8 +44,8 @@ export const resolvers = {
             context: IDatabaseContext
         ) => {
             const registerAddressController = new RegisterAddressController(
-                // @ts-expect-error impossible undefined
                 new RegisterAddressUseCase(
+                    // @ts-expect-error impossible undefined
                     Container.get(context.userDatabaseContext)
                 )
             );
