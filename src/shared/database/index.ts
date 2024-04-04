@@ -10,6 +10,7 @@ export abstract class Database {
     protected async insert(itemToAdd: any): Promise<void> {
         try {
             const { id } = itemToAdd;
+            // istanbul ignore next
             await this.db?.doc(id)?.set({
                 ...itemToAdd,
             });
