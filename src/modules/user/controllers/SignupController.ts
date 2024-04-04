@@ -34,7 +34,7 @@ export class SignupController {
             );
             const response = await this.useCase.execute(user);
             return {
-                status: StatusCodes.OK,
+                status: StatusCodes.CREATED,
                 data: response,
             };
         } catch (err) {

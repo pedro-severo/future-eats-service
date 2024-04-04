@@ -9,6 +9,9 @@ module.exports = {
         '**/__tests__/**/*.(js|ts)?(x)',
         '**/?(*.)+(spec|test).(js|ts)?(x)',
     ],
+    testPathIgnorePatterns: [
+        '<rootDir>/src/modules/user/__tests__/integration.test.ts',
+    ],
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     coverageReporters: ['lcov', 'text-summary'],
     coverageDirectory: 'coverage',

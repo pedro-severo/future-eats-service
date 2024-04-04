@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { Database } from '../../../../shared/database';
+import { DatabaseTestContext } from '../../../../shared/database/context';
 import { UserRepository } from '../UserRepository';
 import { USER_COLLECTIONS } from '../interfaces';
 
@@ -28,8 +29,10 @@ const userAddress = {
 describe('UserRepository test', () => {
     let userRepository: UserRepository;
     const mockInsert = jest.fn();
+    let databaseMock: DatabaseTestContext;
     beforeEach(() => {
-        userRepository = new UserRepository();
+        databaseMock = new DatabaseTestContext();
+        userRepository = new UserRepository(databaseMock);
         jest.spyOn(Database.prototype, 'checkDataExistence').mockImplementation(
             (field, email: string) => {
                 return email == user.email;

@@ -5,6 +5,7 @@ import { RegisterAddressInput } from '../inputs/RegisterAddressInput';
 import { RegisterAddressController } from '../RegisterAddressController';
 import { UserRepository } from '../../repository/UserRepository';
 import { Output } from '../outputs';
+import { DatabaseTestContext } from '../../../../shared/database/context';
 
 jest.mock('../../useCases/RegisterAddressUseCase');
 jest.mock('../../../../shared/database');
@@ -35,10 +36,12 @@ const expectedResponse: Output<RegisterAddressResponse> = {
 describe('RegisterAddressController test', () => {
     let registerAddressController: RegisterAddressController;
     let registerAddressUseCase: RegisterAddressUseCase;
-    let databaseMock: UserRepository;
+    let repositoryMock: UserRepository;
+    let databaseMock: DatabaseTestContext;
     beforeEach(() => {
-        databaseMock = new UserRepository();
-        registerAddressUseCase = new RegisterAddressUseCase(databaseMock);
+        databaseMock = new DatabaseTestContext();
+        repositoryMock = new UserRepository(databaseMock);
+        registerAddressUseCase = new RegisterAddressUseCase(repositoryMock);
         registerAddressController = new RegisterAddressController(
             registerAddressUseCase
         );

@@ -5,3 +5,8 @@ build
 
 # testing
 /coverage
+
+# firebase
+/firebase
+
+/*.log

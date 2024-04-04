@@ -1,16 +1,8 @@
-import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-
-const serviceAccount = require('../../../../future-eats-service-5f069c811a09.json');
-
 export abstract class Database {
     protected db: FirebaseFirestore.CollectionReference;
 
-    constructor() {
-        initializeApp({
-            credential: cert(serviceAccount),
-        });
-        this.db = getFirestore().collection(this.getCollectionName());
+    constructor(context: FirebaseFirestore.Firestore) {
+        this.db = context.collection(this.getCollectionName());
     }
 
     protected abstract getCollectionName(): string;

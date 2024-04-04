@@ -5,6 +5,7 @@ import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { StatusCodes } from 'http-status-codes';
 import { UserRepository } from '../../repository/UserRepository';
 import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
+import { DatabaseTestContext } from '../../../../shared/database/context';
 
 jest.mock('../../useCases/LoginUseCase');
 jest.mock('../../../../shared/database');
@@ -32,10 +33,12 @@ const expectedResponse: Output<LoginResponse> = {
 describe('LoginController test', () => {
     let loginController: LoginController;
     let loginUseCaseMock: LoginUseCase;
-    let databaseMock: UserRepository;
+    let repositoryMock: UserRepository;
+    let databaseMock: DatabaseTestContext;
     beforeEach(() => {
-        databaseMock = new UserRepository();
-        loginUseCaseMock = new LoginUseCase(databaseMock);
+        databaseMock = new DatabaseTestContext();
+        repositoryMock = new UserRepository(databaseMock);
+        loginUseCaseMock = new LoginUseCase(repositoryMock);
         loginController = new LoginController(loginUseCaseMock);
     });
     it('should return a successful response', async () => {

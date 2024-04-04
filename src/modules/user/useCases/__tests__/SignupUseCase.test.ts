@@ -81,7 +81,7 @@ describe('SignupUseCase test', () => {
                 },
             });
         } catch (e) {
-            expect(e.message).toBe('This email is already registered.');
+            expect(e.message).toBe('This email is already registered');
         }
     });
 });

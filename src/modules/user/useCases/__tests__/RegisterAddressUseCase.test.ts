@@ -74,7 +74,7 @@ describe('RegisterAddressUseCase test', () => {
             // @ts-expect-error expect a class, I'm injecting a object with the same props
             await registerAddressUseCase.execute(input, 'invalidId');
         } catch (e) {
-            expect(e.message).toBe('Failed to register address.');
+            expect(e.message).toBe('Failed to register address');
         }
     });
 });
