@@ -19,7 +19,7 @@ export class DatabaseContext {
     }
 }
 
-export const projectId = 'future-eats-service';
+const projectId = 'future-eats-service';
 
 @Service()
 export class DatabaseTestContext {

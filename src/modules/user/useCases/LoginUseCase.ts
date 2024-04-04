@@ -6,6 +6,7 @@ import { LoginResponse } from './interfaces/LoginResponse';
 import { mapUserEntityToResponse } from '../repository/mappers/mapUserEntityToResponse';
 import { UserResponse } from './interfaces/UserResponse';
 import { UserRepository } from '../repository/UserRepository';
+import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 
 @Service()
 export class LoginUseCase {
@@ -27,7 +28,7 @@ export class LoginUseCase {
 
     private getUserByEmail = async (email: string): Promise<UserResponse> => {
         const user = await this.userRepository.getUserByEmail(email);
-        if (!user) throw new Error('User not found.');
+        if (!user) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
         return mapUserEntityToResponse(user);
     };
 
@@ -38,7 +39,8 @@ export class LoginUseCase {
         const isPasswordCorrect =
             user.password &&
             (await this.hashManager.compare(passwordToCheck, user.password));
-        if (!isPasswordCorrect) throw new Error('Incorrect password.');
+        if (!isPasswordCorrect)
+            throw new Error(USER_ERROR_MESSAGES.INCORRECT_PASSWORD);
     };
 
     private formatUseCaseResponse = (

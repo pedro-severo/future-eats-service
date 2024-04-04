@@ -3,6 +3,7 @@ import { UserRepository } from '../repository/UserRepository';
 import { User } from '../entities/User';
 import { SignupResponse } from './interfaces/SignupResponse';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
+import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 
 @Service()
 export class SignupUseCase {
@@ -23,6 +24,7 @@ export class SignupUseCase {
     private checkUserExistence = async (email: string): Promise<void> => {
         const doesUserExist =
             await this.userRepository.checkUserExistenceByEmail(email);
-        if (doesUserExist) throw new Error('This email is already registered.');
+        if (doesUserExist)
+            throw new Error(USER_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED);
     };
 }

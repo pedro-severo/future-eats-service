@@ -102,14 +102,14 @@ describe('LoginUseCase test', () => {
                 password: 'invalidPassword',
             });
         } catch (e) {
-            expect(e.message).toBe('Incorrect password.');
+            expect(e.message).toBe('Incorrect password');
         }
     });
     it('should throw error by incorrect email', async () => {
         try {
             await loginUseCase.execute({ ...input, email: 'invalidEmail' });
         } catch (e) {
-            expect(e.message).toBe('User not found.');
+            expect(e.message).toBe('User not found');
         }
     });
 });
