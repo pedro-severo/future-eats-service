@@ -1,4 +1,4 @@
-# Future Eats Service
+# Future Eats Service (readme in progress...)
 
 Future Eats Service is a backend service responsible for managing various aspects of the Future Eats UI (https://github.com/pedro-severo/future-eats). It handles user authentication, restaurant management, menu items, orders, and more.
 
