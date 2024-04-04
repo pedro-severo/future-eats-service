@@ -3,12 +3,12 @@ import { LoginInput } from './controllers/inputs/LoginInput';
 import { SignupInput } from './controllers/inputs/SignupInput';
 import { LoginController } from './controllers/LoginController';
 import { SignupController } from './controllers/SignupController';
-import { RegisterAddressUseCaseToken } from '../../shared/dependencies/index';
 import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput';
 import { RegisterAddressController } from './controllers/RegisterAddressController';
 import { LoginUseCase } from './useCases/LoginUseCase';
 import { SignupUseCase } from './useCases/SignupUseCase';
 import { IDatabaseContext } from '../../shared/database/interfaces';
+import { RegisterAddressUseCase } from './useCases/RegisterAddressUseCase';
 
 export const resolvers = {
     Mutation: {
@@ -40,10 +40,14 @@ export const resolvers = {
         },
         registerAddress: async (
             _parent: any,
-            args: { input: RegisterAddressInput }
+            args: { input: RegisterAddressInput },
+            context: IDatabaseContext
         ) => {
             const registerAddressController = new RegisterAddressController(
-                Container.get(RegisterAddressUseCaseToken)
+                // @ts-expect-error impossible undefined
+                new RegisterAddressUseCase(
+                    Container.get(context.userDatabaseContext)
+                )
             );
             const {
                 userId,

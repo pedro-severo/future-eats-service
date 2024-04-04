@@ -18,7 +18,7 @@ const input: SignupInput = {
 };
 
 const expectedResponse: Output<SignupResponse> = {
-    status: StatusCodes.OK,
+    status: StatusCodes.CREATED,
     data: {
         user: {
             name: 'Test User',

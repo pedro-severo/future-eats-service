@@ -101,7 +101,13 @@ describe('Mutation Resolvers', () => {
                     zone: 'Barreiro',
                 },
             };
-            const result = await resolvers.Mutation.registerAddress(null, args);
+            const result = await resolvers.Mutation.registerAddress(
+                null,
+                args,
+                {
+                    userDatabaseContext: UserDatabaseToken,
+                }
+            );
             expect(mockControllerMethod).toHaveBeenCalledWith({
                 userId: 'userId',
                 city: 'Lisbon',
