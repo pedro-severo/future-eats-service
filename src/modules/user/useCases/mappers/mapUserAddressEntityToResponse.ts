@@ -1,5 +1,5 @@
 import { UserAddress } from '../../entities/UserAddress';
-import { RegisterAddressResponse } from '../../useCases/interfaces/RegisterAddressResponse';
+import { RegisterAddressResponse } from '../interfaces/RegisterAddressResponse';
 
 export const mapUserAddressEntityToResponse = (
     userAddress: UserAddress
