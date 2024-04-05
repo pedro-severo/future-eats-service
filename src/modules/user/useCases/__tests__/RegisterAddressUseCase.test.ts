@@ -32,7 +32,7 @@ const expectedResponse: RegisterAddressResponse = {
     zone: 'Barreiro',
 };
 
-jest.mock('../../repository/mappers/mapUserAddressEntityToResponse', () => ({
+jest.mock('../mappers/mapUserAddressEntityToResponse', () => ({
     mapUserAddressEntityToResponse: jest.fn().mockResolvedValue({
         id: 'userId',
         city: 'Lisbon',

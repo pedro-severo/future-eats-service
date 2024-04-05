@@ -3,7 +3,7 @@ import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { LoginInput } from '../../controllers/inputs/LoginInput';
 import { UserResponse } from '../interfaces/UserResponse';
 
-jest.mock('../../repository/mappers/mapUserEntityToResponse', () => ({
+jest.mock('../mappers/mapUserEntityToResponse', () => ({
     mapUserEntityToResponse: jest.fn().mockResolvedValue({
         name: 'Test User',
         email: 'test@example.com',
