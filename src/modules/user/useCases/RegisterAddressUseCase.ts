@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { UserAddress } from '../entities/UserAddress';
 import { RegisterAddressResponse } from './interfaces/RegisterAddressResponse';
-import { mapUserAddressEntityToResponse } from '../repository/mappers/mapUserAddressEntityToResponse';
+import { mapUserAddressEntityToResponse } from './mappers/mapUserAddressEntityToResponse';
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 

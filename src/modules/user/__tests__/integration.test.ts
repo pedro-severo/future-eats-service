@@ -30,7 +30,6 @@ const registerAddressInput = {
 describe('Integration tests', () => {
     let userId: string;
     let signupResult: any;
-    // TODO: Finish integration tests
     beforeAll(async () => {
         const result = await server.executeOperation({
             query: signupQuery,
