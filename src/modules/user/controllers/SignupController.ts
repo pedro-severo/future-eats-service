@@ -10,7 +10,6 @@ import { Output } from './outputs';
 import { Service } from 'typedi';
 import { SignupResponse } from '../useCases/interfaces/SignupResponse';
 
-// TODO: Refac error handling for all endpoints.
 @Service()
 export class SignupController {
     constructor(private useCase: SignupUseCase) {}

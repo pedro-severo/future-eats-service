@@ -7,7 +7,6 @@ import { Output } from './outputs';
 import { Service } from 'typedi';
 import { LoginResponse } from '../useCases/interfaces/LoginResponse';
 
-// TODO: Refac error handling for all endpoints.
 @Service()
 export class LoginController {
     constructor(private useCase: LoginUseCase) {}
