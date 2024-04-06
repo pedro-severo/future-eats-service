@@ -9,6 +9,9 @@ import { LoginUseCase } from './useCases/LoginUseCase';
 import { SignupUseCase } from './useCases/SignupUseCase';
 import { IDatabaseContext } from '../../shared/database/interfaces';
 import { RegisterAddressUseCase } from './useCases/RegisterAddressUseCase';
+import { GetProfileInput } from './controllers/inputs/GetProfileInput';
+import { GetProfileController } from './controllers/GetProfileController';
+import { GetProfileUseCase } from './useCases/GetProfileUseCase';
 
 export const resolvers = {
     Mutation: {
@@ -67,6 +70,20 @@ export const resolvers = {
                 streetNumber,
                 zone,
             });
+        },
+        getProfile: async (
+            _parent: any,
+            args: { input: GetProfileInput },
+            context: IDatabaseContext
+        ) => {
+            const controller = new GetProfileController(
+                new GetProfileUseCase(
+                    // @ts-expect-error impossible undefined
+                    Container.get(context.userDatabaseContext)
+                )
+            );
+            const { userId } = JSON.parse(JSON.stringify(args)).input;
+            return controller.getProfile({ userId });
         },
     },
 };

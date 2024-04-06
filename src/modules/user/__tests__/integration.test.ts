@@ -170,7 +170,46 @@ describe('Integration tests', () => {
             );
         });
     });
+    describe('getProfile query', () => {
+        it('should get profile correctly', async () => {
+            const result = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId },
+            });
+            expect(result?.data?.getProfile?.status).toBe(StatusCodes.OK);
+            expect(result?.data?.getProfile?.data?.profile.id).toBe(userId);
+            expect(result?.data?.getProfile?.data?.profile.name).toBe(
+                signupInput.name
+            );
+            expect(result?.data?.getProfile?.data?.profile.email).toBe(
+                signupInput.email
+            );
+            expect(result?.data?.getProfile?.data?.profile.cpf).toBe(
+                signupInput.cpf
+            );
+            expect(result?.data?.getProfile?.data?.profile.cpf).toBe(
+                signupInput.cpf
+            );
+        });
+    });
 });
+
+const getProfileQuery = gql`
+    query getProfile($userId: String!) {
+        getProfile(input: { userId: $userId }) {
+            status
+            data {
+                profile {
+                    id
+                    name
+                    email
+                    cpf
+                    address
+                }
+            }
+        }
+    }
+`;
 
 const signupQuery = gql`
     mutation signup(
