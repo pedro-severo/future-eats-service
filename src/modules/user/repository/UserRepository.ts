@@ -25,6 +25,10 @@ export class UserRepository extends Database {
         return await this.checkDataExistence(id);
     }
 
+    async getUser(id: string): Promise<User | void> {
+        console.log('🚀 ~ UserRepository ~ getUser ~ id:', id);
+    }
+
     async getUserByEmail(email: string): Promise<User | void> {
         const user = await this.getDataByField('email', email);
         if (user) {

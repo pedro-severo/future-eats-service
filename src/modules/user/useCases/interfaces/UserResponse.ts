@@ -1,3 +1,5 @@
+import { UserAddress } from '../../entities/UserAddress';
+
 export interface UserResponse {
     id: string;
     name: string;
@@ -5,4 +7,5 @@ export interface UserResponse {
     cpf: string;
     hasAddress: boolean;
     password: string;
+    address?: UserAddress;
 }
