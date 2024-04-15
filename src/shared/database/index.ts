@@ -102,6 +102,8 @@ export abstract class Database {
         }
     }
 
+    // TODO: Create a method do get data from a subentity
+
     protected async getData(id: string): Promise<any> {
         try {
             // istanbul ignore next

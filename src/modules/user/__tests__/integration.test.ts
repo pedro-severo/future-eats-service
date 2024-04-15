@@ -127,11 +127,15 @@ describe('Integration tests', () => {
             );
         });
     });
-    describe('registerAddress mutation', () => {
+    describe.only('registerAddress mutation', () => {
         it('should register address correctly', async () => {
             const result = await server.executeOperation({
                 query: registerAddressQuery,
                 variables: { ...registerAddressInput, userId },
+            });
+            await server.executeOperation({
+                query: loginQuery,
+                variables: loginInput,
             });
             // TODO: call getUser endppoint (when it is done) to see if hasAddress prop was changed to true
             expect(result?.data?.registerAddress?.status).toBe(
