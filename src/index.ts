@@ -7,6 +7,7 @@ import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
 import { contextProps } from './shared/database/constants';
+import helmet from 'helmet';
 
 const { ruruHTML } = require('ruru/server');
 
@@ -17,6 +18,9 @@ app.use(
         allowedHeaders: ['Content-Type'],
     })
 );
+
+// TODO: study helmet: https://helmetjs.github.io/
+app.use(helmet());
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 
