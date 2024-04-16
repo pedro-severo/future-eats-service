@@ -1,7 +1,6 @@
 import { Service } from 'typedi';
 import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
-import { LoginInput } from '../controllers/inputs/LoginInput';
 import { LoginResponse } from './interfaces/LoginResponse';
 import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 import { UserResponse } from './interfaces/UserResponse';
@@ -18,8 +17,7 @@ export class LoginUseCase {
         this.authenticator = new AuthenticatorManager();
     }
 
-    async execute(input: LoginInput): Promise<LoginResponse> {
-        const { email, password } = input;
+    async execute(email: string, password: string): Promise<LoginResponse> {
         const user = await this.getUserByEmail(email);
         await this.checkPassword(user, password);
         const token = this.authenticator.generateToken({ id: user.id });
