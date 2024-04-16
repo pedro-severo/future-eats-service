@@ -8,10 +8,19 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
 import { contextProps } from './shared/database/constants';
 import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 const { ruruHTML } = require('ruru/server');
 
 const app = express();
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: 'Too many requests from this IP, please try again later',
+});
+
+app.use(limiter);
 
 app.use(
     cors({
