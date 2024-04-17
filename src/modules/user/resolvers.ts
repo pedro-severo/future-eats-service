@@ -10,10 +10,6 @@ import { SignupUseCase } from './useCases/SignupUseCase';
 import { IDatabaseContext } from '../../shared/database/interfaces';
 import { RegisterAddressUseCase } from './useCases/RegisterAddressUseCase';
 
-// Topics to study:
-// Main approaches to maintain security on node projects
-// Main node questions given by chatgpd: https://chat.openai.com/c/60b2f349-3067-4098-b702-7fbbf8201614
-
 export const resolvers = {
     Mutation: {
         login: async (
