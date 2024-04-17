@@ -3,9 +3,12 @@ import { authenticationData } from './interfaces/authenticationData';
 
 export class AuthenticatorManager {
     public generateToken = (payload: authenticationData): string => {
-        return sign(payload, process.env.JWT_KEY || 'key', {
-            expiresIn: '60d',
-        });
+        return (
+            'Bearer ' +
+            sign(payload, process.env.JWT_KEY || 'key', {
+                expiresIn: '60d',
+            })
+        );
     };
 
     public getTokenData = (token: string): authenticationData | null => {
