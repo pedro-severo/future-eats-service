@@ -4,7 +4,7 @@ import { UserDatabaseToken } from '../dependencies';
 
 // @ts-expect-error apollo-server callback
 export const getServerContext = (req): IServerContext => {
-    const token = req.headers.authorization || '';
+    const token = req?.headers?.authorization || '';
     return { auth: { token }, userDatabaseContext: UserDatabaseToken };
 };
 

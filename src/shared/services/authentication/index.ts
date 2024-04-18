@@ -1,5 +1,5 @@
 import { sign, verify } from 'jsonwebtoken';
-import { authenticationData } from './interfaces/authenticationData';
+import { authenticationData } from './interfaces';
 
 export class AuthenticatorManager {
     public generateToken = (payload: authenticationData): string => {
@@ -14,14 +14,23 @@ export class AuthenticatorManager {
     public getTokenData = (token: string): authenticationData | null => {
         try {
             const tokenData = verify(
-                token,
+                this.removeBearer(token),
                 process.env.JWT_KEY || 'key'
             ) as authenticationData;
             return {
                 id: tokenData.id,
+                role: tokenData.role,
             };
         } catch (err) {
             throw new Error(err.message);
+        }
+    };
+
+    private removeBearer = (token: string): string => {
+        if (token.startsWith('Bearer ')) {
+            return token.slice(7);
+        } else {
+            return token;
         }
     };
 }

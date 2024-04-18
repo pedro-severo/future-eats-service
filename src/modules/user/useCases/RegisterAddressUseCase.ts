@@ -5,6 +5,7 @@ import { mapUserAddressEntityToResponse } from './mappers/mapUserAddressEntityTo
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 @Service()
 export class RegisterAddressUseCase {
@@ -19,9 +20,7 @@ export class RegisterAddressUseCase {
         userId: string,
         token: string
     ): Promise<RegisterAddressResponse> {
-        const a = this.authenticator.getTokenData(token);
-        // TODO: Study how to manage roles on authorization accesses
-        console.log('🚀 ~ RegisterAddressUseCase ~ a:', a);
+        this.checkAuthorization(token, userId);
         const userExist = await this.userRepository.checkUserExistence(userId);
         if (!userExist) {
             throw new Error(USER_ERROR_MESSAGES.FAILED_TO_REGISTER_ADDRESS);
@@ -32,4 +31,12 @@ export class RegisterAddressUseCase {
         });
         return mapUserAddressEntityToResponse(address);
     }
+
+    private checkAuthorization = (token: string, userId: string): void => {
+        const { id, role } = this.authenticator.getTokenData(token) || {};
+        if (!id || !role)
+            throw new Error(USER_ERROR_MESSAGES.TOKEN_DATA_MISSING);
+        if (!(userId === id && role === USER_ROLES.USER))
+            throw new Error(USER_ERROR_MESSAGES.AUTHORIZATION_ERROR);
+    };
 }
