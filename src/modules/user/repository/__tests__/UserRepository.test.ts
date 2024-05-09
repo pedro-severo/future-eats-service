@@ -55,8 +55,13 @@ describe('UserRepository test', () => {
             }
         );
         jest.spyOn(Database.prototype, 'getDataByField').mockImplementation(
-            () => {
-                return user;
+            (field, email) => {
+                if (email === user.email) return user;
+            }
+        );
+        jest.spyOn(Database.prototype, 'getData').mockImplementation(
+            (id) => {
+                if (id === user.id) return user;
             }
         );
         jest.spyOn(Database.prototype, 'insert').mockImplementation((user) => {
@@ -92,6 +97,10 @@ describe('UserRepository test', () => {
     });
     it('should call getUserByEmail correctly', async () => {
         const userResponse = await userRepository.getUserByEmail(user.email);
+        expect(userResponse).toEqual(user);
+    });
+    it('should call getUser correctly', async () => {
+        const userResponse = await userRepository.getUser(user.id);
         expect(userResponse).toEqual(user);
     });
     it('should call createUser correctly', async () => {

@@ -5,26 +5,38 @@ import { GetProfileUseCase } from '../GetProfileUseCase';
 //         name: 'Test User',
 //         email: 'test@example.com',
 //         id: '123456789',
-//         password: 'hashedPassword',
 //         hasAddress: false,
 //         cpf: '12345678901',
 //         address: "Rua dos Guajajaras..."
 //     }
 // };
 
+const addressId = "addressId"
+
 const mockRepository = {
-    getUser: jest.fn().mockImplementation((input) => {
-        if (input.userId === 'userNotFoundId') throw new Error('foo');
+    getUser: jest.fn().mockImplementation((userId) => {
+        if (userId === 'userNotFoundId') throw new Error('foo');
         return {
             name: 'Test User',
             email: 'test@example.com',
             id: '123456789',
-            password: 'hashedPassword',
-            hasAddress: false,
+            mainAddressId: addressId,
+            hasAddress: true,
             cpf: '12345678901',
             address: 'Rua dos Guajajaras...',
         };
     }),
+    getAddress: jest.fn().mockImplementation((userId, addressId) => {
+        return {
+            id: addressId,
+            city: "BH",
+            complement: "Complement",
+            state: "State",
+            streetName: "StreetName",
+            streetNumber: "streetNumber",
+            zone: "zone"
+        }
+    })
 };
 
 describe('GetProfileUseCase suit test', () => {
@@ -39,5 +51,6 @@ describe('GetProfileUseCase suit test', () => {
         };
         await useCase.execute(input);
         expect(mockRepository.getUser).toHaveBeenCalledWith(input.userId);
+        expect(mockRepository.getAddress).toHaveBeenCalledWith(input.userId, addressId)
     });
 });

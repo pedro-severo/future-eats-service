@@ -102,12 +102,20 @@ export abstract class Database {
         }
     }
 
-    // TODO: Create a method do get data from a subentity
-
     protected async getData(id: string): Promise<any> {
         try {
             // istanbul ignore next
             return (await this.db?.doc(id)?.get())?.data();
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
+    protected async getSubCollectionData(subCollection: string, mainItemId: string, subCollectionDataId: string): Promise<any> {
+        try {
+            // istanbul ignore next
+            return (await this.db?.doc(mainItemId)?.collection(subCollection)?.doc(subCollectionDataId)?.get())?.data();
         } catch (e) {
             // istanbul ignore next
             throw new Error(e.message);

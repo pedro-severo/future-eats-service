@@ -26,7 +26,17 @@ export class UserRepository extends Database {
     }
 
     async getUser(id: string): Promise<User | void> {
-        console.log('🚀 ~ UserRepository ~ getUser ~ id:', id);
+        const user = await this.getData(id)
+        if (user) {
+            const { id, name, email, password, hasAddress, cpf } = user;
+            return new User(id, name, email, password, hasAddress, cpf);
+        }
+    }
+
+    async getAddress(userId: string, addressId: string): Promise<UserAddress | void> {
+        const address = await this.getSubCollectionData(USER_COLLECTIONS.USER_ADDRESS, userId, addressId)
+        console.log("🚀 ~ UserRepository ~ getAddress ~ address:", address)
+        
     }
 
     async getUserByEmail(email: string): Promise<User | void> {

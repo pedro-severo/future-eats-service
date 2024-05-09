@@ -127,7 +127,7 @@ describe('Integration tests', () => {
             );
         });
     });
-    describe.only('registerAddress mutation', () => {
+    describe('registerAddress mutation', () => {
         it('should register address correctly', async () => {
             const result = await server.executeOperation({
                 query: registerAddressQuery,
@@ -180,18 +180,19 @@ describe('Integration tests', () => {
                 query: getProfileQuery,
                 variables: { userId },
             });
+            console.log("🚀 ~ it ~ result:", result?.data?.getProfile.data)
             expect(result?.data?.getProfile?.status).toBe(StatusCodes.OK);
-            expect(result?.data?.getProfile?.data?.profile.id).toBe(userId);
-            expect(result?.data?.getProfile?.data?.profile.name).toBe(
+            expect(result?.data?.getProfile?.data?.id).toBe(userId);
+            expect(result?.data?.getProfile?.data?.name).toBe(
                 signupInput.name
             );
-            expect(result?.data?.getProfile?.data?.profile.email).toBe(
+            expect(result?.data?.getProfile?.data?.email).toBe(
                 signupInput.email
             );
-            expect(result?.data?.getProfile?.data?.profile.cpf).toBe(
+            expect(result?.data?.getProfile?.data?.cpf).toBe(
                 signupInput.cpf
             );
-            expect(result?.data?.getProfile?.data?.profile.cpf).toBe(
+            expect(result?.data?.getProfile?.data?.cpf).toBe(
                 signupInput.cpf
             );
         });
@@ -203,13 +204,11 @@ const getProfileQuery = gql`
         getProfile(input: { userId: $userId }) {
             status
             data {
-                profile {
-                    id
-                    name
-                    email
-                    cpf
-                    address
-                }
+                id
+                name
+                email
+                cpf
+                address
             }
         }
     }
