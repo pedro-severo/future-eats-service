@@ -12,18 +12,6 @@ import { RegisterAddressUseCase } from './useCases/RegisterAddressUseCase';
 
 export const resolvers = {
     Mutation: {
-        login: async (
-            _parent: any,
-            args: { input: LoginInput },
-            context: IDatabaseContext
-        ) => {
-            const loginController = new LoginController(
-                // @ts-expect-error impossible undefined
-                new LoginUseCase(Container.get(context.userDatabaseContext))
-            );
-            const { email, password } = JSON.parse(JSON.stringify(args)).input;
-            return loginController.login({ email, password });
-        },
         signup: async (
             _parent: any,
             args: { input: SignupInput },
@@ -37,6 +25,18 @@ export const resolvers = {
                 JSON.stringify(args)
             ).input;
             return signupController.signup({ name, cpf, email, password });
+        },
+        login: async (
+            _parent: any,
+            args: { input: LoginInput },
+            context: IDatabaseContext
+        ) => {
+            const loginController = new LoginController(
+                // @ts-expect-error impossible undefined
+                new LoginUseCase(Container.get(context.userDatabaseContext))
+            );
+            const { email, password } = JSON.parse(JSON.stringify(args)).input;
+            return loginController.login({ email, password });
         },
         registerAddress: async (
             _parent: any,

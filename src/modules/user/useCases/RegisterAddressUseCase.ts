@@ -21,6 +21,7 @@ export class RegisterAddressUseCase {
         await this.userRepository.updateUserAddressFlag(userId, {
             hasAddress: true,
         });
+        // TODO: Create handleMainAddressId on userRepository
         return mapUserAddressEntityToResponse(address);
     }
 }

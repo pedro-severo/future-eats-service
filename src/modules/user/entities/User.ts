@@ -33,6 +33,10 @@ export class User {
     @MinLength(6)
     private password: string;
 
+    @IsString()
+    @IsNotEmpty()
+    private mainAddressId?: string
+
     constructor(
         id: string,
         name: string,
@@ -50,7 +54,7 @@ export class User {
     }
 
     public getUser() {
-        const { id, name, email, password, cpf, hasAddress } = this;
+        const { id, name, email, password, cpf, hasAddress, mainAddressId } = this;
         return {
             id,
             name,
@@ -58,6 +62,7 @@ export class User {
             password,
             cpf,
             hasAddress,
+            mainAddressId
         };
     }
 }

@@ -5,4 +5,5 @@ export interface UserResponse {
     cpf: string;
     hasAddress: boolean;
     password: string;
+    mainAddressId?: string;
 }
