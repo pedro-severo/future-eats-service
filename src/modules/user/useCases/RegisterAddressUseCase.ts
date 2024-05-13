@@ -5,8 +5,6 @@ import { mapUserAddressEntityToResponse } from './mappers/mapUserAddressEntityTo
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 
-// TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
-
 @Service()
 export class RegisterAddressUseCase {
     constructor(private userRepository: UserRepository) {}
@@ -24,6 +22,7 @@ export class RegisterAddressUseCase {
             hasAddress: true,
         });
         const { id } = address.getUserAddress();
+        // TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
         await this.userRepository.setMainAddressId(userId, id);
         return mapUserAddressEntityToResponse(address);
     }
