@@ -35,7 +35,7 @@ export class User {
 
     @IsString()
     @IsNotEmpty()
-    private mainAddressId?: string
+    private mainAddressId?: string;
 
     constructor(
         id: string,
@@ -53,8 +53,17 @@ export class User {
         this.hasAddress = hasAddress;
     }
 
-    public getUser() {
-        const { id, name, email, password, cpf, hasAddress, mainAddressId } = this;
+    public getUser(): {
+        id: string;
+        name: string;
+        email: string;
+        password: string;
+        hasAddress: boolean;
+        cpf: string;
+        mainAddressId?: string;
+    } {
+        const { id, name, email, password, cpf, hasAddress, mainAddressId } =
+            this;
         return {
             id,
             name,
@@ -62,7 +71,7 @@ export class User {
             password,
             cpf,
             hasAddress,
-            mainAddressId
+            mainAddressId,
         };
     }
 }

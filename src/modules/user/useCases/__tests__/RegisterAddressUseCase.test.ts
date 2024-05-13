@@ -1,7 +1,7 @@
 import { RegisterAddressUseCase } from '../RegisterAddressUseCase';
 import { RegisterAddressResponse } from '../interfaces/RegisterAddressResponse';
 
-const userId = "userId"
+const userId = 'userId';
 
 const input = {
     id: 'addressId',
@@ -11,6 +11,17 @@ const input = {
     streetNumber: '123',
     streetName: 'Guajajaras',
     zone: 'Barreiro',
+    getUserAddress: () => {
+        return {
+            id: 'addressId',
+            city: 'Lisbon',
+            complement: '1D',
+            state: 'MG',
+            streetNumber: '123',
+            streetName: 'Guajajaras',
+            zone: 'Barreiro',
+        };
+    },
 };
 
 const expectedResponse: RegisterAddressResponse = {
@@ -41,11 +52,11 @@ const mockCheckUserExistence = jest
         return id === userId;
     });
 
-const mockRegisterAddress = jest.fn()
+const mockRegisterAddress = jest.fn();
 
-const mockUpdateUserAddressFlag = jest.fn()
+const mockUpdateUserAddressFlag = jest.fn();
 
-const mockHandleMainAddressId = jest.fn()
+const mockSetMainAddressId = jest.fn();
 
 describe('RegisterAddressUseCase test', () => {
     let registerAddressUseCase: RegisterAddressUseCase;
@@ -53,9 +64,12 @@ describe('RegisterAddressUseCase test', () => {
         // @ts-expect-error dependency injection
         registerAddressUseCase = new RegisterAddressUseCase({
             checkUserExistence: (id: string) => mockCheckUserExistence(id),
-            registerAddress: (address, userId) => mockRegisterAddress(address, userId),
-            updateUserAddressFlag: (userId) => mockUpdateUserAddressFlag(userId, { hasAddress: true }),
-            // handleMainAddressId: (input, userId: string) => mockHandleMainAddressId(input.id, userId)
+            registerAddress: (address, userId) =>
+                mockRegisterAddress(address, userId),
+            updateUserAddressFlag: (userId) =>
+                mockUpdateUserAddressFlag(userId, { hasAddress: true }),
+            setMainAddressId: (userId, addressId) =>
+                mockSetMainAddressId(userId, addressId),
         });
     });
     it('should run execute method correctly', async () => {
@@ -66,8 +80,10 @@ describe('RegisterAddressUseCase test', () => {
         );
         expect(mockCheckUserExistence).toHaveBeenCalledWith(userId);
         expect(mockRegisterAddress).toHaveBeenCalledWith(input, userId);
-        expect(mockUpdateUserAddressFlag).toHaveBeenCalledWith(userId, { hasAddress: true });
-        expect(mockHandleMainAddressId).toHaveBeenCalledWith(userId, input.id)
+        expect(mockUpdateUserAddressFlag).toHaveBeenCalledWith(userId, {
+            hasAddress: true,
+        });
+        expect(mockSetMainAddressId).toHaveBeenCalledWith(userId, input.id);
         expect(response).toEqual(expectedResponse);
     });
     it('should throw error by userId not found', async () => {

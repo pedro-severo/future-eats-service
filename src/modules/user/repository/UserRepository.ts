@@ -55,4 +55,8 @@ export class UserRepository extends Database {
         const { hasAddress } = flag;
         return await this.update(userId, { hasAddress });
     }
+
+    async setMainAddressId(userId: string, addressId: string): Promise<void> {
+        return await this.update(userId, { mainAddressId: addressId });
+    }
 }

@@ -29,6 +29,7 @@ const userAddress = {
 describe('UserRepository test', () => {
     let userRepository: UserRepository;
     const mockInsert = jest.fn();
+    const mockUpdate = jest.fn();
     let databaseMock: DatabaseTestContext;
     beforeEach(() => {
         databaseMock = new DatabaseTestContext();
@@ -69,8 +70,8 @@ describe('UserRepository test', () => {
             mockInsert(USER_COLLECTIONS.USER_ADDRESS, userId, userAddress);
         });
         jest.spyOn(Database.prototype, 'update').mockImplementation(
-            (userId, { hasAddress }) => {
-                mockInsert(userId, { hasAddress });
+            (userId, { hasAddress, mainAddressId }) => {
+                mockUpdate(userId, { hasAddress, mainAddressId });
             }
         );
     });
@@ -112,7 +113,14 @@ describe('UserRepository test', () => {
         await userRepository.updateUserAddressFlag(user.id, {
             hasAddress: true,
         });
-        expect(mockInsert).toHaveBeenCalled();
-        expect(mockInsert).toHaveBeenCalledWith(user.id, { hasAddress: true });
+        expect(mockUpdate).toHaveBeenCalled();
+        expect(mockUpdate).toHaveBeenCalledWith(user.id, { hasAddress: true });
+    });
+    it('should call setMainAddressId correctly', async () => {
+        await userRepository.setMainAddressId(user.id, 'addressId');
+        expect(mockUpdate).toHaveBeenCalled();
+        expect(mockUpdate).toHaveBeenCalledWith(user.id, {
+            mainAddressId: 'addressId',
+        });
     });
 });
