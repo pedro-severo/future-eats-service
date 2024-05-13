@@ -20,6 +20,10 @@ input RegisterAddressInput {
     zone: String!
 }
 
+input GetProfileInput {
+    userId: String!
+}
+
 type User {
     id: String!
     name: String!
@@ -44,6 +48,14 @@ type RegisterAddressResponse {
     id: String!
 }
 
+type ProfileResponse {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    address: String
+}
+
 type UserApiResponse {
     status: Int!
     data: UserResponse!
@@ -54,8 +66,13 @@ type RegisterAddressApiResponse {
     data: RegisterAddressResponse!
 }
 
+type ProfileApiResponse {
+    status: Int!
+    data: ProfileResponse!
+}
+
 type Query {
-    _empty: String
+    getProfile(input: GetProfileInput): ProfileApiResponse!
 }
 
 type Mutation {

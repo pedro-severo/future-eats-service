@@ -133,6 +133,10 @@ describe('Integration tests', () => {
                 query: registerAddressQuery,
                 variables: { ...registerAddressInput, userId },
             });
+            await server.executeOperation({
+                query: loginQuery,
+                variables: loginInput,
+            });
             // TODO: call getUser endppoint (when it is done) to see if hasAddress prop was changed to true
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
@@ -170,7 +174,45 @@ describe('Integration tests', () => {
             );
         });
     });
+    describe('getProfile query', () => {
+        it('should get profile correctly', async () => {
+            const result = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId },
+            });
+            console.log("🚀 ~ it ~ result:", result?.data?.getProfile.data)
+            expect(result?.data?.getProfile?.status).toBe(StatusCodes.OK);
+            expect(result?.data?.getProfile?.data?.id).toBe(userId);
+            expect(result?.data?.getProfile?.data?.name).toBe(
+                signupInput.name
+            );
+            expect(result?.data?.getProfile?.data?.email).toBe(
+                signupInput.email
+            );
+            expect(result?.data?.getProfile?.data?.cpf).toBe(
+                signupInput.cpf
+            );
+            expect(result?.data?.getProfile?.data?.cpf).toBe(
+                signupInput.cpf
+            );
+        });
+    });
 });
+
+const getProfileQuery = gql`
+    query getProfile($userId: String!) {
+        getProfile(input: { userId: $userId }) {
+            status
+            data {
+                id
+                name
+                email
+                cpf
+                address
+            }
+        }
+    }
+`;
 
 const signupQuery = gql`
     mutation signup(
