@@ -111,12 +111,10 @@ describe('UserRepository test', () => {
         expect(trueResult).toBe(true);
         expect(falseResult).toBe(false);
     });
-    // TODO: Fix test
     it('should call getUserByEmail correctly', async () => {
         const userResponse = await userRepository.getUserByEmail(user.email);
         expect(userResponse).toEqual(user);
     });
-    // TODO: Fix test
     it('should call getUser correctly', async () => {
         const userResponse = await userRepository.getUser(user.id);
         expect(userResponse).toEqual(user);

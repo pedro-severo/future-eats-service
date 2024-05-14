@@ -193,8 +193,10 @@ describe('Integration tests', () => {
                 signupInput.email
             );
             expect(result?.data?.getProfile?.data?.cpf).toBe(signupInput.cpf);
+            // TODO: Check address correctly
             expect(result?.data?.getProfile?.data?.address).toBeTruthy();
         });
+        // TODO: Create tests to fail scenarios
     });
 });
 

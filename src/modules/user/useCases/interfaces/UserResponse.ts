@@ -1,3 +1,4 @@
+// TODO: Test endpoint callings on graphql and see if is necessary to return mainAddressId on UserResponse
 export interface UserResponse {
     id: string;
     name: string;

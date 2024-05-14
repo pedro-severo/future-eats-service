@@ -12,6 +12,8 @@ const expectedResponse = { status: 'success' };
 
 // TODO: Test usecases calling
 
+// TODO: Test fail cases, if it is possible
+
 const mockControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
 
 const mockGetProfileMethod = jest.fn().mockResolvedValue(expectedResponse);
