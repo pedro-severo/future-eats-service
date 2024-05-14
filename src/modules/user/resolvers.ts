@@ -70,7 +70,7 @@ export const resolvers = {
                 streetNumber,
                 zone,
             });
-        }
+        },
     },
     Query: {
         getProfile: async (
@@ -87,5 +87,5 @@ export const resolvers = {
             const { userId } = JSON.parse(JSON.stringify(args)).input;
             return controller.getProfile({ userId });
         },
-    }
+    },
 };

@@ -1,5 +1,8 @@
-import { UserResponse } from './UserResponse';
-
 export interface GetProfileResponse {
-    user: UserResponse;
+    id: string;
+    name: string;
+    email: string;
+    cpf: string;
+    hasAddress: boolean;
+    address: string | null;
 }

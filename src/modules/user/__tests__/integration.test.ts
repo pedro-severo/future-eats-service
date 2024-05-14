@@ -175,26 +175,25 @@ describe('Integration tests', () => {
         });
     });
     describe('getProfile query', () => {
+        beforeEach(async () => {
+            await server.executeOperation({
+                query: registerAddressQuery,
+                variables: { ...registerAddressInput, userId },
+            });
+        });
         it('should get profile correctly', async () => {
             const result = await server.executeOperation({
                 query: getProfileQuery,
                 variables: { userId },
             });
-            console.log("🚀 ~ it ~ result:", result?.data?.getProfile.data)
-            expect(result?.data?.getProfile?.status).toBe(StatusCodes.OK);
+            expect(result?.data?.getProfile?.status).toBe(StatusCodes.ACCEPTED);
             expect(result?.data?.getProfile?.data?.id).toBe(userId);
-            expect(result?.data?.getProfile?.data?.name).toBe(
-                signupInput.name
-            );
+            expect(result?.data?.getProfile?.data?.name).toBe(signupInput.name);
             expect(result?.data?.getProfile?.data?.email).toBe(
                 signupInput.email
             );
-            expect(result?.data?.getProfile?.data?.cpf).toBe(
-                signupInput.cpf
-            );
-            expect(result?.data?.getProfile?.data?.cpf).toBe(
-                signupInput.cpf
-            );
+            expect(result?.data?.getProfile?.data?.cpf).toBe(signupInput.cpf);
+            expect(result?.data?.getProfile?.data?.address).toBeTruthy();
         });
     });
 });
@@ -208,6 +207,7 @@ const getProfileQuery = gql`
                 name
                 email
                 cpf
+                hasAddress
                 address
             }
         }

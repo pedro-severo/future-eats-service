@@ -36,7 +36,7 @@ jest.mock('class-validator', () => {
     };
 });
 
-const mockExecute = jest.fn();
+const mockExecute = jest.fn().mockResolvedValueOnce({});
 
 describe('GetProfileController', () => {
     let controller: GetProfileController;

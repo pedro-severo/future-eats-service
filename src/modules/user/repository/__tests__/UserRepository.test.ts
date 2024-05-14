@@ -14,10 +14,11 @@ const user = {
     password: 'hashedPassword',
     hasAddress: false,
     cpf: '12345678901',
+    mainAddressId: 'addressId',
 };
 
 const userAddress = {
-    userId: 'userId',
+    id: 'addressId',
     city: 'Lisbon',
     complement: '1D',
     state: 'MG',
@@ -30,6 +31,12 @@ describe('UserRepository test', () => {
     let userRepository: UserRepository;
     const mockInsert = jest.fn();
     const mockUpdate = jest.fn();
+    const mockGetSubCollectionData = jest
+        .fn()
+        .mockImplementation((collection, userId, addressId) => {
+            if (userId === user.id && addressId === userAddress.id)
+                return userAddress;
+        });
     let databaseMock: DatabaseTestContext;
     beforeEach(() => {
         databaseMock = new DatabaseTestContext();
@@ -60,11 +67,9 @@ describe('UserRepository test', () => {
                 if (email === user.email) return user;
             }
         );
-        jest.spyOn(Database.prototype, 'getData').mockImplementation(
-            (id) => {
-                if (id === user.id) return user;
-            }
-        );
+        jest.spyOn(Database.prototype, 'getData').mockImplementation((id) => {
+            if (id === user.id) return user;
+        });
         jest.spyOn(Database.prototype, 'insert').mockImplementation((user) => {
             mockInsert(user);
         });
@@ -78,6 +83,16 @@ describe('UserRepository test', () => {
             (userId, { hasAddress, mainAddressId }) => {
                 mockUpdate(userId, { hasAddress, mainAddressId });
             }
+        );
+        jest.spyOn(
+            Database.prototype,
+            'getSubCollectionData'
+        ).mockImplementation((collection, userId, addressId) =>
+            mockGetSubCollectionData(
+                USER_COLLECTIONS.USER_ADDRESS,
+                userId,
+                addressId
+            )
         );
     });
     it('should call checkUserExistenceByEmail correctly', async () => {
@@ -96,10 +111,12 @@ describe('UserRepository test', () => {
         expect(trueResult).toBe(true);
         expect(falseResult).toBe(false);
     });
+    // TODO: Fix test
     it('should call getUserByEmail correctly', async () => {
         const userResponse = await userRepository.getUserByEmail(user.email);
         expect(userResponse).toEqual(user);
     });
+    // TODO: Fix test
     it('should call getUser correctly', async () => {
         const userResponse = await userRepository.getUser(user.id);
         expect(userResponse).toEqual(user);
@@ -131,5 +148,17 @@ describe('UserRepository test', () => {
         expect(mockUpdate).toHaveBeenCalledWith(user.id, {
             mainAddressId: 'addressId',
         });
+    });
+    it('should call getAddress correctly', async () => {
+        const addressResponse = await userRepository.getAddress(
+            user.id,
+            userAddress.id
+        );
+        expect(mockGetSubCollectionData).toHaveBeenCalledWith(
+            USER_COLLECTIONS.USER_ADDRESS,
+            user.id,
+            userAddress.id
+        );
+        expect(addressResponse).toEqual(userAddress);
     });
 });

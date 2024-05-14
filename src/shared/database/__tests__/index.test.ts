@@ -80,6 +80,7 @@ const user = {
     mainAddressId: 'addressId',
     hasAddress: false,
     cpf: '12345678901',
+    bla: undefined,
 };
 
 describe('Database', () => {
@@ -136,8 +137,12 @@ describe('Database', () => {
         expect(database.db.doc).toHaveBeenCalledWith(user.id);
     });
     it('should call getSubCollectionData', async () => {
-        await database.getSubCollectionData("subCollection", user.id, user.mainAddressId)
+        await database.getSubCollectionData(
+            'subCollection',
+            user.id,
+            user.mainAddressId
+        );
         expect(database.db.doc).toHaveBeenCalled();
         expect(database.db.doc).toHaveBeenCalledWith(user.id);
-    })
+    });
 });

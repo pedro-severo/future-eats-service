@@ -43,7 +43,8 @@ export class User {
         email: string,
         password: string,
         hasAddress: boolean,
-        cpf: string
+        cpf: string,
+        mainAddressId?: string
     ) {
         this.id = id;
         this.name = name;
@@ -51,6 +52,7 @@ export class User {
         this.password = password;
         this.cpf = cpf;
         this.hasAddress = hasAddress;
+        this.mainAddressId = mainAddressId;
     }
 
     public getUser(): {

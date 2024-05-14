@@ -153,7 +153,7 @@ describe('Mutation Resolvers', () => {
                     userId: 'userId',
                 },
             };
-            const result = await resolvers.Mutation.getProfile(null, args, {
+            const result = await resolvers.Query.getProfile(null, args, {
                 userDatabaseContext: UserDatabaseToken,
             });
             expect(GetProfileController).toHaveBeenCalledTimes(1);

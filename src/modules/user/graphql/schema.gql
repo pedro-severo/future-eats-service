@@ -48,11 +48,12 @@ type RegisterAddressResponse {
     id: String!
 }
 
-type ProfileResponse {
+type GetProfileResponse {
     id: String!
     name: String!
     email: String!
     cpf: String!
+    hasAddress: Boolean!
     address: String
 }
 
@@ -66,17 +67,17 @@ type RegisterAddressApiResponse {
     data: RegisterAddressResponse!
 }
 
-type ProfileApiResponse {
+type GetProfileApiResponse {
     status: Int!
-    data: ProfileResponse!
-}
-
-type Query {
-    getProfile(input: GetProfileInput): ProfileApiResponse!
+    data: GetProfileResponse!
 }
 
 type Mutation {
     login(input: LoginInput): UserApiResponse!
     signup(input: SignupInput): UserApiResponse!
     registerAddress(input: RegisterAddressInput): RegisterAddressApiResponse!
+}
+
+type Query {
+    getProfile(input: GetProfileInput): GetProfileApiResponse!
 }
