@@ -193,8 +193,9 @@ describe('Integration tests', () => {
                 signupInput.email
             );
             expect(result?.data?.getProfile?.data?.cpf).toBe(signupInput.cpf);
-            // TODO: Check address correctly
-            expect(result?.data?.getProfile?.data?.address).toBeTruthy();
+            expect(typeof result?.data?.getProfile?.data?.address).toBe(
+                'string'
+            );
         });
         // TODO: Create tests to fail scenarios
     });

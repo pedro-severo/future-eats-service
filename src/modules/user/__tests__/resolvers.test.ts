@@ -3,18 +3,23 @@ import { GetProfileController } from '../controllers/GetProfileController';
 import { RegisterAddressController } from '../controllers/RegisterAddressController';
 import { resolvers } from '../resolvers';
 import { GetProfileUseCase } from '../useCases/GetProfileUseCase';
+import { LoginUseCase } from '../useCases/LoginUseCase';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
+import { SignupUseCase } from '../useCases/SignupUseCase';
 
 const expectedResponse = { status: 'success' };
 
-// TODO: Create one mock to each controller method and
-// create test cases on controller success to see if the respective methods is been called just once
-
-// TODO: Test usecases calling
-
 // TODO: Test fail cases, if it is possible
 
-const mockControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
+const mockLoginControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
+
+const mockSignupControllerMethod = jest
+    .fn()
+    .mockResolvedValue(expectedResponse);
+
+const mockRegisterAddressControllerMethod = jest
+    .fn()
+    .mockResolvedValue(expectedResponse);
 
 const mockGetProfileMethod = jest.fn().mockResolvedValue(expectedResponse);
 
@@ -31,7 +36,7 @@ jest.mock('typedi', () => ({
 jest.mock('../controllers/LoginController', () => {
     return {
         LoginController: jest.fn(() => ({
-            login: mockControllerMethod,
+            login: mockLoginControllerMethod,
         })),
     };
 });
@@ -39,7 +44,7 @@ jest.mock('../controllers/LoginController', () => {
 jest.mock('../controllers/SignupController', () => {
     return {
         SignupController: jest.fn(() => ({
-            signup: mockControllerMethod,
+            signup: mockSignupControllerMethod,
         })),
     };
 });
@@ -47,12 +52,10 @@ jest.mock('../controllers/SignupController', () => {
 jest.mock('../controllers/RegisterAddressController', () => {
     return {
         RegisterAddressController: jest.fn(() => ({
-            registerAddress: mockControllerMethod,
+            registerAddress: mockRegisterAddressControllerMethod,
         })),
     };
 });
-
-jest.mock('../useCases/RegisterAddressUseCase');
 
 jest.mock('../controllers/GetProfileController', () => {
     return {
@@ -62,8 +65,6 @@ jest.mock('../controllers/GetProfileController', () => {
     };
 });
 
-jest.mock('../useCases/GetProfileUseCase');
-
 jest.mock('../repository/UserRepository', () => {
     return {
         UserRepository: jest.fn(() => ({
@@ -71,6 +72,11 @@ jest.mock('../repository/UserRepository', () => {
         })),
     };
 });
+
+jest.mock('../useCases/LoginUseCase');
+jest.mock('../useCases/SignupUseCase');
+jest.mock('../useCases/RegisterAddressUseCase');
+jest.mock('../useCases/GetProfileUseCase');
 
 describe('Mutation Resolvers', () => {
     describe('login', () => {
@@ -84,10 +90,12 @@ describe('Mutation Resolvers', () => {
             const result = await resolvers.Mutation.login(null, args, {
                 userDatabaseContext: UserDatabaseToken,
             });
-            expect(mockControllerMethod).toHaveBeenCalledWith({
+            expect(mockLoginControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
             });
+            expect(LoginUseCase).toHaveBeenCalled();
+            expect(LoginUseCase).toHaveBeenCalledWith('foo');
             expect(result).toEqual(expectedResponse);
         });
     });
@@ -104,12 +112,14 @@ describe('Mutation Resolvers', () => {
             const result = await resolvers.Mutation.signup(null, args, {
                 userDatabaseContext: UserDatabaseToken,
             });
-            expect(mockControllerMethod).toHaveBeenCalledWith({
+            expect(mockSignupControllerMethod).toHaveBeenCalledWith({
                 email: 'test@example.com',
                 password: 'password123',
                 name: 'name123',
                 cpf: 'cpf123',
             });
+            expect(SignupUseCase).toHaveBeenCalled();
+            expect(SignupUseCase).toHaveBeenCalledWith('foo');
             expect(result).toEqual(expectedResponse);
         });
     });
@@ -136,7 +146,7 @@ describe('Mutation Resolvers', () => {
             expect(RegisterAddressController).toHaveBeenCalledTimes(1);
             expect(RegisterAddressUseCase).toHaveBeenCalled();
             expect(RegisterAddressUseCase).toHaveBeenCalledWith('foo');
-            expect(mockControllerMethod).toHaveBeenCalledWith({
+            expect(mockRegisterAddressControllerMethod).toHaveBeenCalledWith({
                 userId: 'userId',
                 city: 'Lisbon',
                 complement: '1D',
