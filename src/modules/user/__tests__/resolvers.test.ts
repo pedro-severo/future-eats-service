@@ -9,8 +9,6 @@ import { SignupUseCase } from '../useCases/SignupUseCase';
 
 const expectedResponse = { status: 'success' };
 
-// TODO: Test fail cases, if it is possible
-
 const mockLoginControllerMethod = jest.fn().mockResolvedValue(expectedResponse);
 
 const mockSignupControllerMethod = jest
