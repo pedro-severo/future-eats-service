@@ -2,13 +2,13 @@
 
 Future Eats Service is a backend service responsible for managing various aspects of the Future Eats UI (https://github.com/pedro-severo/future-eats). It handles user authentication, restaurant management, menu items, orders, and more.
 
-## Summary
+# Summary
 
 * [Getting Started](#getting-started)
 * [Project Description](#project-description)
 * [API](#API)
 
-## <a name="getting-started"></a>Getting Started
+# <a name="getting-started">Getting Started</a>
 
 Follow these steps to set up and run Future Eats API on your local machine.
 
@@ -89,6 +89,59 @@ TODO: list all comands of the project
 TODO:
 
 
-## API
+# <a name="API">API</a>
 
+## Mutations
+
+<details>
+<summary>Signup</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary>Login</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary>Register Address</summary>
+
+</details>
+
+
+## Queries
+
+<details>
+<summary>Get Profile</summary>
+
+Give the user details according this model
+
+``` graphql
+type Query {
+    getProfile(input: GetProfileInput): GetProfileApiResponse!
+}
+
+input GetProfileInput {
+    userId: String!
+}
+
+type GetProfileApiResponse {
+    status: Int!
+    data: GetProfileResponse!
+}
+
+type GetProfileResponse {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    hasAddress: Boolean!
+    address: String
+}
+```
+</details>
 
