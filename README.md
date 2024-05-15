@@ -2,7 +2,13 @@
 
 Future Eats Service is a backend service responsible for managing various aspects of the Future Eats UI (https://github.com/pedro-severo/future-eats). It handles user authentication, restaurant management, menu items, orders, and more.
 
-## Getting Started
+## Summary
+
+* [Getting Started](#getting-started)
+* [Project Description](#project-description)
+* [API](#API)
+
+## <a name="getting-started"></a>Getting Started
 
 Follow these steps to set up and run Future Eats API on your local machine.
 
@@ -68,7 +74,7 @@ TODO: list all comands of the project
 
 <br>
 
-## A brief description of the project choices 
+# <a name="project-description">Project Description</a> 
 
 ### Main technologies used
 
@@ -80,5 +86,9 @@ TODO: list all comands of the project
 
 ### A description of the architecture
 
-// TODO
+TODO:
+
+
+## API
+
 
