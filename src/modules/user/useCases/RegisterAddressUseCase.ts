@@ -29,6 +29,9 @@ export class RegisterAddressUseCase {
         await this.userRepository.updateUserAddressFlag(userId, {
             hasAddress: true,
         });
+        const { id } = address.getUserAddress();
+        // TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
+        await this.userRepository.setMainAddressId(userId, id);
         return mapUserAddressEntityToResponse(address);
     }
 

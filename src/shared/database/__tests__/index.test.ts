@@ -41,7 +41,7 @@ const mockCollection = {
             update: jest.fn(),
             collection: jest.fn(() => {
                 return {
-                    doc: jest.fn(() => ({ set: jest.fn() })),
+                    doc: jest.fn(() => ({ set: jest.fn(), get: jest.fn() })),
                 };
             }),
         };
@@ -77,8 +77,10 @@ const user = {
     email: 'test@example.com',
     id: '123456789',
     password: 'hashedPassword',
+    mainAddressId: 'addressId',
     hasAddress: false,
     cpf: '12345678901',
+    bla: undefined,
 };
 
 describe('Database', () => {
@@ -131,6 +133,15 @@ describe('Database', () => {
     });
     it('should call getData method', async () => {
         await database.getData(user.id);
+        expect(database.db.doc).toHaveBeenCalled();
+        expect(database.db.doc).toHaveBeenCalledWith(user.id);
+    });
+    it('should call getSubCollectionData', async () => {
+        await database.getSubCollectionData(
+            'subCollection',
+            user.id,
+            user.mainAddressId
+        );
         expect(database.db.doc).toHaveBeenCalled();
         expect(database.db.doc).toHaveBeenCalledWith(user.id);
     });
