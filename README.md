@@ -91,6 +91,12 @@ TODO:
 
 # <a name="API">API</a>
 
+### Running 
+
+`yarn (or npm) start`
+
+Starts GraphiQL server at http://localhost:3003/
+
 ## Mutations
 
 <details>
@@ -118,7 +124,23 @@ TODO:
 <details>
 <summary>Get Profile</summary>
 
-Give the user details according this model
+Give the common user (person who makes orders on app) details according this model: 
+
+``` json
+   {
+      "status": 202,
+      "data": {
+        "name": "Severo Snape",
+        "email": "severo.snape@email.com",
+        "cpf": "000000000",
+        "hasAddress": true,
+        "address": "Spinner's End, s/n, complement, Cokeworth, England"
+      }
+   }
+```
+The option to use "Profile" instead "User" to name the endpoint (getProfile) is because the system doesn't returns a User if we see to entity. Instead, the system formats a specific response according the two entities related to a common user (User and UserAddress entities), merging specific keys of this two entities to generate the response above. 
+
+Here there are the graphQL related types:
 
 ``` graphql
 type Query {
@@ -143,5 +165,20 @@ type GetProfileResponse {
     address: String
 }
 ```
-</details>
 
+Query example:
+```graphql
+  getProfile(input: "") {
+    status
+    data {
+      id
+      name
+      email
+      cpf
+      hasAddress
+      address
+    }
+  }
+```
+
+</details>
