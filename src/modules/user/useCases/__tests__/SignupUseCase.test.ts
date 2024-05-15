@@ -59,14 +59,14 @@ describe('SignupUseCase test', () => {
         });
     });
     it('should run execute method correctly', async () => {
-        // @ts-expect-error expect a class, I'm injecting a object with the same props
+        // @ts-expect-error expect a class, It's injecting an object with the same props
         const response = await signupUseCase.execute(input);
         expect(mockCheckExistenceByEmail).toHaveBeenCalledWith(input.email);
         expect(response).toEqual(expectedResponse);
     });
     it('should throw error by email already existed on database', async () => {
         try {
-            // @ts-expect-error expect a class, I'm injecting a object with the same props
+            // @ts-expect-error expect a class, It's injecting an object with the same props
             await signupUseCase.execute({
                 ...input,
                 getUser: () => {

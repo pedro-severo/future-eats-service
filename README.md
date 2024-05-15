@@ -2,7 +2,13 @@
 
 Future Eats Service is a backend service responsible for managing various aspects of the Future Eats UI (https://github.com/pedro-severo/future-eats). It handles user authentication, restaurant management, menu items, orders, and more.
 
-## Getting Started
+# Summary
+
+* [Getting Started](#getting-started)
+* [Project Description](#project-description)
+* [API](#API)
+
+# <a name="getting-started">Getting Started</a>
 
 Follow these steps to set up and run Future Eats API on your local machine.
 
@@ -68,7 +74,7 @@ TODO: list all comands of the project
 
 <br>
 
-## A brief description of the project choices 
+# <a name="project-description">Project Description</a> 
 
 ### Main technologies used
 
@@ -80,5 +86,99 @@ TODO: list all comands of the project
 
 ### A description of the architecture
 
-// TODO
+TODO:
 
+
+# <a name="API">API</a>
+
+### Running 
+
+`yarn (or npm) start`
+
+Starts GraphiQL server at http://localhost:3003/
+
+## Mutations
+
+<details>
+<summary>Signup</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary>Login</summary>
+
+</details>
+
+<br>
+
+<details>
+<summary>Register Address</summary>
+
+</details>
+
+
+## Queries
+
+<details>
+<summary>Get Profile</summary>
+
+Give the common user (person who makes orders on app) details according this model: 
+
+``` json
+   {
+      "status": 202,
+      "data": {
+        "name": "Severo Snape",
+        "email": "severo.snape@email.com",
+        "cpf": "000000000",
+        "hasAddress": true,
+        "address": "Spinner's End, s/n, complement, Cokeworth, England"
+      }
+   }
+```
+The option to use "Profile" instead "User" to name the endpoint (getProfile) is because the system doesn't returns a User if we see to entity. Instead, the system formats a specific response according the two entities related to a common user (User and UserAddress entities), merging specific keys of this two entities to generate the response above. 
+
+Here there are the graphQL related types:
+
+``` graphql
+type Query {
+    getProfile(input: GetProfileInput): GetProfileApiResponse!
+}
+
+input GetProfileInput {
+    userId: String!
+}
+
+type GetProfileApiResponse {
+    status: Int!
+    data: GetProfileResponse!
+}
+
+type GetProfileResponse {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    hasAddress: Boolean!
+    address: String
+}
+```
+
+Query example:
+```graphql
+  getProfile(input: "") {
+    status
+    data {
+      id
+      name
+      email
+      cpf
+      hasAddress
+      address
+    }
+  }
+```
+
+</details>

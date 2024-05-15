@@ -133,7 +133,10 @@ describe('Integration tests', () => {
                 query: registerAddressQuery,
                 variables: { ...registerAddressInput, userId },
             });
-            // TODO: call getUser endppoint (when it is done) to see if hasAddress prop was changed to true
+            const profile = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId },
+            });
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -158,6 +161,7 @@ describe('Integration tests', () => {
             expect(result?.data?.registerAddress?.data.zone).toBe(
                 registerAddressInput.zone
             );
+            expect(profile?.data?.getProfile?.data?.hasAddress).toBe(true);
         });
         it('should fail by inexistent user id', async () => {
             const result = await server.executeOperation({
@@ -170,7 +174,57 @@ describe('Integration tests', () => {
             );
         });
     });
+    describe('getProfile query', () => {
+        beforeEach(async () => {
+            await server.executeOperation({
+                query: registerAddressQuery,
+                variables: { ...registerAddressInput, userId },
+            });
+        });
+        it('should get profile correctly', async () => {
+            const result = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId },
+            });
+            expect(result?.data?.getProfile?.status).toBe(StatusCodes.ACCEPTED);
+            expect(result?.data?.getProfile?.data?.id).toBe(userId);
+            expect(result?.data?.getProfile?.data?.name).toBe(signupInput.name);
+            expect(result?.data?.getProfile?.data?.email).toBe(
+                signupInput.email
+            );
+            expect(result?.data?.getProfile?.data?.cpf).toBe(signupInput.cpf);
+            expect(typeof result?.data?.getProfile?.data?.address).toBe(
+                'string'
+            );
+        });
+        it('should fail by user not found', async () => {
+            const result = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId: 'wrongId' },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                USER_ERROR_MESSAGES.NOT_FOUND
+            );
+        });
+    });
 });
+
+const getProfileQuery = gql`
+    query getProfile($userId: String!) {
+        getProfile(input: { userId: $userId }) {
+            status
+            data {
+                id
+                name
+                email
+                cpf
+                hasAddress
+                address
+            }
+        }
+    }
+`;
 
 const signupQuery = gql`
     mutation signup(
