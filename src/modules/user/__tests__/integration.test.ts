@@ -133,11 +133,10 @@ describe('Integration tests', () => {
                 query: registerAddressQuery,
                 variables: { ...registerAddressInput, userId },
             });
-            await server.executeOperation({
-                query: loginQuery,
-                variables: loginInput,
+            const profile = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId },
             });
-            // TODO: call getUser endppoint (when it is done) to see if hasAddress prop was changed to true
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -162,6 +161,7 @@ describe('Integration tests', () => {
             expect(result?.data?.registerAddress?.data.zone).toBe(
                 registerAddressInput.zone
             );
+            expect(profile?.data?.getProfile?.data?.hasAddress).toBe(true);
         });
         it('should fail by inexistent user id', async () => {
             const result = await server.executeOperation({
@@ -197,7 +197,16 @@ describe('Integration tests', () => {
                 'string'
             );
         });
-        // TODO: Create tests to fail scenarios
+        it('should fail by user not found', async () => {
+            const result = await server.executeOperation({
+                query: getProfileQuery,
+                variables: { userId: 'wrongId' },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                USER_ERROR_MESSAGES.NOT_FOUND
+            );
+        });
     });
 });
 
