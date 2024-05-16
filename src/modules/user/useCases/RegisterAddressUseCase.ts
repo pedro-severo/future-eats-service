@@ -9,22 +9,19 @@ import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 @Service()
 export class RegisterAddressUseCase {
-    authenticator: AuthenticatorManager;
-
-    constructor(private userRepository: UserRepository) {
-        this.authenticator = new AuthenticatorManager();
-    }
+    constructor(
+        private userRepository: UserRepository,
+        private authenticator: AuthenticatorManager
+    ) {}
 
     async execute(
         address: UserAddress,
         userId: string,
         token: string
     ): Promise<RegisterAddressResponse> {
-        this.checkAuthorization(token, userId);
-        const userExist = await this.userRepository.checkUserExistence(userId);
-        if (!userExist) {
-            throw new Error(USER_ERROR_MESSAGES.FAILED_TO_REGISTER_ADDRESS);
-        }
+        if (!this.hasAuthorization(token, userId))
+            throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+        await this.checkUserExistence(userId);
         await this.userRepository.registerAddress(address, userId);
         await this.userRepository.updateUserAddressFlag(userId, {
             hasAddress: true,
@@ -35,11 +32,24 @@ export class RegisterAddressUseCase {
         return mapUserAddressEntityToResponse(address);
     }
 
-    private checkAuthorization = (token: string, userId: string): void => {
-        const { id, role } = this.authenticator.getTokenData(token) || {};
-        if (!id || !role)
-            throw new Error(USER_ERROR_MESSAGES.TOKEN_DATA_MISSING);
-        if (!(userId === id && role === USER_ROLES.USER))
-            throw new Error(USER_ERROR_MESSAGES.AUTHORIZATION_ERROR);
-    };
+    private async checkUserExistence(userId: string) {
+        const userExist = await this.userRepository.checkUserExistence(userId);
+        if (!userExist) {
+            throw new Error(USER_ERROR_MESSAGES.FAILED_TO_REGISTER_ADDRESS);
+        }
+    }
+
+    private hasAuthorization(token: string, idToCheck: string): boolean {
+        try {
+            return this.authenticator.checkToken(
+                token,
+                idToCheck,
+                USER_ROLES.USER
+            );
+        } catch (e) {
+            if (e.message === USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR)
+                throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+            throw new Error(USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR);
+        }
+    }
 }

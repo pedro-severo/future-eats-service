@@ -12,6 +12,7 @@ import { IServerContext } from '../../shared/server';
 import { GetProfileInput } from './controllers/inputs/GetProfileInput';
 import { GetProfileController } from './controllers/GetProfileController';
 import { GetProfileUseCase } from './useCases/GetProfileUseCase';
+import { AuthenticatorManagerToken } from '../../shared/dependencies';
 
 export const resolvers = {
     Mutation: {
@@ -47,7 +48,8 @@ export const resolvers = {
             const { token } = context.auth;
             const registerAddressController = new RegisterAddressController(
                 new RegisterAddressUseCase(
-                    Container.get(context.userDatabaseContext)
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
                 )
             );
             const req = JSON.parse(JSON.stringify(args)).input;
@@ -55,6 +57,9 @@ export const resolvers = {
         },
     },
     Query: {
+        // TODO: coverage
+        // TODO: test whole implementation
+        // TODO: implement authorization on getProfile endpoint
         getProfile: async (
             _parent: any,
             args: { input: GetProfileInput },

@@ -26,7 +26,7 @@ jest.mock('typedi', () => ({
     Service: jest.fn(() => (target: any) => target),
     Token: jest.fn((name) => ({ name })),
     default: {
-        get: jest.fn(() => 'foo'), // Mocking the Container.get method
+        get: jest.fn(() => 'serviceInjection'), // Mocking the Container.get method
         set: jest.fn(() => ({})), // Mocking the Container.set method
     },
 }));
@@ -86,6 +86,9 @@ describe('Mutation Resolvers', () => {
                 },
             };
             const result = await resolvers.Mutation.login(null, args, {
+                auth: {
+                    token: '',
+                },
                 userDatabaseContext: UserDatabaseToken,
             });
             expect(mockLoginControllerMethod).toHaveBeenCalledWith({
@@ -93,7 +96,7 @@ describe('Mutation Resolvers', () => {
                 password: 'password123',
             });
             expect(LoginUseCase).toHaveBeenCalled();
-            expect(LoginUseCase).toHaveBeenCalledWith('foo');
+            expect(LoginUseCase).toHaveBeenCalledWith('serviceInjection');
             expect(result).toEqual(expectedResponse);
         });
     });
@@ -108,6 +111,9 @@ describe('Mutation Resolvers', () => {
                 },
             };
             const result = await resolvers.Mutation.signup(null, args, {
+                auth: {
+                    token: '',
+                },
                 userDatabaseContext: UserDatabaseToken,
             });
             expect(mockSignupControllerMethod).toHaveBeenCalledWith({
@@ -117,7 +123,7 @@ describe('Mutation Resolvers', () => {
                 cpf: 'cpf123',
             });
             expect(SignupUseCase).toHaveBeenCalled();
-            expect(SignupUseCase).toHaveBeenCalledWith('foo');
+            expect(SignupUseCase).toHaveBeenCalledWith('serviceInjection');
             expect(result).toEqual(expectedResponse);
         });
     });
@@ -138,21 +144,30 @@ describe('Mutation Resolvers', () => {
                 null,
                 args,
                 {
+                    auth: {
+                        token: '',
+                    },
                     userDatabaseContext: UserDatabaseToken,
                 }
             );
             expect(RegisterAddressController).toHaveBeenCalledTimes(1);
             expect(RegisterAddressUseCase).toHaveBeenCalled();
-            expect(RegisterAddressUseCase).toHaveBeenCalledWith('foo');
-            expect(mockRegisterAddressControllerMethod).toHaveBeenCalledWith({
-                userId: 'userId',
-                city: 'Lisbon',
-                complement: '1D',
-                state: 'MG',
-                streetNumber: '123',
-                streetName: 'Guajajaras',
-                zone: 'Barreiro',
-            });
+            expect(RegisterAddressUseCase).toHaveBeenCalledWith(
+                'serviceInjection',
+                'serviceInjection'
+            );
+            expect(mockRegisterAddressControllerMethod).toHaveBeenCalledWith(
+                {
+                    userId: 'userId',
+                    city: 'Lisbon',
+                    complement: '1D',
+                    state: 'MG',
+                    streetNumber: '123',
+                    streetName: 'Guajajaras',
+                    zone: 'Barreiro',
+                },
+                ''
+            );
             expect(result).toEqual(expectedResponse);
         });
     });
@@ -164,11 +179,14 @@ describe('Mutation Resolvers', () => {
                 },
             };
             const result = await resolvers.Query.getProfile(null, args, {
+                auth: {
+                    token: '',
+                },
                 userDatabaseContext: UserDatabaseToken,
             });
             expect(GetProfileController).toHaveBeenCalledTimes(1);
             expect(GetProfileUseCase).toHaveBeenCalledTimes(1);
-            expect(GetProfileUseCase).toHaveBeenCalledWith('foo');
+            expect(GetProfileUseCase).toHaveBeenCalledWith('serviceInjection');
             expect(mockGetProfileMethod).toHaveBeenCalledTimes(1);
             expect(mockGetProfileMethod).toHaveBeenCalledWith(args.input);
             expect(result).toEqual(expectedResponse);

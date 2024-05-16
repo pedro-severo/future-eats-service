@@ -1,33 +1,36 @@
 import { sign, verify } from 'jsonwebtoken';
 import { authenticationData } from './interfaces';
+import { Service } from 'typedi';
 
+@Service()
 export class AuthenticatorManager {
     public generateToken = (payload: authenticationData): string => {
-        try {
-            return (
-                'Bearer ' +
-                sign(payload, process.env.JWT_KEY || 'key', {
-                    expiresIn: '60d',
-                })
-            );
-        } catch (err) {
-            throw new Error(err.message);
-        }
+        return (
+            'Bearer ' +
+            sign(payload, process.env.JWT_KEY || 'key', {
+                expiresIn: '60d',
+            })
+        );
     };
 
     public getTokenData = (token: string): authenticationData | null => {
-        try {
-            const tokenData = verify(
-                this.removeBearer(token),
-                process.env.JWT_KEY || 'key'
-            ) as authenticationData;
-            return {
-                id: tokenData.id,
-                role: tokenData.role,
-            };
-        } catch (err) {
-            throw new Error(err.message);
-        }
+        const tokenData = verify(
+            this.removeBearer(token),
+            process.env.JWT_KEY || 'key'
+        ) as authenticationData;
+        return {
+            id: tokenData.id,
+            role: tokenData.role,
+        };
+    };
+
+    public checkToken = (
+        token: string,
+        idToCheck: string,
+        roleToCheck: string
+    ): boolean => {
+        const { id, role } = this.getTokenData(token) || {};
+        return id === idToCheck && role === roleToCheck;
     };
 
     private removeBearer = (token: string): string => {
