@@ -47,8 +47,6 @@ export class RegisterAddressUseCase {
                 USER_ROLES.USER
             );
         } catch (e) {
-            if (e.message === USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR)
-                throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
             throw new Error(USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR);
         }
     }
