@@ -72,8 +72,8 @@ const mockCheckToken = jest
 describe('RegisterAddressUseCase test', () => {
     let registerAddressUseCase: RegisterAddressUseCase;
     beforeEach(() => {
-        // @ts-expect-error dependency injection
         registerAddressUseCase = new RegisterAddressUseCase(
+            // @ts-expect-error dependency injection
             {
                 checkUserExistence: (id: string) => mockCheckUserExistence(id),
                 registerAddress: (address, userId) =>
