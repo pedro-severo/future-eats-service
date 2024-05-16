@@ -1,4 +1,4 @@
-export interface authenticationData {
+export interface AuthenticationData {
     id: string;
     role: string;
 }

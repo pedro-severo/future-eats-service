@@ -2,6 +2,7 @@ import { AuthenticatorManager } from '..';
 import { generateId } from '../../uuid';
 import { USER_ROLES } from '../interfaces';
 
+// TODO: Create a mockedToken with ramdom data and object keys
 const mockedToken =
     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjllZmFhM2VmLTY4MTItNDlmNi05ZWJmLTZhYTA5NWIxNDg1NSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzE1ODg2ODY1LCJleHAiOjE3MjEwNzA4NjV9.hU650R-NwfHQw9sGwy5euOKd1MGjjV4DFZnaLpGX13c';
 const mockedId = '9efaa3ef-6812-49f6-9ebf-6aa095b14855';

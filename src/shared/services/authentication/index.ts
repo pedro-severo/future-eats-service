@@ -1,10 +1,10 @@
 import { sign, verify } from 'jsonwebtoken';
-import { authenticationData } from './interfaces';
+import { AuthenticationData } from './interfaces';
 import { Service } from 'typedi';
 
 @Service()
 export class AuthenticatorManager {
-    public generateToken = (payload: authenticationData): string => {
+    public generateToken = (payload: AuthenticationData): string => {
         return (
             'Bearer ' +
             sign(payload, process.env.JWT_KEY || 'key', {
@@ -13,11 +13,11 @@ export class AuthenticatorManager {
         );
     };
 
-    public getTokenData = (token: string): authenticationData | null => {
+    public getTokenData = (token: string): AuthenticationData | null => {
         const tokenData = verify(
             this.removeBearer(token),
             process.env.JWT_KEY || 'key'
-        ) as authenticationData;
+        ) as AuthenticationData;
         return {
             id: tokenData.id,
             role: tokenData.role,
