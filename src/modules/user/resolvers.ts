@@ -57,7 +57,6 @@ export const resolvers = {
         },
     },
     Query: {
-        // TODO: coverage
         // TODO: test whole implementation
         // TODO: implement authorization on getProfile endpoint
         getProfile: async (
