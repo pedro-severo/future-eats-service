@@ -25,7 +25,7 @@ export class LoginUseCase {
         await this.checkPassword(user, password);
         const token = this.authenticator.generateToken({
             id: user.id,
-            role: USER_ROLES.RESTAURANT_OWNER,
+            role: USER_ROLES.USER,
         });
         return this.formatUseCaseResponse(user, token);
     }
