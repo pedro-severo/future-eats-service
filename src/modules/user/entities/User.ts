@@ -6,6 +6,16 @@ import {
     MinLength,
 } from 'class-validator';
 
+export type UserType = {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    hasAddress: boolean;
+    cpf: string;
+    mainAddressId?: string;
+};
+
 export class User {
     @IsString()
     @IsNotEmpty()

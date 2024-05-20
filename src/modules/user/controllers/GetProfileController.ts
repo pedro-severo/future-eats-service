@@ -11,7 +11,8 @@ import { GetProfileResponse } from '../useCases/interfaces/GetProfileResponse';
 export class GetProfileController {
     constructor(private useCase: GetProfileUseCase) {}
     async getProfile(
-        input: GetProfileInput
+        input: GetProfileInput,
+        token: string
     ): Promise<Output<GetProfileResponse>> {
         try {
             const inputToValidate = plainToClass(GetProfileInput, input);
@@ -19,7 +20,7 @@ export class GetProfileController {
             if (errors.length) {
                 throw new Error('Failed to validate input.', { cause: errors });
             }
-            const response = await this.useCase.execute(input);
+            const response = await this.useCase.execute(input, token);
             return {
                 status: StatusCodes.ACCEPTED,
                 data: response,

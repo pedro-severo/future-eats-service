@@ -5,6 +5,7 @@ import { GetProfileUseCase } from '../../useCases/GetProfileUseCase';
 import { GetProfileController } from '../GetProfileController';
 import { GetProfileInput } from '../inputs/GetProfileInput';
 import { StatusCodes } from 'http-status-codes';
+import { AuthenticatorManager } from '../../../../shared/services/authentication';
 
 const mockPlainToClass = jest
     .fn()
@@ -46,7 +47,7 @@ describe('GetProfileController', () => {
     beforeEach(() => {
         database = new DatabaseTestContext();
         repository = new UserRepository(database);
-        useCase = new GetProfileUseCase(repository);
+        useCase = new GetProfileUseCase(repository, new AuthenticatorManager());
         controller = new GetProfileController(useCase);
     });
     it('should run getProfileController correctly', async () => {
@@ -54,15 +55,15 @@ describe('GetProfileController', () => {
             userId: 'userId',
         };
         jest.spyOn(useCase, 'execute').mockImplementation(
-            (input: GetProfileInput) => mockExecute(input)
+            (input: GetProfileInput, token: string) => mockExecute(input, token)
         );
-        const output = await controller.getProfile(input);
+        const output = await controller.getProfile(input, '');
         expect(mockPlainToClass).toHaveBeenCalled();
         expect(mockPlainToClass).toHaveBeenCalledWith(input);
         expect(mockValidate).toHaveBeenCalled();
         expect(mockValidate).toHaveBeenCalledWith(input);
         expect(mockExecute).toHaveBeenCalled();
-        expect(mockExecute).toHaveBeenCalledWith(input);
+        expect(mockExecute).toHaveBeenCalledWith(input, '');
         expect(output).toEqual({
             status: StatusCodes.ACCEPTED,
             data: {},
@@ -73,7 +74,10 @@ describe('GetProfileController', () => {
             userId: 1234,
         };
         try {
-            await controller.getProfile(input as unknown as GetProfileInput);
+            await controller.getProfile(
+                input as unknown as GetProfileInput,
+                ''
+            );
         } catch (e) {
             expect(mockPlainToClass).toHaveBeenCalled();
             expect(mockPlainToClass).toHaveBeenCalledWith(input);
@@ -86,7 +90,10 @@ describe('GetProfileController', () => {
     it('should throw error by undefined userId prop type', async () => {
         const input = {};
         try {
-            await controller.getProfile(input as unknown as GetProfileInput);
+            await controller.getProfile(
+                input as unknown as GetProfileInput,
+                ''
+            );
         } catch (e) {
             expect(mockPlainToClass).toHaveBeenCalled();
             expect(mockPlainToClass).toHaveBeenCalledWith(input);

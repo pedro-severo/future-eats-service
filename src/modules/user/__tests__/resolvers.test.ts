@@ -186,9 +186,12 @@ describe('Mutation Resolvers', () => {
             });
             expect(GetProfileController).toHaveBeenCalledTimes(1);
             expect(GetProfileUseCase).toHaveBeenCalledTimes(1);
-            expect(GetProfileUseCase).toHaveBeenCalledWith('serviceInjection');
+            expect(GetProfileUseCase).toHaveBeenCalledWith(
+                'serviceInjection',
+                'serviceInjection'
+            );
             expect(mockGetProfileMethod).toHaveBeenCalledTimes(1);
-            expect(mockGetProfileMethod).toHaveBeenCalledWith(args.input);
+            expect(mockGetProfileMethod).toHaveBeenCalledWith(args.input, '');
             expect(result).toEqual(expectedResponse);
         });
     });

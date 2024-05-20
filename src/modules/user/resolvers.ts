@@ -57,20 +57,20 @@ export const resolvers = {
         },
     },
     Query: {
-        // TODO: test whole implementation
-        // TODO: implement authorization on getProfile endpoint
         getProfile: async (
             _parent: any,
             args: { input: GetProfileInput },
             context: IServerContext
         ) => {
+            const { token } = context.auth;
             const controller = new GetProfileController(
                 new GetProfileUseCase(
-                    Container.get(context.userDatabaseContext)
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
                 )
             );
             const { userId } = JSON.parse(JSON.stringify(args)).input;
-            return controller.getProfile({ userId });
+            return controller.getProfile({ userId }, token);
         },
     },
 };

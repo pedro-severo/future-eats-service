@@ -43,6 +43,7 @@ export class RegisterAddressController {
                 data: response,
             };
         } catch (err) {
+            console.error('🚀 ~ RegisterAddressController:', err.message);
             throw new Error(err.message, { cause: err.cause });
         }
     }
