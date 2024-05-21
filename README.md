@@ -91,13 +91,46 @@ TODO:
 
 # <a name="API">API</a>
 
+- [User](##user)
+
 ### Running 
 
 `yarn (or npm) start`
 
 Starts GraphiQL server at http://localhost:3003/
 
-## Mutations
+## <a name="user">User</a>
+
+Person who makes orders on app:
+
+   ```js
+      export type UserType = {
+         id: string;
+         name: string;
+         email: string;
+         password: string;
+         hasAddress: boolean;
+         cpf: string;
+         mainAddressId?: string;
+      };
+   ```
+
+### Sub-entities:
+
+   - UserAddress
+      ```js
+      export type UserAddressType = {
+         id: string,
+         city: string,
+         complement: string,
+         state: string,
+         streetNumber: string,
+         zone: string,
+         streetName: string
+      }
+      ```
+
+### Mutations
 
 <details>
 <summary>Signup</summary>
@@ -116,15 +149,104 @@ Starts GraphiQL server at http://localhost:3003/
 <details>
 <summary>Register Address</summary>
 
+<br>
+
+**Create a UserAddress linked with the User who make the request (1:n).**
+
+Response model:
+
+``` json
+   {
+      "status": 201,
+      "data": {
+         "city": "Lisbon",
+         "complement": "1D",
+         "state": "Metropolitan Zone of Lisbon", 
+         "streetNumber": "34",
+         "zone": "Campo de Ourique",
+         "streetName": "4 de Infantaria",
+         "id": "123"      
+      }
+   }
+```
+
+Here there are the graphQL related types:
+
+``` graphql
+type Mutation {
+    registerAddress(input: RegisterAddressInput): RegisterAddressApiResponse!
+}
+
+input RegisterAddressInput {
+    userId: String!
+    city: String!
+    complement: String!
+    state: String!
+    streetName: String!
+    streetNumber: String!
+    zone: String!
+}
+
+type RegisterAddressApiResponse {
+    status: Int!
+    data: RegisterAddressResponse!
+}
+
+type RegisterAddressResponse {
+    city: String!
+    complement: String!
+    state: String!
+    streetNumber: String!
+    zone: String!
+    streetName: String!
+    id: String!
+}
+
+```
+
+Query example:
+```graphql
+  registerAddress(
+    input: {
+     city: "Lisbon",
+     complement: "1D",
+     state: "Metropolitan Zone of Lisbon", 
+     streetNumber: "34",
+     zone: "Campo de Ourique",
+     streetName: "4 de Infantaria",
+     userId: "123"  
+   }) {
+      status
+      data {
+         city
+         complement
+         state
+         streetNumber
+         zone
+         streetName
+         id
+      }
+   }
+```
+
+Authorization:
+```graphql
+{
+  "Authorization": "Bearer token"
+}
+```
+
 </details>
 
 
-## Queries
+### Queries
 
 <details>
 <summary>Get Profile</summary>
 
-Give the common user (person who makes orders on app) details according this model: 
+<br>
+
+**Give the common user (person who makes orders on app) details according this model:**
 
 ``` json
    {
@@ -179,6 +301,13 @@ Query example:
       address
     }
   }
+```
+
+Authorization:
+```graphql
+{
+  "Authorization": "Bearer token"
+}
 ```
 
 </details>
