@@ -101,6 +101,9 @@ Starts GraphiQL server at http://localhost:3003/
 
 ## <a name="user">User</a>
 
+- [Mutations](#user-mutations)
+- [Queries](#user-queries)
+
 Person who makes orders on app:
 
    ```js
@@ -130,7 +133,7 @@ Person who makes orders on app:
       }
       ```
 
-### Mutations
+### <a name="user-mutations">Mutations</a>
 
 <details>
 <summary>Signup</summary>
@@ -239,7 +242,7 @@ Authorization:
 </details>
 
 
-### Queries
+### <a name="user-queries">Queries</a>
 
 <details>
 <summary>Get Profile</summary>
