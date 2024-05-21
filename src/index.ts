@@ -6,17 +6,30 @@ import { ApolloServer } from 'apollo-server-express';
 import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import { IServerContext, getServerContext } from './shared/server';
 
 const { ruruHTML } = require('ruru/server');
 
 const app = express();
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100,
+    message: 'Too many requests from this IP, please try again later',
+});
+
+app.use(limiter);
+
 app.use(
     cors({
         allowedHeaders: ['Content-Type'],
     })
 );
+
+// TODO: study helmet: https://helmetjs.github.io/
+app.use(helmet());
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 

@@ -8,6 +8,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
 import { generateId } from '../../../shared/services/uuid';
+import xss from 'xss';
 
 @Service()
 export class RegisterAddressController {
@@ -26,12 +27,12 @@ export class RegisterAddressController {
             const id = generateId();
             const userAddress = new UserAddress(
                 id,
-                req.city,
-                req.complement,
-                req.state,
-                req.streetNumber,
-                req.zone,
-                req.streetName
+                xss(req.city),
+                xss(req.complement),
+                xss(req.state),
+                xss(req.streetNumber),
+                xss(req.zone),
+                xss(req.streetName)
             );
             const response = await this.useCase.execute(
                 userAddress,

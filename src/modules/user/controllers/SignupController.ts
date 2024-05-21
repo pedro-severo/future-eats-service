@@ -9,6 +9,7 @@ import { SignupUseCase } from '../useCases/SignupUseCase';
 import { Output } from './outputs';
 import { Service } from 'typedi';
 import { SignupResponse } from '../useCases/interfaces/SignupResponse';
+import xss from 'xss';
 
 @Service()
 export class SignupController {
@@ -22,14 +23,14 @@ export class SignupController {
                 throw new Error('Failed to validate input.', { cause: errors });
             }
             const id = generateId();
-            const encryptedPassword = new HashManager().hash(req.password);
+            const encryptedPassword = new HashManager().hash(xss(req.password));
             const user = new User(
                 id,
-                req.name,
-                req.email,
+                xss(req.name),
+                xss(req.email),
                 encryptedPassword,
                 false,
-                req.cpf
+                xss(req.cpf)
             );
             const response = await this.useCase.execute(user);
             return {

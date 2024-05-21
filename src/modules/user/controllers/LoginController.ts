@@ -6,6 +6,7 @@ import { LoginUseCase } from '../useCases/LoginUseCase';
 import { Output } from './outputs';
 import { Service } from 'typedi';
 import { LoginResponse } from '../useCases/interfaces/LoginResponse';
+import xss from 'xss';
 
 @Service()
 export class LoginController {
@@ -18,7 +19,10 @@ export class LoginController {
             if (errors.length) {
                 throw new Error('Failed to validate input.', { cause: errors });
             }
-            const response = await this.useCase.execute(req);
+            const response = await this.useCase.execute(
+                xss(req.email),
+                xss(req.password)
+            );
             return {
                 status: StatusCodes.OK,
                 data: response,

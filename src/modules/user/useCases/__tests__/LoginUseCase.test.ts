@@ -87,7 +87,10 @@ describe('LoginUseCase test', () => {
         });
     });
     it('should run execute method correctly', async () => {
-        const response = await loginUseCase.execute(input);
+        const response = await loginUseCase.execute(
+            input.email,
+            input.password
+        );
         expect(mockGetUserByEmail).toHaveBeenCalledWith(input.email);
         expect(mockCompare).toHaveBeenCalledWith(
             input.password,
@@ -97,17 +100,14 @@ describe('LoginUseCase test', () => {
     });
     it('should throw error by incorrect password', async () => {
         try {
-            await loginUseCase.execute({
-                ...input,
-                password: 'invalidPassword',
-            });
+            await loginUseCase.execute(input.email, 'invalidPassword');
         } catch (e) {
             expect(e.message).toBe('Incorrect password');
         }
     });
     it('should throw error by incorrect email', async () => {
         try {
-            await loginUseCase.execute({ ...input, email: 'invalidEmail' });
+            await loginUseCase.execute('invalidEmail', input.password);
         } catch (e) {
             expect(e.message).toBe('User not found');
         }
