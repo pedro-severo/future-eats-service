@@ -29,6 +29,7 @@ const registerAddressInput = {
 
 describe('Integration tests', () => {
     let userId: string;
+    let token: string;
     let signupResult: any;
     beforeAll(async () => {
         const result = await server.executeOperation({
@@ -37,6 +38,7 @@ describe('Integration tests', () => {
         });
         signupResult = result;
         userId = result?.data?.signup?.data?.user.id;
+        token = result?.data?.signup?.data?.token;
     });
     afterAll(async () => {
         await firebaseTesting.clearFirestoreData({ projectId });
@@ -129,14 +131,20 @@ describe('Integration tests', () => {
     });
     describe('registerAddress mutation', () => {
         it('should register address correctly', async () => {
-            const result = await server.executeOperation({
-                query: registerAddressQuery,
-                variables: { ...registerAddressInput, userId },
-            });
-            const profile = await server.executeOperation({
-                query: getProfileQuery,
-                variables: { userId },
-            });
+            const result = await server.executeOperation(
+                {
+                    query: registerAddressQuery,
+                    variables: { ...registerAddressInput, userId },
+                },
+                { token }
+            );
+            const profile = await server.executeOperation(
+                {
+                    query: getProfileQuery,
+                    variables: { userId },
+                },
+                { token }
+            );
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -164,13 +172,26 @@ describe('Integration tests', () => {
             expect(profile?.data?.getProfile?.data?.hasAddress).toBe(true);
         });
         it('should fail by inexistent user id', async () => {
+            const result = await server.executeOperation(
+                {
+                    query: registerAddressQuery,
+                    variables: { ...registerAddressInput, userId: 'wrongId' },
+                },
+                { token }
+            );
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR
+            );
+        });
+        it('should fail by inexistent token', async () => {
             const result = await server.executeOperation({
                 query: registerAddressQuery,
-                variables: { ...registerAddressInput, userId: 'wrongId' },
+                variables: { ...registerAddressInput, userId },
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.FAILED_TO_REGISTER_ADDRESS
+                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
             );
         });
     });
@@ -182,10 +203,13 @@ describe('Integration tests', () => {
             });
         });
         it('should get profile correctly', async () => {
-            const result = await server.executeOperation({
-                query: getProfileQuery,
-                variables: { userId },
-            });
+            const result = await server.executeOperation(
+                {
+                    query: getProfileQuery,
+                    variables: { userId },
+                },
+                { token }
+            );
             expect(result?.data?.getProfile?.status).toBe(StatusCodes.ACCEPTED);
             expect(result?.data?.getProfile?.data?.id).toBe(userId);
             expect(result?.data?.getProfile?.data?.name).toBe(signupInput.name);
@@ -197,14 +221,14 @@ describe('Integration tests', () => {
                 'string'
             );
         });
-        it('should fail by user not found', async () => {
+        it('should fail by inexistent token', async () => {
             const result = await server.executeOperation({
                 query: getProfileQuery,
-                variables: { userId: 'wrongId' },
+                variables: { userId },
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.NOT_FOUND
+                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
             );
         });
     });

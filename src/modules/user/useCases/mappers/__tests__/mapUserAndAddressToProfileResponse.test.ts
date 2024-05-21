@@ -1,9 +1,16 @@
-import { User } from '../../../entities/User';
 import { UserAddress } from '../../../entities/UserAddress';
 import { GetProfileResponse } from '../../interfaces/GetProfileResponse';
 import { mapUserAndAddressToProfileResponse } from '../mapUserAndAddressToProfileResponse';
 
-const user = new User('id', 'Name', 'email', 'password', true, 'cpf');
+const user = {
+    id: 'id',
+    name: 'Name',
+    email: 'email',
+    cpf: 'cpf',
+    password: 'password',
+    hasAddress: true,
+};
+
 const address = new UserAddress(
     'addressId',
     'BH',

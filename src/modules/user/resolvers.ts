@@ -7,21 +7,21 @@ import { RegisterAddressInput } from './controllers/inputs/RegisterAddressInput'
 import { RegisterAddressController } from './controllers/RegisterAddressController';
 import { LoginUseCase } from './useCases/LoginUseCase';
 import { SignupUseCase } from './useCases/SignupUseCase';
-import { IDatabaseContext } from '../../shared/database/interfaces';
 import { RegisterAddressUseCase } from './useCases/RegisterAddressUseCase';
+import { IServerContext } from '../../shared/server';
 import { GetProfileInput } from './controllers/inputs/GetProfileInput';
 import { GetProfileController } from './controllers/GetProfileController';
 import { GetProfileUseCase } from './useCases/GetProfileUseCase';
+import { AuthenticatorManagerToken } from '../../shared/dependencies';
 
 export const resolvers = {
     Mutation: {
         signup: async (
             _parent: any,
             args: { input: SignupInput },
-            context: IDatabaseContext
+            context: IServerContext
         ) => {
             const signupController = new SignupController(
-                // @ts-expect-error impossible undefined
                 new SignupUseCase(Container.get(context.userDatabaseContext))
             );
             const { name, cpf, email, password } = JSON.parse(
@@ -32,10 +32,9 @@ export const resolvers = {
         login: async (
             _parent: any,
             args: { input: LoginInput },
-            context: IDatabaseContext
+            context: IServerContext
         ) => {
             const loginController = new LoginController(
-                // @ts-expect-error impossible undefined
                 new LoginUseCase(Container.get(context.userDatabaseContext))
             );
             const { email, password } = JSON.parse(JSON.stringify(args)).input;
@@ -44,48 +43,34 @@ export const resolvers = {
         registerAddress: async (
             _parent: any,
             args: { input: RegisterAddressInput },
-            context: IDatabaseContext
+            context: IServerContext
         ) => {
+            const { token } = context.auth;
             const registerAddressController = new RegisterAddressController(
                 new RegisterAddressUseCase(
-                    // @ts-expect-error impossible undefined
-                    Container.get(context.userDatabaseContext)
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
                 )
             );
-            const {
-                userId,
-                city,
-                complement,
-                state,
-                streetName,
-                streetNumber,
-                zone,
-            } = JSON.parse(JSON.stringify(args)).input;
-            return registerAddressController.registerAddress({
-                userId,
-                city,
-                complement,
-                state,
-                streetName,
-                streetNumber,
-                zone,
-            });
+            const req = JSON.parse(JSON.stringify(args)).input;
+            return registerAddressController.registerAddress(req, token);
         },
     },
     Query: {
         getProfile: async (
             _parent: any,
             args: { input: GetProfileInput },
-            context: IDatabaseContext
+            context: IServerContext
         ) => {
+            const { token } = context.auth;
             const controller = new GetProfileController(
                 new GetProfileUseCase(
-                    // @ts-expect-error impossible undefined
-                    Container.get(context.userDatabaseContext)
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
                 )
             );
             const { userId } = JSON.parse(JSON.stringify(args)).input;
-            return controller.getProfile({ userId });
+            return controller.getProfile({ userId }, token);
         },
     },
 };

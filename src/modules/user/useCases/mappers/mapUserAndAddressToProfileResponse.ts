@@ -1,12 +1,12 @@
-import { User } from '../../entities/User';
+import { UserType } from '../../entities/User';
 import { UserAddress } from '../../entities/UserAddress';
 import { GetProfileResponse } from '../interfaces/GetProfileResponse';
 
 export const mapUserAndAddressToProfileResponse = (
-    user: User,
+    user: UserType,
     userAddress?: UserAddress
 ): GetProfileResponse => {
-    const { name, id, email, cpf, hasAddress } = user.getUser();
+    const { name, id, email, cpf, hasAddress } = user;
     const { city, complement, state, streetNumber, streetName, zone } =
         userAddress?.getUserAddress() || {};
     return {

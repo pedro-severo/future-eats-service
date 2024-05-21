@@ -18,10 +18,13 @@ app.use(
 
 const typesArray = loadFilesSync('./src/**/*.gql');
 
-const contextProps = { userDatabaseContext: UserDatabaseTestToken };
+const getContext = (auth: object) => ({
+    userDatabaseContext: UserDatabaseTestToken,
+    auth,
+});
 
 export const server = new ApolloServer({
     typeDefs: typesArray,
     resolvers: merge(resolvers),
-    context: contextProps,
+    context: getContext,
 });

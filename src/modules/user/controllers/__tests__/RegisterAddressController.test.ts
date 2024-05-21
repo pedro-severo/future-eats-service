@@ -6,6 +6,7 @@ import { RegisterAddressController } from '../RegisterAddressController';
 import { UserRepository } from '../../repository/UserRepository';
 import { Output } from '../outputs';
 import { DatabaseTestContext } from '../../../../shared/database/context';
+import { AuthenticatorManager } from '../../../../shared/services/authentication';
 
 jest.mock('../../useCases/RegisterAddressUseCase');
 jest.mock('../../../../shared/database');
@@ -41,7 +42,10 @@ describe('RegisterAddressController test', () => {
     beforeEach(() => {
         databaseMock = new DatabaseTestContext();
         repositoryMock = new UserRepository(databaseMock);
-        registerAddressUseCase = new RegisterAddressUseCase(repositoryMock);
+        registerAddressUseCase = new RegisterAddressUseCase(
+            repositoryMock,
+            new AuthenticatorManager()
+        );
         registerAddressController = new RegisterAddressController(
             registerAddressUseCase
         );
@@ -50,7 +54,10 @@ describe('RegisterAddressController test', () => {
         jest.spyOn(registerAddressUseCase, 'execute').mockResolvedValueOnce(
             expectedResponse.data
         );
-        const result = await registerAddressController.registerAddress(input);
+        const result = await registerAddressController.registerAddress(
+            input,
+            ''
+        );
         expect(result).toEqual(expectedResponse);
     });
     it('should validate input and throw error by missing email property', async () => {
@@ -64,7 +71,8 @@ describe('RegisterAddressController test', () => {
         };
         try {
             await registerAddressController.registerAddress(
-                invalidInput as unknown as RegisterAddressInput
+                invalidInput as unknown as RegisterAddressInput,
+                ''
             );
         } catch (error) {
             expect(error.message).toBe('Failed to validate input.');
@@ -82,7 +90,8 @@ describe('RegisterAddressController test', () => {
         };
         try {
             await registerAddressController.registerAddress(
-                invalidInput as unknown as RegisterAddressInput
+                invalidInput as unknown as RegisterAddressInput,
+                ''
             );
         } catch (error) {
             expect(error.message).toBe('Failed to validate input.');

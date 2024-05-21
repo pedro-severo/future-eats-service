@@ -1,5 +1,15 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
+export type UserAddressType = {
+    id: string;
+    city: string;
+    complement: string;
+    state: string;
+    streetNumber: string;
+    zone: string;
+    streetName: string;
+};
+
 export class UserAddress {
     @IsString()
     @IsNotEmpty()
