@@ -25,11 +25,82 @@ export class UserRepository extends Database {
         return await this.checkDataExistence(id);
     }
 
+    async getUser(id: string): Promise<User | void> {
+        const user = await this.getData(id);
+        if (user) {
+            const {
+                id,
+                name,
+                email,
+                password,
+                hasAddress,
+                cpf,
+                mainAddressId,
+            } = user;
+            return new User(
+                id,
+                name,
+                email,
+                password,
+                hasAddress,
+                cpf,
+                mainAddressId
+            );
+        }
+    }
+
+    async getAddress(
+        userId: string,
+        addressId: string
+    ): Promise<UserAddress | void> {
+        const address = await this.getSubCollectionData(
+            USER_COLLECTIONS.USER_ADDRESS,
+            userId,
+            addressId
+        );
+        if (address) {
+            const {
+                id,
+                city,
+                complement,
+                state,
+                streetNumber,
+                zone,
+                streetName,
+            } = address;
+            return new UserAddress(
+                id,
+                city,
+                complement,
+                state,
+                streetNumber,
+                zone,
+                streetName
+            );
+        }
+    }
+
     async getUserByEmail(email: string): Promise<User | void> {
         const user = await this.getDataByField('email', email);
         if (user) {
-            const { id, name, email, password, hasAddress, cpf } = user;
-            return new User(id, name, email, password, hasAddress, cpf);
+            const {
+                id,
+                name,
+                email,
+                password,
+                hasAddress,
+                cpf,
+                mainAddressId,
+            } = user;
+            return new User(
+                id,
+                name,
+                email,
+                password,
+                hasAddress,
+                cpf,
+                mainAddressId
+            );
         }
     }
 
@@ -54,5 +125,9 @@ export class UserRepository extends Database {
     ): Promise<void> {
         const { hasAddress } = flag;
         return await this.update(userId, { hasAddress });
+    }
+
+    async setMainAddressId(userId: string, addressId: string): Promise<void> {
+        return await this.update(userId, { mainAddressId: addressId });
     }
 }

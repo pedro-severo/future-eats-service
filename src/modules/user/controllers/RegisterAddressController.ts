@@ -15,7 +15,8 @@ export class RegisterAddressController {
     constructor(private useCase: RegisterAddressUseCase) {}
 
     async registerAddress(
-        req: RegisterAddressInput
+        req: RegisterAddressInput,
+        token: string
     ): Promise<Output<RegisterAddressResponse>> {
         try {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
@@ -35,13 +36,15 @@ export class RegisterAddressController {
             );
             const response = await this.useCase.execute(
                 userAddress,
-                req.userId
+                req.userId,
+                token
             );
             return {
                 status: StatusCodes.CREATED,
                 data: response,
             };
         } catch (err) {
+            console.error('🚀 ~ RegisterAddressController:', err.message);
             throw new Error(err.message, { cause: err.cause });
         }
     }

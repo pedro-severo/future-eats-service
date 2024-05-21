@@ -6,9 +6,9 @@ import { ApolloServer } from 'apollo-server-express';
 import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import cors from 'cors';
-import { contextProps } from './shared/database/constants';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import { IServerContext, getServerContext } from './shared/server';
 
 const { ruruHTML } = require('ruru/server');
 
@@ -37,7 +37,7 @@ async function startApolloServer() {
     const server = new ApolloServer({
         typeDefs: typesArray,
         resolvers: merge(userResolvers),
-        context: contextProps,
+        context: ({ req }): IServerContext => getServerContext(req),
     });
 
     await server.start();

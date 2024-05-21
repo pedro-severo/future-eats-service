@@ -6,6 +6,7 @@ import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 import { UserResponse } from './interfaces/UserResponse';
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 @Service()
 export class LoginUseCase {
@@ -20,7 +21,10 @@ export class LoginUseCase {
     async execute(email: string, password: string): Promise<LoginResponse> {
         const user = await this.getUserByEmail(email);
         await this.checkPassword(user, password);
-        const token = this.authenticator.generateToken({ id: user.id });
+        const token = this.authenticator.generateToken({
+            id: user.id,
+            role: USER_ROLES.USER,
+        });
         return this.formatUseCaseResponse(user, token);
     }
 
