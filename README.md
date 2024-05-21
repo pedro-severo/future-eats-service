@@ -97,7 +97,7 @@ TODO:
 
 `yarn (or npm) start`
 
-Starts GraphiQL server at http://localhost:3003/
+Starts GraphQL server at http://localhost:3003/
 
 ## <a name="user">User</a>
 
