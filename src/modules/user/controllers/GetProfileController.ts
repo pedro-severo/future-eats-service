@@ -24,6 +24,7 @@ export class GetProfileController {
                 data: response,
             };
         } catch (err) {
+            console.log('🚀 ~ GetProfileController:', err.message);
             throw new Error(err.message, { cause: err.cause });
         }
     }
