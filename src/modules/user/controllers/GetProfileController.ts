@@ -6,8 +6,6 @@ import { Output } from './outputs';
 import { StatusCodes } from 'http-status-codes';
 import { GetProfileResponse } from '../useCases/interfaces/GetProfileResponse';
 
-// TODO: Authorization checking
-// start trying this: https://www.apollographql.com/docs/react/networking/authentication/
 export class GetProfileController {
     constructor(private useCase: GetProfileUseCase) {}
     async getProfile(
