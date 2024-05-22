@@ -137,6 +137,98 @@ Person who makes orders on app:
 
 <details>
 <summary>Signup</summary>
+<br>
+**Register a new user on database and return a token to be used on protected endpoints**
+
+Response model:
+
+```json
+{
+   "status": 201,
+   "data": {
+      "token": "Bearer token",
+      "user": {
+         "id": "string",
+         "name": "Severo Snape",
+         "email": "severo.snape@gmail.com",
+         "cpf": "000000000",
+         "hasAddress": false,
+         "password": "encriptedPassword",
+      }
+   }
+}
+```
+
+
+Here there are the graphQL related types:
+
+``` graphql
+type Mutation {
+    signup(input: SignupInput): UserApiResponse!
+}
+
+input SignupInput {
+    name: String!
+    email: String!
+    cpf: String!
+    password: String!
+}
+
+type UserApiResponse {
+    status: Int!
+    data: UserResponse!
+}
+
+type UserResponse {
+    user: User!
+    token: String!
+}
+
+type User {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    hasAddress: Boolean!
+    password: String!
+}
+
+
+```
+
+Mutation example:
+
+```graphql
+ mutation signup(
+     $email: String!
+     $password: String!
+     $cpf: String!
+     $name: String!
+ ) {
+     signup(
+         input: {
+             email: $email
+             password: $password
+             cpf: $cpf
+             name: $name
+         }
+     ) {
+         status
+         data {
+             token
+             user {
+                 password
+                 name
+                 id
+                 hasAddress
+                 email
+                 cpf
+             }
+         }
+   }
+}
+```
+
 
 </details>
 
@@ -144,6 +236,91 @@ Person who makes orders on app:
 
 <details>
 <summary>Login</summary>
+<br>
+**Login flow. It returns a token to be used on protected endpoints.**
+
+Response model:
+
+```json
+{
+   "status": 200,
+   "data": {
+      "token": "Bearer token",
+      "user": {
+         "id": "string",
+         "name": "Severo Snape",
+         "email": "severo.snape@gmail.com",
+         "cpf": "000000000",
+         "hasAddress": false,
+         "password": "encriptedPassword",
+      }
+   }
+}
+```
+
+
+Here there are the graphQL related types:
+
+``` graphql
+type Mutation {
+    login(input: LoginInput): UserApiResponse!
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+type UserApiResponse {
+    status: Int!
+    data: UserResponse!
+}
+
+type UserResponse {
+    user: User!
+    token: String!
+}
+
+type User {
+    id: String!
+    name: String!
+    email: String!
+    cpf: String!
+    hasAddress: Boolean!
+    password: String!
+}
+
+
+```
+
+Mutation example:
+
+```graphql
+ mutation login(
+     $email: String!
+     $password: String!
+ ) {
+     login(
+         input: {
+             email: $email
+             password: $password
+         }
+     ) {
+         status
+         data {
+             token
+             user {
+                 password
+                 name
+                 id
+                 hasAddress
+                 email
+                 cpf
+             }
+         }
+   }
+}
+```
 
 </details>
 
@@ -159,18 +336,18 @@ Person who makes orders on app:
 Response model:
 
 ``` json
-   {
-      "status": 201,
-      "data": {
-         "city": "Lisbon",
-         "complement": "1D",
-         "state": "Metropolitan Zone of Lisbon", 
-         "streetNumber": "34",
-         "zone": "Campo de Ourique",
-         "streetName": "4 de Infantaria",
-         "id": "123"      
-      }
+{
+   "status": 201,
+   "data": {
+      "city": "Lisbon",
+      "complement": "1D",
+      "state": "Metropolitan Zone of Lisbon", 
+      "streetNumber": "34",
+      "zone": "Campo de Ourique",
+      "streetName": "4 de Infantaria",
+      "id": "123"      
    }
+}
 ```
 
 Here there are the graphQL related types:
