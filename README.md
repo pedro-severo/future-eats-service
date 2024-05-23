@@ -1,6 +1,6 @@
-# Future Eats Service (readme in progress...)
+# Future Eats Service
 
-Future Eats Service is a backend service responsible for managing various aspects of the Future Eats UI (https://github.com/pedro-severo/future-eats). It handles user authentication, restaurant management, menu items, orders, and more.
+Future Eats Service is a backend service responsible for managing the endpoints consumed by Future Eats UI (https://github.com/pedro-severo/future-eats). It is a Node project built in typescript, exposed with GraphQL interface and infraestructured with Firebase Services, including Firestore to manage a non-SQL database. The project is fully tested with jest (integration and unit tests), also with a coverage checking (100%) to push new changes 
 
 # Summary
 
@@ -18,6 +18,7 @@ Before you begin, make sure you have the following installed:
 
 - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 - [Node.js and npm](https://nodejs.org/) - v.20
+- [Firebase SDK](https://firebase.google.com/docs/admin/setup)
 
 ### Setup
 
@@ -52,7 +53,17 @@ Before you begin, make sure you have the following installed:
    ```bash
    yarn install     
 
-5. **Start the application:**
+5. **Firebase setup**
+
+   On `context.ts` file of database folder, you need change the path of this following line to point to the json file who gives you access on database:
+
+   ```js   
+   const serviceAccount = require('../../../../future-eats-service-5f069c811a09.json');
+   ```
+
+   To generate this json file with the key to access the databe, take a look here: https://firebase.google.com/docs/admin/setup
+  
+7. **Start the application:**
 
    ```bash
    npm run start
@@ -62,17 +73,10 @@ Before you begin, make sure you have the following installed:
    yarn start
    ```
 
-6. **Open graphql api**
+8. **Open graphql api**
    
    Paste http://localhost:3003/ on browser to open graphql api and to consume queries and mutations of application
 
-<br>
-
-### Another coomands:
-
-TODO: list all comands of the project
-
-<br>
 
 # <a name="project-description">Project Description</a> 
 
@@ -86,7 +90,33 @@ TODO: list all comands of the project
 
 ### A description of the architecture
 
-TODO:
+The endpoint are stored inside modules folders. Now, there are these modules on the project:
+
+   - User
+
+
+Folder structure of the project:
+
+```
+├── src/
+│   ├── modules/
+|   |   ├── {module_name}/ 
+│   │      ├── controllers/ => gateway of endpoints: input checking and sanitization, response formating to be exposed on API
+│   │      ├── entities/ => entities related to the module. Usualy, there is one main entity, like User entity on the user module, and some sub-entites
+│   │      ├── graphql/ => all graphQL schema and types related the module
+│   │      ├── repository/ => folder which stores the class who connect useCases with generic database service
+│   │      ├── useCases/ => self explanatory folder.
+│   │      └── resolvers.ts => file to register connect on GraphQL schema defined on graphql folder
+│   ├── shared/
+│   │   ├── database/ => database config
+│   │   └── dependencies/ => dependency injection config
+│   │   └── server/ => server config
+│   │   └── services/
+│   │      ├── authentication/ => authorization token management (token generating, checking, etc)
+│   │      └── hash/ => password encripty service
+│   │      └── uuid/ => id generation service
+
+```
 
 
 # <a name="API">API</a>
