@@ -1,6 +1,6 @@
 # Future Eats Service
 
-Future Eats Service is a backend service responsible for managing the endpoints consumed by Future Eats UI (https://github.com/pedro-severo/future-eats). It is a Node project built in typescript, exposed with GraphQL interface and infraestructured with Firebase Services, including Firestore to manage a non-SQL database. The project is fully tested with jest (integration and unit tests), also with a coverage checking (100%) to push new changes 
+Future Eats Service is a backend service responsible for managing the endpoints consumed by Future Eats UI (https://github.com/pedro-severo/future-eats). It is a Node project built in typescript, exposed by a GraphQL interface and infraestructured with Firebase Services - including a non-SQL database (Firestore). The project is fully tested with jest (integration and unit tests), also with a coverage checking (100%) to push new changes 
 
 # Summary
 
