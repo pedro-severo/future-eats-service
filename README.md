@@ -101,20 +101,20 @@ Folder structure of the project:
 ├── src/
 │   ├── modules/
 |   |   ├── {module_name}/ 
-│   │      ├── controllers/ => gateway of endpoints: input checking and sanitization, response formating to be exposed on API
-│   │      ├── entities/ => entities related to the module. Usualy, there is one main entity, like User entity on the user module, and some sub-entites
-│   │      ├── graphql/ => all graphQL schema and types related the module
-│   │      ├── repository/ => folder which stores the class who connect useCases with generic database service
-│   │      ├── useCases/ => self explanatory folder.
-│   │      └── resolvers.ts => file to register connect on GraphQL schema defined on graphql folder
+│   │      ├── controllers/  // gateway of endpoints: input checking and sanitization, response formating to be exposed on API
+│   │      ├── entities/  // entities related to the module. Usualy, there is one main entity, like User entity on the user module, and some sub-entites
+│   │      ├── graphql/  // all graphQL schema and types related the module
+│   │      ├── repository/  // folder which stores the class who connect useCases with generic database service
+│   │      ├── useCases/ =>  // self explanatory folder.
+│   │      └── resolvers.ts =>  // file to register connect on GraphQL schema defined on graphql folder
 │   ├── shared/
-│   │   ├── database/ => database config
-│   │   └── dependencies/ => dependency injection config
-│   │   └── server/ => server config
+│   │   ├── database/  // database config
+│   │   └── dependencies/  // dependency injection config
+│   │   └── server/  // server config
 │   │   └── services/
-│   │      ├── authentication/ => authorization token management (token generating, checking, etc)
-│   │      └── hash/ => password encripty service
-│   │      └── uuid/ => id generation service
+│   │      ├── authentication/  // authorization token management (token generating, checking, etc)
+│   │      └── hash/  // password encripty service
+│   │      └── uuid/  // id generation service
 
 ```
 
