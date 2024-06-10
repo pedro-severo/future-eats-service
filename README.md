@@ -108,9 +108,9 @@ Folder structure of the project:
 │   │      ├── useCases/ =>  // self explanatory folder.
 │   │      └── resolvers.ts =>  // file to register connect on GraphQL schema defined on graphql folder
 │   ├── shared/
-│   │   ├── database/  // database config
+│   │   ├── database/
 │   │   └── dependencies/  // dependency injection config
-│   │   └── server/  // server config
+│   │   └── server/ 
 │   │   └── services/
 │   │      ├── authentication/  // authorization token management (token generating, checking, etc)
 │   │      └── hash/  // password encripty service
