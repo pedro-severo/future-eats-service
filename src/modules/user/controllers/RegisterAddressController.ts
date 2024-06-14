@@ -28,11 +28,11 @@ export class RegisterAddressController {
             const userAddress = new UserAddress(
                 id,
                 xss(req.city),
-                xss(req.complement),
                 xss(req.state),
                 xss(req.streetNumber),
                 xss(req.zone),
-                xss(req.streetName)
+                xss(req.streetName),
+                req.complement
             );
             const response = await this.useCase.execute(
                 userAddress,
