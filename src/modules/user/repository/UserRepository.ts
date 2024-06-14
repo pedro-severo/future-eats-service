@@ -71,11 +71,11 @@ export class UserRepository extends Database {
             return new UserAddress(
                 id,
                 city,
-                complement,
                 state,
                 streetNumber,
                 zone,
-                streetName
+                streetName,
+                complement
             );
         }
     }

@@ -14,11 +14,11 @@ const user = {
 const address = new UserAddress(
     'addressId',
     'BH',
-    'ap 1502',
     'MG',
     '479',
     'centro',
-    'Guajajaras'
+    'Guajajaras',
+    'ap 1502'
 );
 
 const expectedResponse: GetProfileResponse = {
