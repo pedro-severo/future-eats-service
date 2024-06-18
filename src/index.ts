@@ -22,6 +22,7 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
+// TODO: Figure out cors problem
 app.use(
     cors({
         allowedHeaders: ['Content-Type'],
