@@ -34,6 +34,7 @@ jest.mock('class-validator', () => {
         IsEmail: jest.fn(),
         IsNotEmpty: jest.fn(),
         MinLength: jest.fn(),
+        IsOptional: jest.fn(),
     };
 });
 

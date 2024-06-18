@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class RegisterAddressInput {
     @IsString()
@@ -10,8 +10,8 @@ export class RegisterAddressInput {
     city!: string;
 
     @IsString()
-    @IsNotEmpty()
-    complement!: string;
+    @IsOptional()
+    complement?: string;
 
     @IsString()
     @IsNotEmpty()

@@ -40,7 +40,7 @@ type UserResponse {
 
 type RegisterAddressResponse {
     city: String!
-    complement: String!
+    complement: String
     state: String!
     streetNumber: String!
     zone: String!

@@ -152,6 +152,8 @@ describe('UserRepository test', () => {
             user.id,
             userAddress.id
         );
+        console.log('🚀 ~ it ~ addressResponse:', addressResponse);
+        console.log('🚀 ~ it ~ userAddress:', userAddress);
         expect(mockGetSubCollectionData).toHaveBeenCalledWith(
             USER_COLLECTIONS.USER_ADDRESS,
             user.id,

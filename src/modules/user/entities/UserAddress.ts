@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export type UserAddressType = {
     id: string;
@@ -20,8 +20,8 @@ export class UserAddress {
     private city: string;
 
     @IsString()
-    @IsNotEmpty()
-    private complement: string;
+    @IsOptional()
+    complement?: string;
 
     @IsString()
     @IsNotEmpty()
@@ -42,11 +42,11 @@ export class UserAddress {
     constructor(
         id: string,
         city: string,
-        complement: string,
         state: string,
         streetNumber: string,
         zone: string,
-        streetName: string
+        streetName: string,
+        complement?: string
     ) {
         this.id = id;
         this.city = city;

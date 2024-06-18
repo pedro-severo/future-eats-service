@@ -1,6 +1,6 @@
 export interface RegisterAddressResponse {
     city: string;
-    complement: string;
+    complement?: string;
     state: string;
     streetNumber: string;
     zone: string;
