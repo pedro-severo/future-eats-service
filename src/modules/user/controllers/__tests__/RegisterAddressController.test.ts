@@ -7,6 +7,7 @@ import { UserRepository } from '../../repository/UserRepository';
 import { Output } from '../outputs';
 import { DatabaseTestContext } from '../../../../shared/database/context';
 import { AuthenticatorManager } from '../../../../shared/services/authentication';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
 jest.mock('../../useCases/RegisterAddressUseCase');
 jest.mock('../../../../shared/database');
@@ -75,7 +76,9 @@ describe('RegisterAddressController test', () => {
                 ''
             );
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
         }
     });
     it('should validate input and throw error by invalid values on props', async () => {
@@ -94,14 +97,9 @@ describe('RegisterAddressController test', () => {
                 ''
             );
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
-            expect(error.cause[0].value).toBe(invalidInput.userId);
-            expect(error.cause[1].value).toBe(invalidInput.city);
-            expect(error.cause[2].value).toBe(invalidInput.complement);
-            expect(error.cause[3].value).toBe(invalidInput.state);
-            expect(error.cause[4].value).toBe(invalidInput.streetName);
-            expect(error.cause[5].value).toBe(invalidInput.streetNumber);
-            expect(error.cause[6].value).toBe(invalidInput.zone);
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });

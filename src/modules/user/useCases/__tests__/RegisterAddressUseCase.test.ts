@@ -1,6 +1,6 @@
 import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { RegisterAddressUseCase } from '../RegisterAddressUseCase';
-import { USER_ERROR_MESSAGES } from '../constants/errorMessages';
 import { RegisterAddressResponse } from '../interfaces/RegisterAddressResponse';
 
 const userId = 'userId';
@@ -122,7 +122,7 @@ describe('RegisterAddressUseCase test', () => {
             );
         } catch (e) {
             expect(e.message).toBe(
-                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );
         }
     });
@@ -135,7 +135,9 @@ describe('RegisterAddressUseCase test', () => {
                 token
             );
         } catch (e) {
-            expect(e.message).toBe(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 
@@ -144,7 +146,9 @@ describe('RegisterAddressUseCase test', () => {
             // @ts-expect-error expect a class, I'm injecting a object with the same props
             await registerAddressUseCase.execute(input, 'invalidId');
         } catch (e) {
-            expect(e.message).toBe('Failed to register address');
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });

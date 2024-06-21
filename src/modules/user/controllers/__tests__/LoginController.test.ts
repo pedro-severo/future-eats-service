@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { UserRepository } from '../../repository/UserRepository';
 import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { DatabaseTestContext } from '../../../../shared/database/context';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
 jest.mock('../../useCases/LoginUseCase');
 jest.mock('../../../../shared/database');
@@ -55,7 +56,9 @@ describe('LoginController test', () => {
         try {
             await loginController.login(invalidInput as unknown as LoginInput);
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE
+            );
         }
     });
     it('should validate input and throw error by invalid values on props', async () => {
@@ -66,9 +69,9 @@ describe('LoginController test', () => {
         try {
             await loginController.login(invalidInput as unknown as LoginInput);
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
-            expect(error.cause[0].value).toBe(invalidInput.email);
-            expect(error.cause[1].value).toBe(invalidInput.password);
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });

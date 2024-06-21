@@ -1,3 +1,4 @@
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { SignupUseCase } from '../SignupUseCase';
 import { SignupResponse } from '../interfaces/SignupResponse';
 
@@ -35,7 +36,7 @@ const expectedResponse: SignupResponse = {
 const mockCheckExistenceByEmail = jest
     .fn()
     .mockImplementation(async (email: string): Promise<boolean> => {
-        return email !== input.email;
+        return email !== input.getUser().email;
     });
 
 const mockGenerateToken = jest.fn().mockReturnValue(expectedResponse.token);
@@ -81,7 +82,23 @@ describe('SignupUseCase test', () => {
                 },
             });
         } catch (e) {
-            expect(e.message).toBe('This email is already registered');
+            expect(e.message).toBe(API_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED);
+        }
+    });
+    it('should throw a generic error in execute', async () => {
+        // @ts-expect-error dependency injection
+        signupUseCase = new SignupUseCase({
+            checkUserExistenceByEmail: (email: string) =>
+                mockCheckExistenceByEmail(email),
+            createUser: jest.fn().mockRejectedValue('Foo'),
+        });
+        try {
+            // @ts-expect-error expect a class, It's injecting an object with the same prop
+            await signupUseCase.execute(input);
+        } catch (e) {
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.SIGNUP_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });
