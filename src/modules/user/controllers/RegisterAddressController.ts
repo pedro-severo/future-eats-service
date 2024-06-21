@@ -23,6 +23,7 @@ export class RegisterAddressController {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);
             if (errors.length) {
+                // TODO: Change console.error for a better error printing tool
                 console.error('Failed to validate input.');
                 console.info(errors);
                 throw new Error(

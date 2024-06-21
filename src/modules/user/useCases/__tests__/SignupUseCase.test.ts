@@ -36,7 +36,6 @@ const expectedResponse: SignupResponse = {
 const mockCheckExistenceByEmail = jest
     .fn()
     .mockImplementation(async (email: string): Promise<boolean> => {
-        console.log('🚀 ~ .mockImplementation ~ email:', email);
         return email !== input.getUser().email;
     });
 
