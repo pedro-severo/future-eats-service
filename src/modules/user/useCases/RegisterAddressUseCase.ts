@@ -6,6 +6,7 @@ import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 @Service()
 export class RegisterAddressUseCase {
@@ -19,23 +20,35 @@ export class RegisterAddressUseCase {
         userId: string,
         token: string
     ): Promise<RegisterAddressResponse> {
-        if (!this.hasAuthorization(token, userId))
-            throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
-        await this.checkUserExistence(userId);
-        await this.userRepository.registerAddress(address, userId);
-        await this.userRepository.updateUserAddressFlag(userId, {
-            hasAddress: true,
-        });
-        const { id } = address.getUserAddress();
-        // TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
-        await this.userRepository.setMainAddressId(userId, id);
-        return mapUserAddressEntityToResponse(address);
+        try {
+            if (!this.hasAuthorization(token, userId))
+                throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+            await this.checkUserExistence(userId);
+            await this.userRepository.registerAddress(address, userId);
+            await this.userRepository.updateUserAddressFlag(userId, {
+                hasAddress: true,
+            });
+            const { id } = address.getUserAddress();
+            // TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
+            await this.userRepository.setMainAddressId(userId, id);
+            return mapUserAddressEntityToResponse(address);
+        } catch (e) {
+            console.error(e);
+            if (Object.values(API_ERROR_MESSAGES).includes(e.message))
+                throw new Error(e.message);
+            throw new Error(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
+        }
     }
 
     private async checkUserExistence(userId: string) {
         const userExist = await this.userRepository.checkUserExistence(userId);
         if (!userExist) {
-            throw new Error(USER_ERROR_MESSAGES.FAILED_TO_REGISTER_ADDRESS);
+            console.error(USER_ERROR_MESSAGES.NOT_FOUND);
+            throw new Error(
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
         }
     }
 

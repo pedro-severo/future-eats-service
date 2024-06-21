@@ -7,6 +7,7 @@ import { UserResponse } from './interfaces/UserResponse';
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 @Service()
 export class LoginUseCase {
@@ -19,30 +20,42 @@ export class LoginUseCase {
     }
 
     async execute(email: string, password: string): Promise<LoginResponse> {
-        const user = await this.getUserByEmail(email);
-        await this.checkPassword(user, password);
-        const token = this.authenticator.generateToken({
-            id: user.id,
-            role: USER_ROLES.USER,
-        });
-        return this.formatUseCaseResponse(user, token);
+        try {
+            const user = await this.getUserByEmail(email);
+            await this.checkPassword(user, password);
+            const token = this.authenticator.generateToken({
+                id: user.id,
+                role: USER_ROLES.USER,
+            });
+            return this.formatUseCaseResponse(user, token);
+        } catch (e) {
+            console.error(e);
+            if (Object.values(API_ERROR_MESSAGES).includes(e.message))
+                throw new Error(e.message);
+            throw new Error(API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE);
+        }
     }
 
-    private getUserByEmail = async (email: string): Promise<UserResponse> => {
+    getUserByEmail = async (email: string): Promise<UserResponse> => {
         const user = await this.userRepository.getUserByEmail(email);
-        if (!user) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
+        if (!user) {
+            console.error(USER_ERROR_MESSAGES.NOT_FOUND);
+            throw new Error(API_ERROR_MESSAGES.EMAIL_NOT_REGISTERED);
+        }
         return mapUserEntityToResponse(user);
     };
 
-    private checkPassword = async (
+    checkPassword = async (
         user: UserResponse,
         passwordToCheck: string
     ): Promise<void> => {
         const isPasswordCorrect =
             user.password &&
             (await this.hashManager.compare(passwordToCheck, user.password));
-        if (!isPasswordCorrect)
-            throw new Error(USER_ERROR_MESSAGES.INCORRECT_PASSWORD);
+        if (!isPasswordCorrect) {
+            console.error(USER_ERROR_MESSAGES.INCORRECT_PASSWORD);
+            throw new Error(API_ERROR_MESSAGES.INCORRECT_PASSWORD);
+        }
     };
 
     private formatUseCaseResponse = (

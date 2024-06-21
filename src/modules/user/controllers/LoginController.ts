@@ -7,6 +7,7 @@ import { Output } from './outputs';
 import { Service } from 'typedi';
 import { LoginResponse } from '../useCases/interfaces/LoginResponse';
 import xss from 'xss';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 @Service()
 export class LoginController {
@@ -17,7 +18,9 @@ export class LoginController {
             const inputToValidate = plainToClass(LoginInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);
             if (errors.length) {
-                throw new Error('Failed to validate input.', { cause: errors });
+                console.error('Failed to validate input.');
+                console.info(errors);
+                throw new Error(API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE);
             }
             const response = await this.useCase.execute(
                 xss(req.email),
@@ -28,7 +31,7 @@ export class LoginController {
                 data: response,
             };
         } catch (err) {
-            throw new Error(err.message, { cause: err.cause });
+            throw new Error(err.message);
         }
     }
 }

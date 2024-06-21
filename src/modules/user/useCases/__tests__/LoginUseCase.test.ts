@@ -2,15 +2,21 @@ import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { LoginInput } from '../../controllers/inputs/LoginInput';
 import { UserResponse } from '../interfaces/UserResponse';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
 jest.mock('../mappers/mapUserEntityToResponse', () => ({
-    mapUserEntityToResponse: jest.fn().mockResolvedValue({
-        name: 'Test User',
-        email: 'test@example.com',
-        id: '123456789',
-        password: 'hashedPassword',
-        hasAddress: false,
-        cpf: '12345678901',
+    mapUserEntityToResponse: jest.fn().mockImplementation((user) => {
+        if (user.id === 'invalidId') {
+            return {};
+        }
+        return {
+            name: 'Test User',
+            email: 'test@example.com',
+            id: '123456789',
+            password: 'hashedPassword',
+            hasAddress: false,
+            cpf: '12345678901',
+        };
     }),
 }));
 
@@ -35,7 +41,10 @@ const mockGetUserByEmail = jest
     .fn()
     .mockImplementation(
         async (email: string): Promise<UserResponse | undefined> => {
-            if (email === 'test@example.com') {
+            if (email === 'invalidUser@email.com') {
+                throw new Error('Foo');
+            } else if (email === 'test@example.com') {
+                console.log('OI');
                 return {
                     name: 'Test User',
                     email: 'test@example.com',
@@ -102,14 +111,23 @@ describe('LoginUseCase test', () => {
         try {
             await loginUseCase.execute(input.email, 'invalidPassword');
         } catch (e) {
-            expect(e.message).toBe('Incorrect password');
+            expect(e.message).toBe(API_ERROR_MESSAGES.INCORRECT_PASSWORD);
         }
     });
-    it('should throw error by incorrect email', async () => {
+    it('should throw error by user not found', async () => {
         try {
             await loginUseCase.execute('invalidEmail', input.password);
         } catch (e) {
-            expect(e.message).toBe('User not found');
+            expect(e.message).toBe(API_ERROR_MESSAGES.EMAIL_NOT_REGISTERED);
+        }
+    });
+    it('should throw generic error of execute method', async () => {
+        try {
+            await loginUseCase.execute('invalidUser@email.com', input.password);
+        } catch (e) {
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });

@@ -6,6 +6,7 @@ import { SignupInput } from '../inputs/SignupInput';
 import { UserRepository } from '../../repository/UserRepository';
 import { SignupResponse } from '../../useCases/interfaces/SignupResponse';
 import { DatabaseTestContext } from '../../../../shared/database/context';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
 jest.mock('../../useCases/SignupUseCase');
 jest.mock('../../../../shared/database');
@@ -59,7 +60,9 @@ describe('SignupController test', () => {
                 invalidInput as unknown as SignupInput
             );
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.SIGNUP_GENERIC_ERROR_MESSAGE
+            );
         }
     });
     it('should validate input and throw error by invalid values on props', async () => {
@@ -74,11 +77,9 @@ describe('SignupController test', () => {
                 invalidInput as unknown as SignupInput
             );
         } catch (error) {
-            expect(error.message).toBe('Failed to validate input.');
-            expect(error.cause[0].value).toBe(invalidInput.name);
-            expect(error.cause[1].value).toBe(invalidInput.email);
-            expect(error.cause[2].value).toBe(invalidInput.cpf);
-            expect(error.cause[3].value).toBe(invalidInput.password);
+            expect(error.message).toBe(
+                API_ERROR_MESSAGES.SIGNUP_GENERIC_ERROR_MESSAGE
+            );
         }
     });
 });

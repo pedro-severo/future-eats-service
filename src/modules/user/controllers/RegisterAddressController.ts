@@ -9,6 +9,7 @@ import { Service } from 'typedi';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
 import { generateId } from '../../../shared/services/uuid';
 import xss from 'xss';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 @Service()
 export class RegisterAddressController {
@@ -22,7 +23,11 @@ export class RegisterAddressController {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);
             if (errors.length) {
-                throw new Error('Failed to validate input.', { cause: errors });
+                console.error('Failed to validate input.');
+                console.info(errors);
+                throw new Error(
+                    API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+                );
             }
             const id = generateId();
             const userAddress = new UserAddress(
@@ -44,8 +49,7 @@ export class RegisterAddressController {
                 data: response,
             };
         } catch (err) {
-            console.error('🚀 ~ RegisterAddressController:', err.message);
-            throw new Error(err.message, { cause: err.cause });
+            throw new Error(err.message);
         }
     }
 }
