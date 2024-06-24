@@ -10,6 +10,7 @@ import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
 import { generateId } from '../../../shared/services/uuid';
 import xss from 'xss';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
+import { logger } from '../../../logger';
 
 @Service()
 export class RegisterAddressController {
@@ -23,9 +24,7 @@ export class RegisterAddressController {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);
             if (errors.length) {
-                // TODO: Change console.error for a better error printing tool
-                console.error('Failed to validate input.');
-                console.info(errors);
+                logger.error(errors);
                 throw new Error(
                     API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
                 );

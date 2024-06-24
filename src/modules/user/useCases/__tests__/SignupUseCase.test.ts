@@ -2,6 +2,16 @@ import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { SignupUseCase } from '../SignupUseCase';
 import { SignupResponse } from '../interfaces/SignupResponse';
 
+const mockErrorLog = jest.fn();
+
+jest.mock('../../../../logger', () => ({
+    logger: {
+        info: jest.fn(),
+        // @ts-expect-error test file
+        error: (e) => mockErrorLog(e),
+    },
+}));
+
 const input = {
     name: 'Test User',
     email: 'test@example.com',
@@ -82,6 +92,9 @@ describe('SignupUseCase test', () => {
                 },
             });
         } catch (e) {
+            expect(mockErrorLog).toHaveBeenCalledWith(
+                API_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED
+            );
             expect(e.message).toBe(API_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED);
         }
     });

@@ -1,4 +1,5 @@
 import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { GetProfileUseCase } from '../GetProfileUseCase';
 import { USER_ERROR_MESSAGES } from '../constants/errorMessages';
 import { mapUserAndAddressToProfileResponse } from '../mappers/mapUserAndAddressToProfileResponse';
@@ -66,6 +67,16 @@ const mockRepository = {
     }),
 };
 
+const mockErrorLog = jest.fn();
+
+jest.mock('../../../../logger', () => ({
+    logger: {
+        info: jest.fn(),
+        // @ts-expect-error test file
+        error: (e) => mockErrorLog(e),
+    },
+}));
+
 describe('GetProfileUseCase suit test', () => {
     it('should execute use case correctly', async () => {
         // @ts-expect-error dependency injection
@@ -115,7 +126,12 @@ describe('GetProfileUseCase suit test', () => {
                 mapUserAndAddressToProfileResponse
             ).not.toHaveBeenCalledWith();
         } catch (e) {
-            expect(e.message).toBe(USER_ERROR_MESSAGES.NOT_FOUND);
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
+            );
+            expect(mockErrorLog).toHaveBeenCalledWith(
+                USER_ERROR_MESSAGES.NOT_FOUND
+            );
         }
     });
     it('should throw error by invalid token authentication', async () => {
@@ -133,8 +149,11 @@ describe('GetProfileUseCase suit test', () => {
         try {
             await useCase.execute(input, 'invalidToken');
         } catch (e) {
-            expect(e.message).toBe(
+            expect(mockErrorLog).toHaveBeenCalledWith(
                 USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+            );
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
             );
         }
     });
@@ -153,7 +172,12 @@ describe('GetProfileUseCase suit test', () => {
         try {
             await useCase.execute(input, token);
         } catch (e) {
-            expect(e.message).toBe(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+            expect(mockErrorLog).toHaveBeenCalledWith(
+                USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR
+            );
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
+            );
         }
     });
     it('should execute correctly but with user without mainAddressId', async () => {

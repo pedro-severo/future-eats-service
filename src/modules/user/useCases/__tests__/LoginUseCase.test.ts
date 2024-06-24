@@ -4,6 +4,16 @@ import { LoginInput } from '../../controllers/inputs/LoginInput';
 import { UserResponse } from '../interfaces/UserResponse';
 import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
+const mockErrorLog = jest.fn();
+
+jest.mock('../../../../logger', () => ({
+    logger: {
+        info: jest.fn(),
+        // @ts-expect-error test file
+        error: (e) => mockErrorLog(e),
+    },
+}));
+
 jest.mock('../mappers/mapUserEntityToResponse', () => ({
     mapUserEntityToResponse: jest.fn().mockImplementation((user) => {
         if (user.id === 'invalidId') {
@@ -44,7 +54,6 @@ const mockGetUserByEmail = jest
             if (email === 'invalidUser@email.com') {
                 throw new Error('Foo');
             } else if (email === 'test@example.com') {
-                console.log('OI');
                 return {
                     name: 'Test User',
                     email: 'test@example.com',

@@ -7,6 +7,7 @@ import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
+import { logger } from '../../../logger';
 
 @Service()
 export class RegisterAddressUseCase {
@@ -21,6 +22,7 @@ export class RegisterAddressUseCase {
         token: string
     ): Promise<RegisterAddressResponse> {
         try {
+            logger.info('Registering address...');
             if (!this.hasAuthorization(token, userId))
                 throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
             await this.checkUserExistence(userId);
@@ -33,7 +35,7 @@ export class RegisterAddressUseCase {
             await this.userRepository.setMainAddressId(userId, id);
             return mapUserAddressEntityToResponse(address);
         } catch (e) {
-            console.error(e);
+            logger.error(e);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))
                 throw new Error(e.message);
             throw new Error(
@@ -45,7 +47,7 @@ export class RegisterAddressUseCase {
     private async checkUserExistence(userId: string) {
         const userExist = await this.userRepository.checkUserExistence(userId);
         if (!userExist) {
-            console.error(USER_ERROR_MESSAGES.NOT_FOUND);
+            logger.error(USER_ERROR_MESSAGES.NOT_FOUND);
             throw new Error(
                 API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );

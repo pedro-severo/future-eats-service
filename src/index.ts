@@ -9,6 +9,7 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { IServerContext, getServerContext } from './shared/server';
+import { logger } from './logger';
 
 const { ruruHTML } = require('ruru/server');
 
@@ -52,12 +53,12 @@ async function startApolloServer() {
 
     const PORT = process.env.PORT || 3003;
     app.listen(PORT, () => {
-        console.log(
+        logger.info(
             `Server is running on http://localhost:${PORT}${server.graphqlPath}`
         );
     });
 }
 
 startApolloServer().catch((err) => {
-    console.error('Error starting Apollo Server:', err);
+    logger.error('Error starting Apollo Server:', err);
 });
