@@ -5,6 +5,7 @@ import { SignupResponse } from './interfaces/SignupResponse';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
+import { logger } from '../../../logger';
 
 @Service()
 export class SignupUseCase {
@@ -16,6 +17,7 @@ export class SignupUseCase {
 
     async execute(newUser: User): Promise<SignupResponse> {
         try {
+            logger.info('Executing signup...');
             const user = newUser.getUser();
             await this.checkUserExistence(user.email);
             await this.userRepository.createUser(newUser);
@@ -25,7 +27,7 @@ export class SignupUseCase {
             });
             return { user, token };
         } catch (e) {
-            console.error(e);
+            logger.error(e.message);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))
                 throw new Error(e.message);
             throw new Error(API_ERROR_MESSAGES.SIGNUP_GENERIC_ERROR_MESSAGE);

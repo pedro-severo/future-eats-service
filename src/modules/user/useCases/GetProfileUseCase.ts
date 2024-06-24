@@ -1,5 +1,7 @@
+import { logger } from '../../../logger';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 import { GetProfileInput } from '../controllers/inputs/GetProfileInput';
 import { UserType } from '../entities/User';
 import { UserRepository } from '../repository/UserRepository';
@@ -17,17 +19,26 @@ export class GetProfileUseCase {
         input: GetProfileInput,
         token: string
     ): Promise<GetProfileResponse> {
-        if (!this.hasAuthorization(token, input.userId))
-            throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
-        const user = await this.getUserData(input.userId);
-        const address =
-            user.hasAddress && user.mainAddressId ?
-                await this.userRepository.getAddress(
-                    input.userId,
-                    user.mainAddressId
-                )
-            :   undefined;
-        return mapUserAndAddressToProfileResponse(user, address || undefined);
+        try {
+            logger.info('Getting profile...');
+            if (!this.hasAuthorization(token, input.userId))
+                throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
+            const user = await this.getUserData(input.userId);
+            const address =
+                user.hasAddress && user.mainAddressId ?
+                    await this.userRepository.getAddress(
+                        input.userId,
+                        user.mainAddressId
+                    )
+                :   undefined;
+            return mapUserAndAddressToProfileResponse(
+                user,
+                address || undefined
+            );
+        } catch (e) {
+            logger.error(e.message);
+            throw new Error(API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE);
+        }
     }
 
     private async getUserData(userId: string): Promise<UserType> {

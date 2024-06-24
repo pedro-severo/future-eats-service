@@ -69,6 +69,16 @@ const mockCheckToken = jest
         return true;
     });
 
+const mockErrorLog = jest.fn();
+
+jest.mock('../../../../logger', () => ({
+    logger: {
+        info: jest.fn(),
+        // @ts-expect-error test file
+        error: (e) => mockErrorLog(e),
+    },
+}));
+
 describe('RegisterAddressUseCase test', () => {
     let registerAddressUseCase: RegisterAddressUseCase;
     beforeEach(() => {
