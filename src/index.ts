@@ -24,6 +24,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // TODO: study helmet: https://helmetjs.github.io/
+//       it is blocking http://localhost:3003 to open api on browser
 app.use(helmet());
 
 const typesArray = loadFilesSync('./src/**/*.gql');
@@ -42,6 +43,7 @@ async function startApolloServer() {
         cors<cors.CorsRequest>({
             origin: [
                 'http://localhost:3000',
+                'http://localhost:3003',
                 'https://studio.apollographql.com',
             ],
         }),
