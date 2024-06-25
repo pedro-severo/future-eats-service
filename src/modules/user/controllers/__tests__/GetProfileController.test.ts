@@ -6,6 +6,7 @@ import { GetProfileController } from '../GetProfileController';
 import { GetProfileInput } from '../inputs/GetProfileInput';
 import { StatusCodes } from 'http-status-codes';
 import { AuthenticatorManager } from '../../../../shared/services/authentication';
+import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 
 const mockPlainToClass = jest
     .fn()
@@ -84,8 +85,9 @@ describe('GetProfileController', () => {
             expect(mockPlainToClass).toHaveBeenCalledWith(input);
             expect(mockValidate).toHaveBeenCalled();
             expect(mockValidate).toHaveBeenCalledWith(input);
-            expect(e.message).toBe('Failed to validate input.');
-            expect(e.cause[0].value).toBe(input.userId);
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
+            );
         }
     });
     it('should throw error by undefined userId prop type', async () => {
@@ -100,8 +102,9 @@ describe('GetProfileController', () => {
             expect(mockPlainToClass).toHaveBeenCalledWith(input);
             expect(mockValidate).toHaveBeenCalled();
             expect(mockValidate).toHaveBeenCalledWith(input);
-            expect(e.message).toBe('Failed to validate input.');
-            expect(e.cause[0].value).toBe(undefined);
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
+            );
         }
     });
 });

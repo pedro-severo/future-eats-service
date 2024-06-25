@@ -44,6 +44,7 @@ export class RegisterAddressController {
                 req.userId,
                 token
             );
+            logger.info('Address registration success!');
             return {
                 status: StatusCodes.CREATED,
                 data: response,

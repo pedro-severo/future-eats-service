@@ -5,7 +5,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { resolvers as userResolvers } from './modules/user/resolvers';
 import { loadFilesSync } from '@graphql-tools/load-files';
-// import cors from 'cors';
+import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import { IServerContext, getServerContext } from './shared/server';
@@ -23,13 +23,6 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-// TODO: Fix cors bug when uncomment these lines
-// app.use(
-//     cors({
-//         allowedHeaders: ['Content-Type'],
-//     })
-// );
-
 // TODO: study helmet: https://helmetjs.github.io/
 app.use(helmet());
 
@@ -43,6 +36,17 @@ async function startApolloServer() {
     });
 
     await server.start();
+
+    app.use(
+        '/graphql',
+        cors<cors.CorsRequest>({
+            origin: [
+                'http://localhost:3000',
+                'https://studio.apollographql.com',
+            ],
+        }),
+        express.json()
+    );
 
     server.applyMiddleware({ app });
 
