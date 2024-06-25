@@ -38,6 +38,7 @@ export class SignupController {
                 xss(req.cpf)
             );
             const response = await this.useCase.execute(user);
+            logger.info('Signup success!');
             return {
                 status: StatusCodes.CREATED,
                 data: response,
