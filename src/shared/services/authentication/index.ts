@@ -33,7 +33,7 @@ export class AuthenticatorManager {
         return id === idToCheck && role === roleToCheck;
     };
 
-    private removeBearer = (token: string): string => {
+    removeBearer = (token: string): string => {
         if (token.startsWith('Bearer ')) {
             return token.slice(7);
         } else {

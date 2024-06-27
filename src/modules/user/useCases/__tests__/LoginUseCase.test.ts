@@ -87,11 +87,12 @@ jest.mock('../../../../shared/services/hash', () => {
 });
 
 const mockGenerateToken = jest.fn().mockReturnValue(expectedResponse.token);
-
+const mockRemoveBearer = jest.fn().mockImplementation((token) => token);
 jest.mock('../../../../shared/services/authentication', () => {
     return {
         AuthenticatorManager: jest.fn().mockImplementation(() => ({
             generateToken: mockGenerateToken,
+            removeBearer: mockRemoveBearer,
         })),
     };
 });
