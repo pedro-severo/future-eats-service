@@ -22,6 +22,8 @@ export class LoginUseCase {
 
     async execute(email: string, password: string): Promise<LoginResponse> {
         try {
+            // TODO: Create a pattern to these messages,
+            //       should print email and other inputs in other endpoints
             logger.info('Executing login...');
             const user = await this.getUserByEmail(email);
             await this.checkPassword(user, password);
@@ -29,7 +31,10 @@ export class LoginUseCase {
                 id: user.id,
                 role: USER_ROLES.USER,
             });
-            return this.formatUseCaseResponse(user, token);
+            return {
+                user,
+                token: this.authenticator.removeBearer(token),
+            };
         } catch (e) {
             logger.error(e);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))
@@ -58,15 +63,5 @@ export class LoginUseCase {
             logger.error(USER_ERROR_MESSAGES.INCORRECT_PASSWORD);
             throw new Error(API_ERROR_MESSAGES.INCORRECT_PASSWORD);
         }
-    };
-
-    private formatUseCaseResponse = (
-        user: UserResponse,
-        token: string
-    ): LoginResponse => {
-        return {
-            user,
-            token: token as string,
-        };
     };
 }

@@ -25,7 +25,7 @@ export class SignupUseCase {
                 id: user.id,
                 role: USER_ROLES.USER,
             });
-            return { user, token };
+            return { user, token: this.authenticator.removeBearer(token) };
         } catch (e) {
             logger.error(e.message);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))
