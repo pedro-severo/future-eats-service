@@ -3,6 +3,7 @@ import { server } from '../mocks/mockServer';
 import * as firebaseTesting from '@firebase/testing';
 import { StatusCodes } from 'http-status-codes';
 import { USER_ERROR_MESSAGES } from '../useCases/constants/errorMessages';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 const projectId = 'future-eats-service';
 
@@ -25,6 +26,10 @@ const registerAddressInput = {
     streetNumber: '123',
     streetName: 'Guajajaras',
     zone: 'Barreiro',
+};
+
+const authenticateInput = {
+    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGE2YjIxLWM3NjktNDdhZC1iMzdlLWRmZTc0ZWIxOWZmOCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzE5NTk1Njg2LCJleHAiOjE3MjQ3Nzk2ODZ9.Q_9hDRBc8R3yzs7eOSRjJqmqgCP20lz89cwIcV8qzMA',
 };
 
 describe('Integration tests', () => {
@@ -232,6 +237,16 @@ describe('Integration tests', () => {
             );
         });
     });
+    describe('authenticate query', () => {
+        it('should authenticate (return isAuthenticated as true)', async () => {
+            const result = await server.executeOperation({
+                query: authenticateQuery,
+                variables: { ...authenticateInput },
+            });
+            expect(result?.data?.authenticate?.isAuthenticated).toBe(true);
+            expect(result?.data?.authenticate?.role).toBe(USER_ROLES.USER);
+        });
+    });
 });
 
 const getProfileQuery = gql`
@@ -330,6 +345,18 @@ const registerAddressQuery = gql`
                 zone
                 streetName
                 id
+            }
+        }
+    }
+`;
+
+const authenticateQuery = gql`
+    mutation authenticate($token: String!) {
+        authenticate(input: { userId: $userId, token: $token }) {
+            status
+            authenticate {
+                isAuthenticated
+                role
             }
         }
     }
