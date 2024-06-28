@@ -60,7 +60,6 @@ export const resolvers = {
         },
     },
     Query: {
-        // TODO: authenticate endpoint
         getProfile: async (
             _parent: any,
             args: { input: GetProfileInput },
