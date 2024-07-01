@@ -38,7 +38,7 @@
     "build": "tsc",
     "firebase": "cd firebase && firebase emulators:start --only firestore",
     "test": "NODE_ENV=test jest",
-    "test:shutdown": "pkill -f 'firebase emulators:start'",
+    "test:shutdown": "NODE_ENV=test pkill -f 'firebase emulators:start'",
     "test:integration": "concurrently \"yarn firebase\" \"jest --config=jest.config.specific.js && yarn test:shutdown\"",
     "testFile": "yarn test -- --findRelatedTests",
     "coverage": "jest test --coverage --watchAll=false --silent",

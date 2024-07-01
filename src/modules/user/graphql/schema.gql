@@ -24,6 +24,10 @@ input GetProfileInput {
     userId: String!
 }
 
+input AuthenticateInput {
+    token: String!
+}
+
 type User {
     id: String!
     name: String!
@@ -54,7 +58,13 @@ type GetProfileResponse {
     email: String!
     cpf: String!
     hasAddress: Boolean!
-    address: String
+    address: String!
+}
+
+type AuthenticateResponse {
+    isAuthenticated: Boolean!
+    role: String!
+    id: String!
 }
 
 type UserApiResponse {
@@ -72,12 +82,18 @@ type GetProfileApiResponse {
     data: GetProfileResponse!
 }
 
+type AuthenticateApiResponse {
+    status: Int!
+    data: AuthenticateResponse!
+}
+
 type Mutation {
-    login(input: LoginInput): UserApiResponse!
-    signup(input: SignupInput): UserApiResponse!
-    registerAddress(input: RegisterAddressInput): RegisterAddressApiResponse!
+    login(input: LoginInput!): UserApiResponse!
+    signup(input: SignupInput!): UserApiResponse!
+    registerAddress(input: RegisterAddressInput!): RegisterAddressApiResponse!
 }
 
 type Query {
-    getProfile(input: GetProfileInput): GetProfileApiResponse!
+    getProfile(input: GetProfileInput!): GetProfileApiResponse!
+    authenticate(input: AuthenticateInput!): AuthenticateApiResponse!
 }

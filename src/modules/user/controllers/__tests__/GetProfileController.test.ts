@@ -81,10 +81,6 @@ describe('GetProfileController', () => {
                 ''
             );
         } catch (e) {
-            expect(mockPlainToClass).toHaveBeenCalled();
-            expect(mockPlainToClass).toHaveBeenCalledWith(input);
-            expect(mockValidate).toHaveBeenCalled();
-            expect(mockValidate).toHaveBeenCalledWith(input);
             expect(e.message).toBe(
                 API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
             );

@@ -2,6 +2,9 @@ import { sign, verify } from 'jsonwebtoken';
 import { AuthenticationData } from './interfaces';
 import { Service } from 'typedi';
 
+// TODO: Create a method to validate if return of getTokenData is
+//       a type of AuthenticationData, and if no, throw error
+
 @Service()
 export class AuthenticatorManager {
     public generateToken = (payload: AuthenticationData): string => {

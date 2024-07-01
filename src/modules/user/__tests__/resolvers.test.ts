@@ -1,7 +1,9 @@
 import { UserDatabaseToken } from '../../../shared/dependencies';
+import { AuthenticateController } from '../controllers/AuthenticateController';
 import { GetProfileController } from '../controllers/GetProfileController';
 import { RegisterAddressController } from '../controllers/RegisterAddressController';
 import { resolvers } from '../resolvers';
+import { AuthenticateUseCase } from '../useCases/AuthenticateUseCase';
 import { GetProfileUseCase } from '../useCases/GetProfileUseCase';
 import { LoginUseCase } from '../useCases/LoginUseCase';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
@@ -20,6 +22,10 @@ const mockRegisterAddressControllerMethod = jest
     .mockResolvedValue(expectedResponse);
 
 const mockGetProfileMethod = jest.fn().mockResolvedValue(expectedResponse);
+
+const mockAuthenticateControllerMethod = jest
+    .fn()
+    .mockResolvedValue(expectedResponse);
 
 jest.mock('typedi', () => ({
     __esModule: true,
@@ -63,6 +69,14 @@ jest.mock('../controllers/GetProfileController', () => {
     };
 });
 
+jest.mock('../controllers/AuthenticateController', () => {
+    return {
+        AuthenticateController: jest.fn(() => ({
+            authenticate: mockAuthenticateControllerMethod,
+        })),
+    };
+});
+
 jest.mock('../repository/UserRepository', () => {
     return {
         UserRepository: jest.fn(() => ({
@@ -75,6 +89,7 @@ jest.mock('../useCases/LoginUseCase');
 jest.mock('../useCases/SignupUseCase');
 jest.mock('../useCases/RegisterAddressUseCase');
 jest.mock('../useCases/GetProfileUseCase');
+jest.mock('../useCases/AuthenticateUseCase');
 
 describe('Mutation Resolvers', () => {
     describe('login', () => {
@@ -192,6 +207,32 @@ describe('Mutation Resolvers', () => {
             );
             expect(mockGetProfileMethod).toHaveBeenCalledTimes(1);
             expect(mockGetProfileMethod).toHaveBeenCalledWith(args.input, '');
+            expect(result).toEqual(expectedResponse);
+        });
+    });
+    describe('authenticate', () => {
+        it('call authenticate resolvers prop with correct arguments', async () => {
+            const args = {
+                input: {
+                    token: 'token',
+                },
+            };
+            const result = await resolvers.Query.authenticate(null, args, {
+                auth: {
+                    token: '',
+                },
+                userDatabaseContext: UserDatabaseToken,
+            });
+            expect(AuthenticateController).toHaveBeenCalledTimes(1);
+            expect(AuthenticateUseCase).toHaveBeenCalledTimes(1);
+            expect(AuthenticateUseCase).toHaveBeenCalledWith(
+                'serviceInjection',
+                'serviceInjection'
+            );
+            expect(mockAuthenticateControllerMethod).toHaveBeenCalledTimes(1);
+            expect(mockAuthenticateControllerMethod).toHaveBeenCalledWith(
+                args.input
+            );
             expect(result).toEqual(expectedResponse);
         });
     });
