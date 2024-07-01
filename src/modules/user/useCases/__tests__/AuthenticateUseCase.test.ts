@@ -18,8 +18,9 @@ jest.mock('../../../../logger', () => ({
     },
 }));
 
-const mockCheckUserExistence = jest.fn().mockImplementation(() => {
-    return true;
+const mockCheckUserExistence = jest.fn().mockImplementation((id) => {
+    if (id === userId) return true;
+    return false;
 });
 
 const mockRepository = {
@@ -94,7 +95,7 @@ describe('AuthenticateUseCase test', () => {
                 API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
             );
             expect(mockErrorLog).toHaveBeenCalledWith(
-                USER_ERROR_MESSAGES.NOT_FOUND
+                API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
             );
         }
     });

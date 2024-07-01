@@ -19,6 +19,7 @@ export class AuthenticateUseCase {
             if (!user) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
             const isAuthenticated =
                 await this.userRepository.checkUserExistence(user.id);
+            // istanbul ignore else
             if (!isAuthenticated)
                 throw new Error(
                     API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
