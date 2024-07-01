@@ -3,4 +3,5 @@ import { USER_ROLES } from '../../../../shared/services/authentication/interface
 export interface AuthenticateResponse {
     isAuthenticated: boolean;
     role: USER_ROLES;
+    id: string;
 }

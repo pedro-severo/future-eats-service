@@ -36,9 +36,10 @@ export class LoginUseCase {
                 token: this.authenticator.removeBearer(token),
             };
         } catch (e) {
-            logger.error(e);
-            if (Object.values(API_ERROR_MESSAGES).includes(e.message))
+            logger.error(e.message);
+            if (Object.values(API_ERROR_MESSAGES).includes(e.message)) {
                 throw new Error(e.message);
+            }
             throw new Error(API_ERROR_MESSAGES.LOGIN_GENERIC_ERROR_MESSAGE);
         }
     }

@@ -1,6 +1,6 @@
 export interface AuthenticationData {
     id: string;
-    role: string;
+    role: USER_ROLES;
 }
 
 export enum USER_ROLES {

@@ -2,8 +2,8 @@ import { gql } from 'apollo-server-express';
 import { server } from '../mocks/mockServer';
 import * as firebaseTesting from '@firebase/testing';
 import { StatusCodes } from 'http-status-codes';
-import { USER_ERROR_MESSAGES } from '../useCases/constants/errorMessages';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 const projectId = 'future-eats-service';
 
@@ -26,10 +26,6 @@ const registerAddressInput = {
     streetNumber: '123',
     streetName: 'Guajajaras',
     zone: 'Barreiro',
-};
-
-const authenticateInput = {
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGE2YjIxLWM3NjktNDdhZC1iMzdlLWRmZTc0ZWIxOWZmOCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzE5NTk1Njg2LCJleHAiOjE3MjQ3Nzk2ODZ9.Q_9hDRBc8R3yzs7eOSRjJqmqgCP20lz89cwIcV8qzMA',
 };
 
 describe('Integration tests', () => {
@@ -78,7 +74,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.NOT_FOUND
+                API_ERROR_MESSAGES.EMAIL_NOT_REGISTERED
             );
         });
         it('should fail by incorrect password', async () => {
@@ -91,7 +87,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.INCORRECT_PASSWORD
+                API_ERROR_MESSAGES.INCORRECT_PASSWORD
             );
         });
     });
@@ -130,7 +126,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED
+                API_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED
             );
         });
     });
@@ -186,7 +182,7 @@ describe('Integration tests', () => {
             );
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );
         });
         it('should fail by inexistent token', async () => {
@@ -196,7 +192,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );
         });
     });
@@ -233,18 +229,34 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
             );
         });
     });
     describe('authenticate query', () => {
         it('should authenticate (return isAuthenticated as true)', async () => {
+            const authenticateInput = {
+                token,
+            };
             const result = await server.executeOperation({
                 query: authenticateQuery,
                 variables: { ...authenticateInput },
             });
-            expect(result?.data?.authenticate?.isAuthenticated).toBe(true);
-            expect(result?.data?.authenticate?.role).toBe(USER_ROLES.USER);
+            expect(result?.data?.authenticate?.data.isAuthenticated).toBe(true);
+            expect(result?.data?.authenticate?.data.role).toBe(USER_ROLES.USER);
+        });
+        it('should fail by invalid token', async () => {
+            const authenticateInput = {
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGE2YjIxLWM3NjktNDdhZC1iMzdlLWRmZTc0ZWIxOWZmOCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzE5NTk1Njg2LCJleHAiOjE3MjQ3Nzk2ODZ9.Q_9hDRBc8R3yzs7eOSRjJqmqgCP20lz89cwIcV8qzMA',
+            };
+            const result = await server.executeOperation({
+                query: authenticateQuery,
+                variables: { ...authenticateInput },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
+            );
         });
     });
 });
@@ -351,10 +363,10 @@ const registerAddressQuery = gql`
 `;
 
 const authenticateQuery = gql`
-    mutation authenticate($token: String!) {
-        authenticate(input: { userId: $userId, token: $token }) {
+    query authenticate($token: String!) {
+        authenticate(input: { token: $token }) {
             status
-            authenticate {
+            data {
                 isAuthenticated
                 role
             }
