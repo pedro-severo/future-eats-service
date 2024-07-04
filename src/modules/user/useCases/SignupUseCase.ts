@@ -20,6 +20,7 @@ export class SignupUseCase {
             logger.info('Executing signup...');
             const user = newUser.getUser();
             await this.checkUserExistence(user.email);
+            // TODO: Save role on DB
             await this.userRepository.createUser(newUser);
             const token = this.authenticator.generateToken({
                 id: user.id,

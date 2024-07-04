@@ -26,6 +26,7 @@ export class AuthenticateUseCase {
                 );
             return {
                 isAuthenticated,
+                // TODO: the role should come from db
                 role: user.role,
                 id: user.id,
             };
