@@ -24,6 +24,7 @@ export class AuthenticateUseCase {
                 throw new Error(
                     API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
                 );
+            // TODO: return entire user
             return {
                 isAuthenticated,
                 // TODO: the role should come from db
