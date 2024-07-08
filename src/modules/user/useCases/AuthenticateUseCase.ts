@@ -5,6 +5,7 @@ import { AuthenticateResponse } from './interfaces/AuthenticateResponse';
 import { logger } from '../../../logger';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
+import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 
 export class AuthenticateUseCase {
     constructor(
@@ -15,21 +16,13 @@ export class AuthenticateUseCase {
     async execute(input: AuthenticateInput): Promise<AuthenticateResponse> {
         try {
             logger.info('Authenticating token...');
-            const user = this.authenticator.getTokenData(input.token);
-            if (!user) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
-            const isAuthenticated =
-                await this.userRepository.checkUserExistence(user.id);
+            const tokenData = this.authenticator.getTokenData(input.token);
+            if (!tokenData) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
+            const user = await this.userRepository.getUser(tokenData.id);
             // istanbul ignore else
-            if (!isAuthenticated)
-                throw new Error(
-                    API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
-                );
-            // TODO: return entire user
+            if (!user) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
             return {
-                isAuthenticated,
-                // TODO: the role should come from db
-                role: user.role,
-                id: user.id,
+                user: mapUserEntityToResponse(user.getUser()),
             };
         } catch (e) {
             logger.error(e.message);

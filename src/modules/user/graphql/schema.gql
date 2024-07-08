@@ -62,9 +62,7 @@ type GetProfileResponse {
 }
 
 type AuthenticateResponse {
-    isAuthenticated: Boolean!
-    role: String!
-    id: String!
+    user: User!
 }
 
 type UserApiResponse {

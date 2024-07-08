@@ -3,12 +3,12 @@ import { HashManager } from '../../../shared/services/hash';
 import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { LoginResponse } from './interfaces/LoginResponse';
 import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
-import { UserResponse } from './interfaces/UserResponse';
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 import { logger } from '../../../logger';
+import { UserType } from '../entities/User';
 
 @Service()
 export class LoginUseCase {
@@ -29,10 +29,10 @@ export class LoginUseCase {
             await this.checkPassword(user, password);
             const token = this.authenticator.generateToken({
                 id: user.id,
-                role: USER_ROLES.USER,
+                role: user.role || USER_ROLES.USER,
             });
             return {
-                user,
+                user: mapUserEntityToResponse(user),
                 token: this.authenticator.removeBearer(token),
             };
         } catch (e) {
@@ -44,17 +44,17 @@ export class LoginUseCase {
         }
     }
 
-    getUserByEmail = async (email: string): Promise<UserResponse> => {
+    getUserByEmail = async (email: string): Promise<UserType> => {
         const user = await this.userRepository.getUserByEmail(email);
         if (!user) {
             logger.error(USER_ERROR_MESSAGES.NOT_FOUND);
             throw new Error(API_ERROR_MESSAGES.EMAIL_NOT_REGISTERED);
         }
-        return mapUserEntityToResponse(user);
+        return user.getUser();
     };
 
     checkPassword = async (
-        user: UserResponse,
+        user: UserType,
         passwordToCheck: string
     ): Promise<void> => {
         const isPasswordCorrect =

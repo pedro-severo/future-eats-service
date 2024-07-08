@@ -1,14 +1,14 @@
-import { User } from '../../entities/User';
+import { UserType } from '../../entities/User';
 import { UserResponse } from '../interfaces/UserResponse';
 
-export const mapUserEntityToResponse = (user: User): UserResponse => {
-    const { name, email, cpf, hasAddress, password, id } = user.getUser();
+export const mapUserEntityToResponse = (user: UserType): UserResponse => {
+    const { name, email, cpf, hasAddress, id, role } = user;
     return {
         name,
         email,
         cpf,
         hasAddress,
-        password,
         id,
+        role,
     };
 };

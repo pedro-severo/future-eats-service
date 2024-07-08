@@ -1,7 +1,5 @@
-import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
+import { UserResponse } from './UserResponse';
 
 export interface AuthenticateResponse {
-    isAuthenticated: boolean;
-    role: USER_ROLES;
-    id: string;
+    user: UserResponse;
 }
