@@ -60,6 +60,7 @@ export class User {
         password: string,
         hasAddress: boolean,
         cpf: string,
+        role?: USER_ROLES,
         mainAddressId?: string
     ) {
         this.id = id;
@@ -69,6 +70,7 @@ export class User {
         this.cpf = cpf;
         this.hasAddress = hasAddress;
         this.mainAddressId = mainAddressId;
+        this.role = role;
     }
 
     public getUser(): UserType {

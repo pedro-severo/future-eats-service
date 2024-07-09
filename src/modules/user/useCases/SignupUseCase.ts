@@ -18,9 +18,7 @@ export class SignupUseCase {
     async execute(newUser: User): Promise<SignupResponse> {
         try {
             logger.info('Executing signup...');
-            newUser.setRole(USER_ROLES.USER);
             const user = newUser.getUser();
-            console.log('🚀 ~ SignupUseCase ~ execute ~ user:', user);
             await this.checkUserExistence(user.email);
             await this.userRepository.createUser(newUser);
             const token = this.authenticator.generateToken({

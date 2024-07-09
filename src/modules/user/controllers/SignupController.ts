@@ -12,6 +12,7 @@ import { SignupResponse } from '../useCases/interfaces/SignupResponse';
 import xss from 'xss';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 import { logger } from '../../../logger';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 @Service()
 export class SignupController {
@@ -35,7 +36,8 @@ export class SignupController {
                 xss(req.email),
                 encryptedPassword,
                 false,
-                xss(req.cpf)
+                xss(req.cpf),
+                USER_ROLES.USER
             );
             const response = await this.useCase.execute(user);
             logger.info('Signup success!');

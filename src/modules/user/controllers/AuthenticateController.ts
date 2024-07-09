@@ -24,14 +24,12 @@ export class AuthenticateController {
                 );
             }
             const response = await this.useCase.execute(input);
-            logger.info('🚀 ~ AuthenticateController ~ response:', response);
             logger.info('Authentication success!');
             return {
                 status: StatusCodes.ACCEPTED,
                 data: response,
             };
         } catch (e) {
-            logger.info('🚀 ~ AuthenticateController ~ e:', e);
             throw new Error(e.message);
         }
     }
