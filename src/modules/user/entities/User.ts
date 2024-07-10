@@ -95,8 +95,4 @@ export class User {
             role,
         };
     }
-
-    public setRole(role: USER_ROLES): void {
-        this.role = role;
-    }
 }

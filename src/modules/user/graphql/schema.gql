@@ -58,7 +58,7 @@ type GetProfileResponse {
     email: String!
     cpf: String!
     hasAddress: Boolean!
-    address: String!
+    address: String
 }
 
 type AuthenticateResponse {

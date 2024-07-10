@@ -26,7 +26,6 @@ export class LoginController {
                 xss(req.email),
                 xss(req.password)
             );
-            console.log('🚀 ~ LoginController ~ login ~ response:', response);
             logger.info('Login success!');
             return {
                 status: StatusCodes.OK,
