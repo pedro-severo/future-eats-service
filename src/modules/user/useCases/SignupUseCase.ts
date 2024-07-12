@@ -6,6 +6,7 @@ import { AuthenticatorManager } from '../../../shared/services/authentication';
 import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 import { logger } from '../../../logger';
+import { mapUserEntityToResponse } from './mappers/mapUserEntityToResponse';
 
 @Service()
 export class SignupUseCase {
@@ -25,7 +26,10 @@ export class SignupUseCase {
                 id: user.id,
                 role: user.role || USER_ROLES.USER,
             });
-            return { user, token: this.authenticator.removeBearer(token) };
+            return {
+                user: mapUserEntityToResponse(user),
+                token: this.authenticator.removeBearer(token),
+            };
         } catch (e) {
             logger.error(e.message);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))

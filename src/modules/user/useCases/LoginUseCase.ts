@@ -37,6 +37,7 @@ export class LoginUseCase {
             };
         } catch (e) {
             logger.error(e.message);
+
             if (Object.values(API_ERROR_MESSAGES).includes(e.message)) {
                 throw new Error(e.message);
             }

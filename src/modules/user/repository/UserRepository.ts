@@ -35,6 +35,7 @@ export class UserRepository extends Database {
                 password,
                 hasAddress,
                 cpf,
+                role,
                 mainAddressId,
             } = user;
             return new User(
@@ -44,6 +45,7 @@ export class UserRepository extends Database {
                 password,
                 hasAddress,
                 cpf,
+                role,
                 mainAddressId
             );
         }
@@ -90,6 +92,7 @@ export class UserRepository extends Database {
                 password,
                 hasAddress,
                 cpf,
+                role,
                 mainAddressId,
             } = user;
             return new User(
@@ -99,6 +102,7 @@ export class UserRepository extends Database {
                 password,
                 hasAddress,
                 cpf,
+                role,
                 mainAddressId
             );
         }

@@ -3,6 +3,8 @@ import { AuthenticatorManager } from '../../../../shared/services/authentication
 import { UserRepository } from '../../repository/UserRepository';
 import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { USER_ERROR_MESSAGES } from '../constants/errorMessages';
+import { User } from '../../entities/User';
+import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
 
 const userId = 'userId';
 
@@ -18,13 +20,23 @@ jest.mock('../../../../logger', () => ({
     },
 }));
 
-const mockCheckUserExistence = jest.fn().mockImplementation((id) => {
-    if (id === userId) return true;
-    return false;
+const mockUser = new User(
+    userId,
+    'name',
+    'email',
+    'password',
+    false,
+    'cpf',
+    USER_ROLES.USER
+);
+
+const mockGetUser = jest.fn().mockImplementation((id) => {
+    if (id === userId) return mockUser;
+    return undefined;
 });
 
 const mockRepository = {
-    checkUserExistence: mockCheckUserExistence,
+    getUser: mockGetUser,
 };
 
 const mockGetTokenData = jest.fn().mockImplementation((token) => {
@@ -66,10 +78,8 @@ describe('AuthenticateUseCase test', () => {
         });
         expect(mockInfoLog).toHaveBeenCalled();
         expect(mockGetTokenData).toHaveBeenCalledWith('validToken');
-        expect(mockCheckUserExistence).toHaveBeenCalledWith(userId);
-        expect(response.isAuthenticated).toBe(true);
-        expect(response.role).toBe('role');
-        expect(response.id).toBe(userId);
+        expect(mockGetUser).toHaveBeenCalledWith(userId);
+        expect(response.user.id).toBe(userId);
     });
     it('should throw error by invalid token', async () => {
         try {
@@ -95,7 +105,7 @@ describe('AuthenticateUseCase test', () => {
                 API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
             );
             expect(mockErrorLog).toHaveBeenCalledWith(
-                API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
+                USER_ERROR_MESSAGES.NOT_FOUND
             );
         }
     });

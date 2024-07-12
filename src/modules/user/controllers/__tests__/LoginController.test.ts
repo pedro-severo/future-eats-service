@@ -23,7 +23,7 @@ const expectedResponse: Output<LoginResponse> = {
             name: 'Test User',
             email: 'test@example.com',
             id: '123456789',
-            password: 'hashedPassword',
+            role: 'USER',
             hasAddress: false,
             cpf: '12345678901',
         },
