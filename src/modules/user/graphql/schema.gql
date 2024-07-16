@@ -35,6 +35,7 @@ type User {
     cpf: String!
     hasAddress: Boolean!
     password: String!
+    role: String
 }
 
 type UserResponse {

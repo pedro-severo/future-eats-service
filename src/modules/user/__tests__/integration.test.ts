@@ -31,6 +31,7 @@ const registerAddressInput = {
 describe('Integration tests', () => {
     let userId: string;
     let token: string;
+    let role: USER_ROLES;
     let signupResult: any;
     beforeAll(async () => {
         const result = await server.executeOperation({
@@ -40,6 +41,7 @@ describe('Integration tests', () => {
         signupResult = result;
         userId = result?.data?.signup?.data?.user.id;
         token = result?.data?.signup?.data?.token;
+        role = result?.data?.signup?.data?.user.role;
     });
     afterAll(async () => {
         await firebaseTesting.clearFirestoreData({ projectId });
@@ -52,10 +54,8 @@ describe('Integration tests', () => {
                 variables: loginInput,
             });
             expect(typeof result?.data?.login?.data?.token).toBe('string');
-            expect(typeof result?.data?.login?.data?.user.password).toBe(
-                'string'
-            );
             expect(result?.data?.login?.data?.user.id).toBe(userId);
+            expect(result?.data?.login?.data?.user.role).toBe(role);
             expect(result?.data?.login?.data?.user.name).toBe(signupInput.name);
             expect(result?.data?.login?.data?.user.hasAddress).toBe(false);
             expect(result?.data?.login?.data?.user.cpf).toBe(signupInput.cpf);
@@ -97,9 +97,6 @@ describe('Integration tests', () => {
             expect(typeof signupResult?.data?.signup?.data?.token).toBe(
                 'string'
             );
-            expect(typeof signupResult?.data?.signup?.data?.user.password).toBe(
-                'string'
-            );
             expect(typeof signupResult?.data?.signup?.data?.user.id).toBe(
                 'string'
             );
@@ -115,6 +112,7 @@ describe('Integration tests', () => {
             expect(signupResult?.data?.signup?.data?.user.email).toBe(
                 signupInput.email
             );
+            expect(signupResult?.data?.signup?.data?.user.role).toBe(role);
             expect(signupResult?.data?.signup?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -242,8 +240,20 @@ describe('Integration tests', () => {
                 query: authenticateQuery,
                 variables: { ...authenticateInput },
             });
-            expect(result?.data?.authenticate?.data.isAuthenticated).toBe(true);
-            expect(result?.data?.authenticate?.data.role).toBe(USER_ROLES.USER);
+            expect(result?.data?.authenticate?.data?.user.id).toBe(userId);
+            expect(result?.data?.authenticate?.data?.user.name).toBe(
+                signupInput.name
+            );
+            expect(result?.data?.authenticate?.data?.user.hasAddress).toBe(
+                true
+            );
+            expect(result?.data?.authenticate?.data?.user.cpf).toBe(
+                signupInput.cpf
+            );
+            expect(result?.data?.authenticate?.data?.user.role).toBe(role);
+            expect(result?.data?.authenticate?.data?.user.email).toBe(
+                signupInput.email
+            );
         });
         it('should fail by invalid token', async () => {
             const authenticateInput = {
@@ -296,12 +306,12 @@ const signupQuery = gql`
             data {
                 token
                 user {
-                    password
                     name
                     id
                     hasAddress
                     email
                     cpf
+                    role
                 }
             }
         }
@@ -315,12 +325,12 @@ const loginQuery = gql`
             data {
                 token
                 user {
-                    password
                     name
                     id
                     hasAddress
                     email
                     cpf
+                    role
                 }
             }
         }
@@ -367,8 +377,14 @@ const authenticateQuery = gql`
         authenticate(input: { token: $token }) {
             status
             data {
-                isAuthenticated
-                role
+                user {
+                    name
+                    id
+                    hasAddress
+                    email
+                    cpf
+                    role
+                }
             }
         }
     }
