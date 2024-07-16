@@ -4,5 +4,5 @@ export interface UserResponse {
     email: string;
     cpf: string;
     hasAddress: boolean;
-    password: string;
+    role?: string;
 }

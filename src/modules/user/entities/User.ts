@@ -5,6 +5,7 @@ import {
     IsString,
     MinLength,
 } from 'class-validator';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
 
 export type UserType = {
     id: string;
@@ -13,6 +14,7 @@ export type UserType = {
     password: string;
     hasAddress: boolean;
     cpf: string;
+    role?: USER_ROLES;
     mainAddressId?: string;
 };
 
@@ -45,6 +47,10 @@ export class User {
 
     @IsString()
     @IsNotEmpty()
+    private role?: USER_ROLES;
+
+    @IsString()
+    @IsNotEmpty()
     private mainAddressId?: string;
 
     constructor(
@@ -54,6 +60,7 @@ export class User {
         password: string,
         hasAddress: boolean,
         cpf: string,
+        role?: USER_ROLES,
         mainAddressId?: string
     ) {
         this.id = id;
@@ -63,19 +70,20 @@ export class User {
         this.cpf = cpf;
         this.hasAddress = hasAddress;
         this.mainAddressId = mainAddressId;
+        this.role = role;
     }
 
-    public getUser(): {
-        id: string;
-        name: string;
-        email: string;
-        password: string;
-        hasAddress: boolean;
-        cpf: string;
-        mainAddressId?: string;
-    } {
-        const { id, name, email, password, cpf, hasAddress, mainAddressId } =
-            this;
+    public getUser(): UserType {
+        const {
+            id,
+            name,
+            email,
+            password,
+            cpf,
+            hasAddress,
+            mainAddressId,
+            role,
+        } = this;
         return {
             id,
             name,
@@ -84,6 +92,7 @@ export class User {
             cpf,
             hasAddress,
             mainAddressId,
+            role,
         };
     }
 }

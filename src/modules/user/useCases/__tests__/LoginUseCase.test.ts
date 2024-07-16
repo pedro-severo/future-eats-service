@@ -1,8 +1,18 @@
 import { LoginUseCase } from '../../useCases/LoginUseCase';
 import { LoginResponse } from '../../useCases/interfaces/LoginResponse';
 import { LoginInput } from '../../controllers/inputs/LoginInput';
-import { UserResponse } from '../interfaces/UserResponse';
 import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
+import { User } from '../../entities/User';
+import { mapUserEntityToResponse } from '../mappers/mapUserEntityToResponse';
+
+const mockUser = new User(
+    'id',
+    'USer Namer',
+    'test@example.com',
+    'password123',
+    false,
+    'cpf'
+);
 
 const mockErrorLog = jest.fn();
 
@@ -19,14 +29,7 @@ jest.mock('../mappers/mapUserEntityToResponse', () => ({
         if (user.id === 'invalidId') {
             return {};
         }
-        return {
-            name: 'Test User',
-            email: 'test@example.com',
-            id: '123456789',
-            password: 'hashedPassword',
-            hasAddress: false,
-            cpf: '12345678901',
-        };
+        return mockUser.getUser();
     }),
 }));
 
@@ -36,37 +39,21 @@ const input: LoginInput = {
 };
 
 const expectedResponse: LoginResponse = {
-    user: {
-        name: 'Test User',
-        email: 'test@example.com',
-        id: '123456789',
-        password: 'hashedPassword',
-        hasAddress: false,
-        cpf: '12345678901',
-    },
+    user: mapUserEntityToResponse(mockUser.getUser()),
     token: 'mockedToken',
 };
 
 const mockGetUserByEmail = jest
     .fn()
-    .mockImplementation(
-        async (email: string): Promise<UserResponse | undefined> => {
-            if (email === 'invalidUser@email.com') {
-                throw new Error('Foo');
-            } else if (email === 'test@example.com') {
-                return {
-                    name: 'Test User',
-                    email: 'test@example.com',
-                    id: '123456789',
-                    password: 'hashedPassword',
-                    hasAddress: false,
-                    cpf: '12345678901',
-                };
-            } else {
-                return undefined;
-            }
+    .mockImplementation(async (email: string): Promise<User | undefined> => {
+        if (email === 'invalidUser@email.com') {
+            throw new Error('Foo');
+        } else if (email === 'test@example.com') {
+            return mockUser;
+        } else {
+            return undefined;
         }
-    );
+    });
 
 const mockCompare = jest.fn().mockImplementation(
     async (
@@ -113,7 +100,7 @@ describe('LoginUseCase test', () => {
         expect(mockGetUserByEmail).toHaveBeenCalledWith(input.email);
         expect(mockCompare).toHaveBeenCalledWith(
             input.password,
-            expectedResponse.user.password
+            mockUser.getUser().password
         );
         expect(response).toEqual(expectedResponse);
     });

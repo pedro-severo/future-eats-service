@@ -19,6 +19,7 @@ const input = {
     password: 'hashedPassword',
     hasAddress: false,
     cpf: '12345678901',
+    role: 'USER',
     getUser: () => {
         return {
             name: 'Test User',
@@ -36,7 +37,6 @@ const expectedResponse: SignupResponse = {
         name: 'Test User',
         email: 'test@example.com',
         id: '123456789',
-        password: 'hashedPassword',
         hasAddress: false,
         cpf: '12345678901',
     },
@@ -78,9 +78,9 @@ describe('SignupUseCase test', () => {
     });
     it('should throw error by email already existed on database', async () => {
         try {
-            // @ts-expect-error expect a class, It's injecting an object with the same props
             await signupUseCase.execute({
                 ...input,
+                // @ts-expect-error expect a class, It's injecting an object with the same props
                 getUser: () => {
                     return {
                         name: 'Test User',
@@ -89,6 +89,7 @@ describe('SignupUseCase test', () => {
                         password: 'hashedPassword',
                         hasAddress: false,
                         cpf: '12345678901',
+                        role: 'USER',
                     };
                 },
             });

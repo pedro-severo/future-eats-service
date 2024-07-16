@@ -15,6 +15,7 @@ const user = {
     hasAddress: false,
     cpf: '12345678901',
     mainAddressId: 'addressId',
+    role: 'USER',
 };
 
 const userAddress = {

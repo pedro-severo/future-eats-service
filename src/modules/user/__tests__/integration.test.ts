@@ -2,7 +2,8 @@ import { gql } from 'apollo-server-express';
 import { server } from '../mocks/mockServer';
 import * as firebaseTesting from '@firebase/testing';
 import { StatusCodes } from 'http-status-codes';
-import { USER_ERROR_MESSAGES } from '../useCases/constants/errorMessages';
+import { USER_ROLES } from '../../../shared/services/authentication/interfaces';
+import { API_ERROR_MESSAGES } from '../apiErrorMessages';
 
 const projectId = 'future-eats-service';
 
@@ -30,6 +31,7 @@ const registerAddressInput = {
 describe('Integration tests', () => {
     let userId: string;
     let token: string;
+    let role: USER_ROLES;
     let signupResult: any;
     beforeAll(async () => {
         const result = await server.executeOperation({
@@ -39,6 +41,7 @@ describe('Integration tests', () => {
         signupResult = result;
         userId = result?.data?.signup?.data?.user.id;
         token = result?.data?.signup?.data?.token;
+        role = result?.data?.signup?.data?.user.role;
     });
     afterAll(async () => {
         await firebaseTesting.clearFirestoreData({ projectId });
@@ -51,10 +54,8 @@ describe('Integration tests', () => {
                 variables: loginInput,
             });
             expect(typeof result?.data?.login?.data?.token).toBe('string');
-            expect(typeof result?.data?.login?.data?.user.password).toBe(
-                'string'
-            );
             expect(result?.data?.login?.data?.user.id).toBe(userId);
+            expect(result?.data?.login?.data?.user.role).toBe(role);
             expect(result?.data?.login?.data?.user.name).toBe(signupInput.name);
             expect(result?.data?.login?.data?.user.hasAddress).toBe(false);
             expect(result?.data?.login?.data?.user.cpf).toBe(signupInput.cpf);
@@ -73,7 +74,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.NOT_FOUND
+                API_ERROR_MESSAGES.EMAIL_NOT_REGISTERED
             );
         });
         it('should fail by incorrect password', async () => {
@@ -86,7 +87,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.INCORRECT_PASSWORD
+                API_ERROR_MESSAGES.INCORRECT_PASSWORD
             );
         });
     });
@@ -94,9 +95,6 @@ describe('Integration tests', () => {
         it('should signup successfully', () => {
             // signup mutation is running on beforeAll callback
             expect(typeof signupResult?.data?.signup?.data?.token).toBe(
-                'string'
-            );
-            expect(typeof signupResult?.data?.signup?.data?.user.password).toBe(
                 'string'
             );
             expect(typeof signupResult?.data?.signup?.data?.user.id).toBe(
@@ -114,6 +112,7 @@ describe('Integration tests', () => {
             expect(signupResult?.data?.signup?.data?.user.email).toBe(
                 signupInput.email
             );
+            expect(signupResult?.data?.signup?.data?.user.role).toBe(role);
             expect(signupResult?.data?.signup?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -125,7 +124,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED
+                API_ERROR_MESSAGES.EMAIL_ALREADY_REGISTERED
             );
         });
     });
@@ -181,7 +180,7 @@ describe('Integration tests', () => {
             );
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );
         });
         it('should fail by inexistent token', async () => {
@@ -191,7 +190,7 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+                API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
             );
         });
     });
@@ -228,7 +227,45 @@ describe('Integration tests', () => {
             });
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
-                USER_ERROR_MESSAGES.AUTHORIZATION_CHECKING_ERROR
+                API_ERROR_MESSAGES.GET_PROFILE_GENERIC_MESSAGE
+            );
+        });
+    });
+    describe('authenticate query', () => {
+        it('should authenticate (return isAuthenticated as true)', async () => {
+            const authenticateInput = {
+                token,
+            };
+            const result = await server.executeOperation({
+                query: authenticateQuery,
+                variables: { ...authenticateInput },
+            });
+            expect(result?.data?.authenticate?.data?.user.id).toBe(userId);
+            expect(result?.data?.authenticate?.data?.user.name).toBe(
+                signupInput.name
+            );
+            expect(result?.data?.authenticate?.data?.user.hasAddress).toBe(
+                true
+            );
+            expect(result?.data?.authenticate?.data?.user.cpf).toBe(
+                signupInput.cpf
+            );
+            expect(result?.data?.authenticate?.data?.user.role).toBe(role);
+            expect(result?.data?.authenticate?.data?.user.email).toBe(
+                signupInput.email
+            );
+        });
+        it('should fail by invalid token', async () => {
+            const authenticateInput = {
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MGE2YjIxLWM3NjktNDdhZC1iMzdlLWRmZTc0ZWIxOWZmOCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzE5NTk1Njg2LCJleHAiOjE3MjQ3Nzk2ODZ9.Q_9hDRBc8R3yzs7eOSRjJqmqgCP20lz89cwIcV8qzMA',
+            };
+            const result = await server.executeOperation({
+                query: authenticateQuery,
+                variables: { ...authenticateInput },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
             );
         });
     });
@@ -269,12 +306,12 @@ const signupQuery = gql`
             data {
                 token
                 user {
-                    password
                     name
                     id
                     hasAddress
                     email
                     cpf
+                    role
                 }
             }
         }
@@ -288,12 +325,12 @@ const loginQuery = gql`
             data {
                 token
                 user {
-                    password
                     name
                     id
                     hasAddress
                     email
                     cpf
+                    role
                 }
             }
         }
@@ -330,6 +367,24 @@ const registerAddressQuery = gql`
                 zone
                 streetName
                 id
+            }
+        }
+    }
+`;
+
+const authenticateQuery = gql`
+    query authenticate($token: String!) {
+        authenticate(input: { token: $token }) {
+            status
+            data {
+                user {
+                    name
+                    id
+                    hasAddress
+                    email
+                    cpf
+                    role
+                }
             }
         }
     }

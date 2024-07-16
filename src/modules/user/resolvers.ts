@@ -13,6 +13,9 @@ import { GetProfileInput } from './controllers/inputs/GetProfileInput';
 import { GetProfileController } from './controllers/GetProfileController';
 import { GetProfileUseCase } from './useCases/GetProfileUseCase';
 import { AuthenticatorManagerToken } from '../../shared/dependencies';
+import { AuthenticateInput } from './controllers/inputs/AuthenticateInput';
+import { AuthenticateController } from './controllers/AuthenticateController';
+import { AuthenticateUseCase } from './useCases/AuthenticateUseCase';
 
 export const resolvers = {
     Mutation: {
@@ -71,6 +74,19 @@ export const resolvers = {
             );
             const { userId } = JSON.parse(JSON.stringify(args)).input;
             return controller.getProfile({ userId }, token);
+        },
+        authenticate: async (
+            _parent: any,
+            args: { input: AuthenticateInput },
+            context: IServerContext
+        ) => {
+            const controller = new AuthenticateController(
+                new AuthenticateUseCase(
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
+                )
+            );
+            return controller.authenticate(args.input);
         },
     },
 };
