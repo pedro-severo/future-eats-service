@@ -16,6 +16,9 @@ import { AuthenticatorManagerToken } from '../../shared/dependencies';
 import { AuthenticateInput } from './controllers/inputs/AuthenticateInput';
 import { AuthenticateController } from './controllers/AuthenticateController';
 import { AuthenticateUseCase } from './useCases/AuthenticateUseCase';
+import { GetAddressController } from './controllers/GetAddressController';
+import { GetAddressUseCase } from './useCases/GetAddressUseCase';
+import { GetAddressInput } from './controllers/inputs/GetAddressInput';
 
 export const resolvers = {
     Mutation: {
@@ -87,6 +90,20 @@ export const resolvers = {
                 )
             );
             return controller.authenticate(args.input);
+        },
+        getAddress: async (
+            _parent: any,
+            args: { input: GetAddressInput },
+            context: IServerContext
+        ) => {
+            const { token } = context.auth;
+            const controller = new GetAddressController(
+                new GetAddressUseCase(
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
+                )
+            );
+            return controller.getAddress(args.input, token);
         },
     },
 };

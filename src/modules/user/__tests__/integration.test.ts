@@ -195,12 +195,6 @@ describe('Integration tests', () => {
         });
     });
     describe('getProfile query', () => {
-        beforeEach(async () => {
-            await server.executeOperation({
-                query: registerAddressQuery,
-                variables: { ...registerAddressInput, userId },
-            });
-        });
         it('should get profile correctly', async () => {
             const result = await server.executeOperation(
                 {
@@ -266,6 +260,74 @@ describe('Integration tests', () => {
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
                 API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
+            );
+        });
+    });
+    describe('getAddress query', () => {
+        it('should get address correctly', async () => {
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: { userId },
+                },
+                { token }
+            );
+            expect(result?.data?.getAddressQuery?.status).toBe(
+                StatusCodes.ACCEPTED
+            );
+            expect(result?.data?.getAddressQuery?.data?.id).toBe(userId);
+            expect(result?.data?.getAddressQuery?.data?.city).toBe(
+                registerAddressInput.city
+            );
+            expect(result?.data?.getAddressQuery?.data?.complement).toBe(
+                registerAddressInput.complement
+            );
+            expect(result?.data?.getAddressQuery?.data?.state).toBe(
+                registerAddressInput.state
+            );
+            expect(result?.data?.getAddressQuery?.data?.streetNumber).toBe(
+                registerAddressInput.streetNumber
+            );
+            expect(result?.data?.getAddressQuery?.data?.zone).toBe(
+                registerAddressInput.zone
+            );
+            expect(result?.data?.getAddressQuery?.data?.streetName).toBe(
+                registerAddressInput.streetName
+            );
+        });
+        it('should fail by inexistent token', async () => {
+            const result = await server.executeOperation({
+                query: getAddressQuery,
+                variables: { userId },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.GET_ADDRESS_GENERIC_MESSAGE
+            );
+        });
+        it('should fail by invalid user id', async () => {
+            const result = await server.executeOperation({
+                query: getAddressQuery,
+                variables: { userId: 'invalidId' },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.USER_NOT_FOUND
+            );
+        });
+        it('should fail by user without address registered', async () => {
+            const user = await server.executeOperation({
+                query: signupQuery,
+                variables: { ...signupInput, email: 'novo.email@gmail.com' },
+            });
+            const idWithoutAddress = user?.data?.signup?.data?.user.id;
+            const result = await server.executeOperation({
+                query: getAddressQuery,
+                variables: { userId: idWithoutAddress },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.USER_WITHOUT_ADDRESS
             );
         });
     });
@@ -385,6 +447,23 @@ const authenticateQuery = gql`
                     cpf
                     role
                 }
+            }
+        }
+    }
+`;
+
+const getAddressQuery = gql`
+    query getAddress($userId: String!) {
+        getAddress(input: { userId: $userId }) {
+            status
+            data {
+                city
+                complement
+                state
+                streetNumber
+                zone
+                streetName
+                id
             }
         }
     }

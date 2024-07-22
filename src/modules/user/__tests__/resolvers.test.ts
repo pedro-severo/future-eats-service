@@ -1,9 +1,11 @@
 import { UserDatabaseToken } from '../../../shared/dependencies';
 import { AuthenticateController } from '../controllers/AuthenticateController';
+import { GetAddressController } from '../controllers/GetAddressController';
 import { GetProfileController } from '../controllers/GetProfileController';
 import { RegisterAddressController } from '../controllers/RegisterAddressController';
 import { resolvers } from '../resolvers';
 import { AuthenticateUseCase } from '../useCases/AuthenticateUseCase';
+import { GetAddressUseCase } from '../useCases/GetAddressUseCase';
 import { GetProfileUseCase } from '../useCases/GetProfileUseCase';
 import { LoginUseCase } from '../useCases/LoginUseCase';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
@@ -24,6 +26,10 @@ const mockRegisterAddressControllerMethod = jest
 const mockGetProfileMethod = jest.fn().mockResolvedValue(expectedResponse);
 
 const mockAuthenticateControllerMethod = jest
+    .fn()
+    .mockResolvedValue(expectedResponse);
+
+const mockGetAddressControllerMethod = jest
     .fn()
     .mockResolvedValue(expectedResponse);
 
@@ -77,6 +83,14 @@ jest.mock('../controllers/AuthenticateController', () => {
     };
 });
 
+jest.mock('../controllers/GetAddressController', () => {
+    return {
+        GetAddressController: jest.fn(() => ({
+            getAddress: mockGetAddressControllerMethod,
+        })),
+    };
+});
+
 jest.mock('../repository/UserRepository', () => {
     return {
         UserRepository: jest.fn(() => ({
@@ -90,6 +104,7 @@ jest.mock('../useCases/SignupUseCase');
 jest.mock('../useCases/RegisterAddressUseCase');
 jest.mock('../useCases/GetProfileUseCase');
 jest.mock('../useCases/AuthenticateUseCase');
+jest.mock('../useCases/GetAddressUseCase');
 
 describe('Mutation Resolvers', () => {
     describe('login', () => {
@@ -232,6 +247,28 @@ describe('Mutation Resolvers', () => {
             expect(mockAuthenticateControllerMethod).toHaveBeenCalledTimes(1);
             expect(mockAuthenticateControllerMethod).toHaveBeenCalledWith(
                 args.input
+            );
+            expect(result).toEqual(expectedResponse);
+        });
+    });
+    describe('getAddress', () => {
+        it('call getAddress method correctly', async () => {
+            const args = {
+                input: {
+                    userId: 'userId',
+                },
+            };
+            const result = await resolvers.Query.getAddress(null, args, {
+                auth: {
+                    token: '',
+                },
+                userDatabaseContext: UserDatabaseToken,
+            });
+            expect(GetAddressController).toHaveBeenCalledTimes(1);
+            expect(GetAddressUseCase).toHaveBeenCalledTimes(1);
+            expect(GetAddressUseCase).toHaveBeenCalledWith(
+                'serviceInjection',
+                'serviceInjection'
             );
             expect(result).toEqual(expectedResponse);
         });
