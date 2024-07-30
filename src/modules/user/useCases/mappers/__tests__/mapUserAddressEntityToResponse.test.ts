@@ -15,7 +15,9 @@ describe('mapUserEntityToResponse test file', () => {
     it('should test correctly behavior of mapper', () => {
         const { id, city, complement, state, streetName, streetNumber, zone } =
             mockInput.getUserAddress();
-        const result = mapUserAddressEntityToResponse(mockInput);
+        const result = mapUserAddressEntityToResponse(
+            mockInput.getUserAddress()
+        );
         expect(result.city).toBe(city);
         expect(result.complement).toBe(complement);
         expect(result.id).toBe(id);

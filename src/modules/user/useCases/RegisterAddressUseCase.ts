@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { UserAddress } from '../entities/UserAddress';
-import { RegisterAddressResponse } from './interfaces/RegisterAddressResponse';
+import { AddressResponse } from './interfaces/AddressResponse';
 import { mapUserAddressEntityToResponse } from './mappers/mapUserAddressEntityToResponse';
 import { UserRepository } from '../repository/UserRepository';
 import { USER_ERROR_MESSAGES } from './constants/errorMessages';
@@ -20,7 +20,7 @@ export class RegisterAddressUseCase {
         address: UserAddress,
         userId: string,
         token: string
-    ): Promise<RegisterAddressResponse> {
+    ): Promise<AddressResponse> {
         try {
             logger.info('Registering address...');
             if (!this.hasAuthorization(token, userId))
@@ -33,7 +33,7 @@ export class RegisterAddressUseCase {
             const { id } = address.getUserAddress();
             // TODO: define and implement RN to handle with addressId updating (userRepository.setMainAddressId calling)
             await this.userRepository.setMainAddressId(userId, id);
-            return mapUserAddressEntityToResponse(address);
+            return mapUserAddressEntityToResponse(address.getUserAddress());
         } catch (e) {
             logger.error(e);
             if (Object.values(API_ERROR_MESSAGES).includes(e.message))

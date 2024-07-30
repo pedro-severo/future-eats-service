@@ -1,5 +1,5 @@
 import { plainToClass } from 'class-transformer';
-import { RegisterAddressResponse } from '../useCases/interfaces/RegisterAddressResponse';
+import { AddressResponse } from '../useCases/interfaces/AddressResponse';
 import { RegisterAddressInput } from './inputs/RegisterAddressInput';
 import { Output } from './outputs';
 import { validate, ValidationError } from 'class-validator';
@@ -19,7 +19,7 @@ export class RegisterAddressController {
     async registerAddress(
         req: RegisterAddressInput,
         token: string
-    ): Promise<Output<RegisterAddressResponse>> {
+    ): Promise<Output<AddressResponse>> {
         try {
             const inputToValidate = plainToClass(RegisterAddressInput, req);
             const errors: ValidationError[] = await validate(inputToValidate);

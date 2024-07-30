@@ -1,4 +1,4 @@
-export interface RegisterAddressResponse {
+export interface AddressResponse {
     city: string;
     complement?: string;
     state: string;
