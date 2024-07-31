@@ -33,6 +33,7 @@ describe('Integration tests', () => {
     let token: string;
     let role: USER_ROLES;
     let signupResult: any;
+    let addressId: string;
     beforeAll(async () => {
         const result = await server.executeOperation({
             query: signupQuery,
@@ -144,6 +145,7 @@ describe('Integration tests', () => {
                 },
                 { token }
             );
+            addressId = result?.data?.registerAddress?.data.id;
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -268,30 +270,28 @@ describe('Integration tests', () => {
             const result = await server.executeOperation(
                 {
                     query: getAddressQuery,
-                    variables: { userId },
+                    variables: { userId, addressId },
                 },
                 { token }
             );
-            expect(result?.data?.getAddressQuery?.status).toBe(
-                StatusCodes.ACCEPTED
-            );
-            expect(result?.data?.getAddressQuery?.data?.id).toBe(userId);
-            expect(result?.data?.getAddressQuery?.data?.city).toBe(
+            expect(result?.data?.getAddress?.status).toBe(StatusCodes.ACCEPTED);
+            expect(result?.data?.getAddress?.data?.id).toBe(addressId);
+            expect(result?.data?.getAddress?.data?.city).toBe(
                 registerAddressInput.city
             );
-            expect(result?.data?.getAddressQuery?.data?.complement).toBe(
+            expect(result?.data?.getAddress?.data?.complement).toBe(
                 registerAddressInput.complement
             );
-            expect(result?.data?.getAddressQuery?.data?.state).toBe(
+            expect(result?.data?.getAddress?.data?.state).toBe(
                 registerAddressInput.state
             );
-            expect(result?.data?.getAddressQuery?.data?.streetNumber).toBe(
+            expect(result?.data?.getAddress?.data?.streetNumber).toBe(
                 registerAddressInput.streetNumber
             );
-            expect(result?.data?.getAddressQuery?.data?.zone).toBe(
+            expect(result?.data?.getAddress?.data?.zone).toBe(
                 registerAddressInput.zone
             );
-            expect(result?.data?.getAddressQuery?.data?.streetName).toBe(
+            expect(result?.data?.getAddress?.data?.streetName).toBe(
                 registerAddressInput.streetName
             );
         });
@@ -306,10 +306,17 @@ describe('Integration tests', () => {
             );
         });
         it('should fail by invalid user id', async () => {
-            const result = await server.executeOperation({
-                query: getAddressQuery,
-                variables: { userId: 'invalidId' },
-            });
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: {
+                        userId: '9bfbe2d8-b3e3-4c44-ab10-e903e0fa57ad',
+                    },
+                },
+                {
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliZmJlMmQ4LWIzZTMtNGM0NC1hYjEwLWU5MDNlMGZhNTdhZCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzIyNDQyODA2LCJleHAiOjE3Mjc2MjY4MDZ9.geQqRdW8YN1QwPNPBcKwMgNr-fpz3MdTCoPzxK9jBq0',
+                }
+            );
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
                 API_ERROR_MESSAGES.USER_NOT_FOUND
@@ -321,10 +328,14 @@ describe('Integration tests', () => {
                 variables: { ...signupInput, email: 'novo.email@gmail.com' },
             });
             const idWithoutAddress = user?.data?.signup?.data?.user.id;
-            const result = await server.executeOperation({
-                query: getAddressQuery,
-                variables: { userId: idWithoutAddress },
-            });
+            const token = user?.data?.signup?.data?.token;
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: { userId: idWithoutAddress },
+                },
+                { token }
+            );
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
                 API_ERROR_MESSAGES.USER_WITHOUT_ADDRESS
@@ -453,8 +464,8 @@ const authenticateQuery = gql`
 `;
 
 const getAddressQuery = gql`
-    query getAddress($userId: String!) {
-        getAddress(input: { userId: $userId }) {
+    query getAddress($userId: String!, $addressId: String) {
+        getAddress(input: { userId: $userId, addressId: $addressId }) {
             status
             data {
                 city

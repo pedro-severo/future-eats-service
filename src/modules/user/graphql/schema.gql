@@ -26,6 +26,7 @@ input GetProfileInput {
 
 input GetAddressInput {
     userId: String!
+    addressId: String
 }
 
 input AuthenticateInput {

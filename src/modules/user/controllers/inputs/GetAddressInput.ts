@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class GetAddressInput {
     @IsString()
     @IsNotEmpty()
     userId!: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
     addressId?: string;
 }

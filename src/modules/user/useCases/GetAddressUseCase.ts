@@ -15,6 +15,7 @@ export class GetAddressUseCase {
         private userRepository: UserRepository,
         private authenticator: AuthenticatorManager
     ) {}
+
     async execute(
         input: GetAddressInput,
         token: string
@@ -23,8 +24,10 @@ export class GetAddressUseCase {
             logger.info('Getting address...');
             if (!this.hasAuthorization(token, input.userId))
                 throw new Error(USER_ERROR_MESSAGES.UNAUTHORIZED_ERROR);
-            if (!this.userRepository.checkUserExistence(input.userId))
-                throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
+            const userFound = await this.userRepository.checkUserExistence(
+                input.userId
+            );
+            if (!userFound) throw new Error(USER_ERROR_MESSAGES.NOT_FOUND);
             const address = await this.handleGetAddress(
                 input.userId,
                 input.addressId

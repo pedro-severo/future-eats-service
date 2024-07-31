@@ -71,9 +71,25 @@ describe('GetAddressController', () => {
             data: {},
         });
     });
-    it('should throw error by invalid input', async () => {
+    it('should throw error by invalid userId in input', async () => {
         const input = {
             userId: 2,
+        };
+        try {
+            await controller.getAddress(
+                input as unknown as GetAddressInput,
+                ''
+            );
+        } catch (e) {
+            expect(e.message).toBe(
+                API_ERROR_MESSAGES.GET_ADDRESS_GENERIC_MESSAGE
+            );
+        }
+    });
+    it('should throw error by invalid address id input', async () => {
+        const input = {
+            userId: 'dasdasd',
+            addressId: 23,
         };
         try {
             await controller.getAddress(

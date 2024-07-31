@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 import { validate, ValidationError } from 'class-validator';
 import { logger } from '../../../logger';
 import { API_ERROR_MESSAGES } from '../apiErrorMessages';
+import { AddressResponse } from '../useCases/interfaces/AddressResponse';
 
 export class GetAddressController {
     constructor(private useCase: GetAddressUseCase) {}
@@ -13,7 +14,7 @@ export class GetAddressController {
     async getAddress(
         input: GetAddressInput,
         token: string
-    ): Promise<Output<any>> {
+    ): Promise<Output<AddressResponse>> {
         try {
             logger.info('Getting address...');
             const inputToValidate = plainToClass(GetAddressInput, input);
