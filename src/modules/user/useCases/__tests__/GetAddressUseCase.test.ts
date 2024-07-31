@@ -100,18 +100,19 @@ const mockCheckToken = jest
     });
 
 describe('GetAddressUseCase test', () => {
+    let useCase: GetAddressUseCase;
     beforeEach(() => {
-        jest.clearAllMocks();
-    });
-    it('should execute use case correctly', async () => {
         // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
+        useCase = new GetAddressUseCase(mockRepository, {
             checkToken: (
                 token: string,
                 idToCheck: string,
                 roleToCheck: string
             ) => mockCheckToken(token, idToCheck, roleToCheck),
         });
+        jest.clearAllMocks();
+    });
+    it('should execute use case correctly', async () => {
         const input = {
             userId,
             addressId,
@@ -133,14 +134,6 @@ describe('GetAddressUseCase test', () => {
         expect(mapUserAddressEntityToResponse).toHaveBeenCalledWith(address);
     });
     it('should execute use case correctly without address id be sending on input', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId,
         };
@@ -153,14 +146,6 @@ describe('GetAddressUseCase test', () => {
         expect(mapUserAddressEntityToResponse).toHaveBeenCalledWith(address);
     });
     it('should throw error by invalid token authentication', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId,
         };
@@ -176,14 +161,6 @@ describe('GetAddressUseCase test', () => {
         }
     });
     it('should throw error by not authorized user', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId: userNotAuthorized,
         };
@@ -199,14 +176,6 @@ describe('GetAddressUseCase test', () => {
         }
     });
     it('should throw error by user not found', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId: userNotFoundId,
         };
@@ -220,14 +189,6 @@ describe('GetAddressUseCase test', () => {
         }
     });
     it('should throw error by address not found', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId,
             addressId: addressNotFoundId,
@@ -242,14 +203,6 @@ describe('GetAddressUseCase test', () => {
         }
     });
     it('should throw error by user without address id', async () => {
-        // @ts-expect-error dependency injection
-        const useCase = new GetAddressUseCase(mockRepository, {
-            checkToken: (
-                token: string,
-                idToCheck: string,
-                roleToCheck: string
-            ) => mockCheckToken(token, idToCheck, roleToCheck),
-        });
         const input = {
             userId: userWithoutMainAddressId,
         };
