@@ -33,6 +33,7 @@ describe('Integration tests', () => {
     let token: string;
     let role: USER_ROLES;
     let signupResult: any;
+    let addressId: string;
     beforeAll(async () => {
         const result = await server.executeOperation({
             query: signupQuery,
@@ -144,6 +145,7 @@ describe('Integration tests', () => {
                 },
                 { token }
             );
+            addressId = result?.data?.registerAddress?.data.id;
             expect(result?.data?.registerAddress?.status).toBe(
                 StatusCodes.CREATED
             );
@@ -195,12 +197,6 @@ describe('Integration tests', () => {
         });
     });
     describe('getProfile query', () => {
-        beforeEach(async () => {
-            await server.executeOperation({
-                query: registerAddressQuery,
-                variables: { ...registerAddressInput, userId },
-            });
-        });
         it('should get profile correctly', async () => {
             const result = await server.executeOperation(
                 {
@@ -266,6 +262,83 @@ describe('Integration tests', () => {
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
                 API_ERROR_MESSAGES.AUTHENTICATION_ERROR_MESSAGE
+            );
+        });
+    });
+    describe('getAddress query', () => {
+        it('should get address correctly', async () => {
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: { userId, addressId },
+                },
+                { token }
+            );
+            expect(result?.data?.getAddress?.status).toBe(StatusCodes.ACCEPTED);
+            expect(result?.data?.getAddress?.data?.id).toBe(addressId);
+            expect(result?.data?.getAddress?.data?.city).toBe(
+                registerAddressInput.city
+            );
+            expect(result?.data?.getAddress?.data?.complement).toBe(
+                registerAddressInput.complement
+            );
+            expect(result?.data?.getAddress?.data?.state).toBe(
+                registerAddressInput.state
+            );
+            expect(result?.data?.getAddress?.data?.streetNumber).toBe(
+                registerAddressInput.streetNumber
+            );
+            expect(result?.data?.getAddress?.data?.zone).toBe(
+                registerAddressInput.zone
+            );
+            expect(result?.data?.getAddress?.data?.streetName).toBe(
+                registerAddressInput.streetName
+            );
+        });
+        it('should fail by inexistent token', async () => {
+            const result = await server.executeOperation({
+                query: getAddressQuery,
+                variables: { userId },
+            });
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.GET_ADDRESS_GENERIC_MESSAGE
+            );
+        });
+        it('should fail by invalid user id', async () => {
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: {
+                        userId: '9bfbe2d8-b3e3-4c44-ab10-e903e0fa57ad',
+                    },
+                },
+                {
+                    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjliZmJlMmQ4LWIzZTMtNGM0NC1hYjEwLWU5MDNlMGZhNTdhZCIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzIyNDQyODA2LCJleHAiOjE3Mjc2MjY4MDZ9.geQqRdW8YN1QwPNPBcKwMgNr-fpz3MdTCoPzxK9jBq0',
+                }
+            );
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.USER_NOT_FOUND
+            );
+        });
+        it('should fail by user without address registered', async () => {
+            const user = await server.executeOperation({
+                query: signupQuery,
+                variables: { ...signupInput, email: 'novo.email@gmail.com' },
+            });
+            const idWithoutAddress = user?.data?.signup?.data?.user.id;
+            const token = user?.data?.signup?.data?.token;
+            const result = await server.executeOperation(
+                {
+                    query: getAddressQuery,
+                    variables: { userId: idWithoutAddress },
+                },
+                { token }
+            );
+            // @ts-expect-error possible undefined
+            expect(result?.errors[0].message).toBe(
+                API_ERROR_MESSAGES.USER_WITHOUT_ADDRESS
             );
         });
     });
@@ -385,6 +458,23 @@ const authenticateQuery = gql`
                     cpf
                     role
                 }
+            }
+        }
+    }
+`;
+
+const getAddressQuery = gql`
+    query getAddress($userId: String!, $addressId: String) {
+        getAddress(input: { userId: $userId, addressId: $addressId }) {
+            status
+            data {
+                city
+                complement
+                state
+                streetNumber
+                zone
+                streetName
+                id
             }
         }
     }

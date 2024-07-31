@@ -24,6 +24,11 @@ input GetProfileInput {
     userId: String!
 }
 
+input GetAddressInput {
+    userId: String!
+    addressId: String
+}
+
 input AuthenticateInput {
     token: String!
 }
@@ -62,6 +67,16 @@ type GetProfileResponse {
     address: String
 }
 
+type GetAddressResponse {
+    city: String!
+    complement: String
+    state: String!
+    streetNumber: String!
+    zone: String!
+    streetName: String!
+    id: String!
+}
+
 type AuthenticateResponse {
     user: User!
 }
@@ -86,6 +101,11 @@ type AuthenticateApiResponse {
     data: AuthenticateResponse!
 }
 
+type GetAddressApiResponse {
+    status: Int!
+    data: GetAddressResponse!
+}
+
 type Mutation {
     login(input: LoginInput!): UserApiResponse!
     signup(input: SignupInput!): UserApiResponse!
@@ -95,4 +115,5 @@ type Mutation {
 type Query {
     getProfile(input: GetProfileInput!): GetProfileApiResponse!
     authenticate(input: AuthenticateInput!): AuthenticateApiResponse!
+    getAddress(input: GetAddressInput!): GetAddressApiResponse!
 }

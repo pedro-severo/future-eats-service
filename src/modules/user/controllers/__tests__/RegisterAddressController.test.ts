@@ -1,6 +1,6 @@
 import { RegisterAddressUseCase } from './../../useCases/RegisterAddressUseCase';
 import { StatusCodes } from 'http-status-codes';
-import { RegisterAddressResponse } from '../../useCases/interfaces/RegisterAddressResponse';
+import { AddressResponse } from '../../useCases/interfaces/AddressResponse';
 import { RegisterAddressInput } from '../inputs/RegisterAddressInput';
 import { RegisterAddressController } from '../RegisterAddressController';
 import { UserRepository } from '../../repository/UserRepository';
@@ -22,7 +22,7 @@ const input: RegisterAddressInput = {
     zone: 'Barreiro',
 };
 
-const expectedResponse: Output<RegisterAddressResponse> = {
+const expectedResponse: Output<AddressResponse> = {
     status: StatusCodes.CREATED,
     data: {
         id: 'id',

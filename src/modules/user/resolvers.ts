@@ -16,6 +16,9 @@ import { AuthenticatorManagerToken } from '../../shared/dependencies';
 import { AuthenticateInput } from './controllers/inputs/AuthenticateInput';
 import { AuthenticateController } from './controllers/AuthenticateController';
 import { AuthenticateUseCase } from './useCases/AuthenticateUseCase';
+import { GetAddressController } from './controllers/GetAddressController';
+import { GetAddressUseCase } from './useCases/GetAddressUseCase';
+import { GetAddressInput } from './controllers/inputs/GetAddressInput';
 
 export const resolvers = {
     Mutation: {
@@ -30,7 +33,12 @@ export const resolvers = {
             const { name, cpf, email, password } = JSON.parse(
                 JSON.stringify(args)
             ).input;
-            return signupController.signup({ name, cpf, email, password });
+            return await signupController.signup({
+                name,
+                cpf,
+                email,
+                password,
+            });
         },
         login: async (
             _parent: any,
@@ -41,7 +49,7 @@ export const resolvers = {
                 new LoginUseCase(Container.get(context.userDatabaseContext))
             );
             const { email, password } = JSON.parse(JSON.stringify(args)).input;
-            return loginController.login({ email, password });
+            return await loginController.login({ email, password });
         },
         registerAddress: async (
             _parent: any,
@@ -56,7 +64,7 @@ export const resolvers = {
                 )
             );
             const req = JSON.parse(JSON.stringify(args)).input;
-            return registerAddressController.registerAddress(req, token);
+            return await registerAddressController.registerAddress(req, token);
         },
     },
     Query: {
@@ -73,7 +81,7 @@ export const resolvers = {
                 )
             );
             const { userId } = JSON.parse(JSON.stringify(args)).input;
-            return controller.getProfile({ userId }, token);
+            return await controller.getProfile({ userId }, token);
         },
         authenticate: async (
             _parent: any,
@@ -86,7 +94,28 @@ export const resolvers = {
                     Container.get(AuthenticatorManagerToken)
                 )
             );
-            return controller.authenticate(args.input);
+            const { token } = JSON.parse(JSON.stringify(args)).input;
+            return await controller.authenticate({ token });
+        },
+        getAddress: async (
+            _parent: any,
+            args: { input: GetAddressInput },
+            context: IServerContext
+        ) => {
+            const { token } = context.auth;
+            const controller = new GetAddressController(
+                new GetAddressUseCase(
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
+                )
+            );
+            const { userId, addressId } = JSON.parse(
+                JSON.stringify(args)
+            ).input;
+            return await controller.getAddress(
+                { userId, addressId: addressId || undefined },
+                token
+            );
         },
     },
 };

@@ -1,11 +1,11 @@
-import { UserAddress } from '../../entities/UserAddress';
-import { RegisterAddressResponse } from '../interfaces/RegisterAddressResponse';
+import { UserAddressType } from '../../entities/UserAddress';
+import { AddressResponse } from '../interfaces/AddressResponse';
 
 export const mapUserAddressEntityToResponse = (
-    userAddress: UserAddress
-): RegisterAddressResponse => {
+    userAddress: UserAddressType
+): AddressResponse => {
     const { city, complement, id, state, streetName, streetNumber, zone } =
-        userAddress.getUserAddress();
+        userAddress;
     return {
         city,
         complement,

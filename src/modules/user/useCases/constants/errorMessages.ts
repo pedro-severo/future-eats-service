@@ -1,5 +1,7 @@
 export enum USER_ERROR_MESSAGES {
     NOT_FOUND = 'User not found',
+    ADDRESS_NOT_FOUND = 'Address not found to this user',
+    USER_WITHOUT_ADDRESS = "This user doesn't have address registered",
     INCORRECT_PASSWORD = 'Incorrect password',
     EMAIL_ALREADY_REGISTERED = 'This email is already registered',
     FAILED_TO_REGISTER_ADDRESS = 'Failed to register address',

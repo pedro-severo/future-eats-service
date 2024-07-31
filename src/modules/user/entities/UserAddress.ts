@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 export type UserAddressType = {
     id: string;
     city: string;
-    complement: string;
+    complement?: string;
     state: string;
     streetNumber: string;
     zone: string;
@@ -57,7 +57,7 @@ export class UserAddress {
         this.zone = zone;
     }
 
-    public getUserAddress() {
+    public getUserAddress(): UserAddressType {
         const { id, city, complement, state, streetNumber, streetName, zone } =
             this;
         return {

@@ -1,7 +1,7 @@
 import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
 import { RegisterAddressUseCase } from '../RegisterAddressUseCase';
-import { RegisterAddressResponse } from '../interfaces/RegisterAddressResponse';
+import { AddressResponse } from '../interfaces/AddressResponse';
 
 const userId = 'userId';
 const token = 'token';
@@ -27,7 +27,7 @@ const input = {
     },
 };
 
-const expectedResponse: RegisterAddressResponse = {
+const expectedResponse: AddressResponse = {
     id: 'userId',
     city: 'Lisbon',
     complement: '1D',
