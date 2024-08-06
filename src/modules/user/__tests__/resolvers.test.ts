@@ -3,6 +3,7 @@ import { AuthenticateController } from '../controllers/AuthenticateController';
 import { GetAddressController } from '../controllers/GetAddressController';
 import { GetProfileController } from '../controllers/GetProfileController';
 import { RegisterAddressController } from '../controllers/RegisterAddressController';
+import { UpdateAddressController } from '../controllers/UpdateAddressController';
 import { resolvers } from '../resolvers';
 import { AuthenticateUseCase } from '../useCases/AuthenticateUseCase';
 import { GetAddressUseCase } from '../useCases/GetAddressUseCase';
@@ -10,6 +11,7 @@ import { GetProfileUseCase } from '../useCases/GetProfileUseCase';
 import { LoginUseCase } from '../useCases/LoginUseCase';
 import { RegisterAddressUseCase } from '../useCases/RegisterAddressUseCase';
 import { SignupUseCase } from '../useCases/SignupUseCase';
+import { UpdateAddressUseCase } from '../useCases/UpdateAddressUseCase';
 
 const expectedResponse = { status: 'success' };
 
@@ -20,6 +22,10 @@ const mockSignupControllerMethod = jest
     .mockResolvedValue(expectedResponse);
 
 const mockRegisterAddressControllerMethod = jest
+    .fn()
+    .mockResolvedValue(expectedResponse);
+
+const mockUpdateAddressControllerMethod = jest
     .fn()
     .mockResolvedValue(expectedResponse);
 
@@ -67,6 +73,14 @@ jest.mock('../controllers/RegisterAddressController', () => {
     };
 });
 
+jest.mock('../controllers/UpdateAddressController', () => {
+    return {
+        UpdateAddressController: jest.fn(() => ({
+            updateAddress: mockUpdateAddressControllerMethod,
+        })),
+    };
+});
+
 jest.mock('../controllers/GetProfileController', () => {
     return {
         GetProfileController: jest.fn(() => ({
@@ -102,6 +116,7 @@ jest.mock('../repository/UserRepository', () => {
 jest.mock('../useCases/LoginUseCase');
 jest.mock('../useCases/SignupUseCase');
 jest.mock('../useCases/RegisterAddressUseCase');
+jest.mock('../useCases/UpdateAddressUseCase');
 jest.mock('../useCases/GetProfileUseCase');
 jest.mock('../useCases/AuthenticateUseCase');
 jest.mock('../useCases/GetAddressUseCase');
@@ -196,6 +211,34 @@ describe('Mutation Resolvers', () => {
                     streetName: 'Guajajaras',
                     zone: 'Barreiro',
                 },
+                ''
+            );
+            expect(result).toEqual(expectedResponse);
+        });
+    });
+    describe('updateAddress', () => {
+        it('should call updateAddress correctly', async () => {
+            const args = {
+                input: {
+                    userId: 'userId',
+                    addressId: 'userId',
+                    city: 'Lisbon',
+                },
+            };
+            const result = await resolvers.Mutation.updateAddress(null, args, {
+                auth: {
+                    token: '',
+                },
+                userDatabaseContext: UserDatabaseToken,
+            });
+            expect(UpdateAddressController).toHaveBeenCalledTimes(1);
+            expect(UpdateAddressUseCase).toHaveBeenCalledTimes(1);
+            expect(RegisterAddressUseCase).toHaveBeenCalledWith(
+                'serviceInjection',
+                'serviceInjection'
+            );
+            expect(mockUpdateAddressControllerMethod).toHaveBeenCalledWith(
+                args.input,
                 ''
             );
             expect(result).toEqual(expectedResponse);

@@ -20,6 +20,17 @@ input RegisterAddressInput {
     zone: String!
 }
 
+input UpdateAddressInput {
+    userId: String!
+    addressId: String!
+    city: String
+    complement: String
+    state: String
+    streetName: String
+    streetNumber: String
+    zone: String
+}
+
 input GetProfileInput {
     userId: String!
 }
@@ -48,7 +59,7 @@ type UserResponse {
     token: String!
 }
 
-type RegisterAddressResponse {
+type AddressResponse {
     city: String!
     complement: String
     state: String!
@@ -67,16 +78,6 @@ type GetProfileResponse {
     address: String
 }
 
-type GetAddressResponse {
-    city: String!
-    complement: String
-    state: String!
-    streetNumber: String!
-    zone: String!
-    streetName: String!
-    id: String!
-}
-
 type AuthenticateResponse {
     user: User!
 }
@@ -88,7 +89,12 @@ type UserApiResponse {
 
 type RegisterAddressApiResponse {
     status: Int!
-    data: RegisterAddressResponse!
+    data: AddressResponse!
+}
+
+type UpdateAddressApiResponse {
+    status: Int!
+    data: AddressResponse!
 }
 
 type GetProfileApiResponse {
@@ -103,13 +109,14 @@ type AuthenticateApiResponse {
 
 type GetAddressApiResponse {
     status: Int!
-    data: GetAddressResponse!
+    data: AddressResponse!
 }
 
 type Mutation {
     login(input: LoginInput!): UserApiResponse!
     signup(input: SignupInput!): UserApiResponse!
     registerAddress(input: RegisterAddressInput!): RegisterAddressApiResponse!
+    updateAddress(input: UpdateAddressInput!): UpdateAddressApiResponse!
 }
 
 type Query {

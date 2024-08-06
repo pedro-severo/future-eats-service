@@ -19,6 +19,9 @@ import { AuthenticateUseCase } from './useCases/AuthenticateUseCase';
 import { GetAddressController } from './controllers/GetAddressController';
 import { GetAddressUseCase } from './useCases/GetAddressUseCase';
 import { GetAddressInput } from './controllers/inputs/GetAddressInput';
+import { UpdateAddressInput } from './controllers/inputs/UpdateAddressInput';
+import { UpdateAddressController } from './controllers/UpdateAddressController';
+import { UpdateAddressUseCase } from './useCases/UpdateAddressUseCase';
 
 export const resolvers = {
     Mutation: {
@@ -65,6 +68,21 @@ export const resolvers = {
             );
             const req = JSON.parse(JSON.stringify(args)).input;
             return await registerAddressController.registerAddress(req, token);
+        },
+        updateAddress: async (
+            _parent: any,
+            args: { input: UpdateAddressInput },
+            context: IServerContext
+        ) => {
+            const { token } = context.auth;
+            const controller = new UpdateAddressController(
+                new UpdateAddressUseCase(
+                    Container.get(context.userDatabaseContext),
+                    Container.get(AuthenticatorManagerToken)
+                )
+            );
+            const req = JSON.parse(JSON.stringify(args)).input;
+            return await controller.updateAddress(req, token);
         },
     },
     Query: {
