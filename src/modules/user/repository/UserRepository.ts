@@ -123,6 +123,17 @@ export class UserRepository extends Database {
         );
     }
 
+    async updateAddress(
+        userId: string,
+        addressId: string
+    ): Promise<UserAddress | void> {
+        console.log(
+            '🚀 ~ UserRepository ~ updateAddress ~ addressId:',
+            addressId
+        );
+        console.log('🚀 ~ UserRepository ~ updateAddress ~ userId:', userId);
+    }
+
     async updateUserAddressFlag(
         userId: string,
         flag: { hasAddress: boolean }

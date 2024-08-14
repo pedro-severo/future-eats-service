@@ -5,6 +5,7 @@ export enum API_ERROR_MESSAGES {
     AUTHENTICATION_ERROR_MESSAGE = 'Oooops, precisamos que você faça o login novamente.',
     GET_PROFILE_GENERIC_MESSAGE = 'Lamentamos, não foi possível encontrar os dados do usuário solicitado. Tente novamente.',
     GET_ADDRESS_GENERIC_MESSAGE = 'Lamentamos, não foi possível encontrar os dados do endereço solicitado. Tente novamente.',
+    UPDATE_ADDRESS_GENERIC_ERROR = 'Lamentamos, não foi possível atualizar o endereço.',
     INCORRECT_PASSWORD = 'Senha incorreta',
     EMAIL_NOT_REGISTERED = 'Esse email ainda não está registrado',
     EMAIL_ALREADY_REGISTERED = 'Esse email já está registrado',
