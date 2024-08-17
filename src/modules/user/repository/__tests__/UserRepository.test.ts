@@ -32,6 +32,7 @@ describe('UserRepository test', () => {
     let userRepository: UserRepository;
     const mockInsert = jest.fn();
     const mockUpdate = jest.fn();
+    const mockUpdateSubCollectionItem = jest.fn();
     const mockGetSubCollectionData = jest
         .fn()
         .mockImplementation((collection, userId, addressId) => {
@@ -85,6 +86,12 @@ describe('UserRepository test', () => {
                 mockUpdate(userId, { hasAddress, mainAddressId });
             }
         );
+        jest.spyOn(
+            Database.prototype,
+            'updateSubCollectionItem'
+        ).mockImplementation((collection, userId, userAddress) => {
+            mockUpdateSubCollectionItem(userId, userAddress);
+        });
         jest.spyOn(
             Database.prototype,
             'getSubCollectionData'
@@ -147,6 +154,10 @@ describe('UserRepository test', () => {
         expect(mockUpdate).toHaveBeenCalledWith(user.id, {
             mainAddressId: 'addressId',
         });
+    });
+    it('should call update address correctly', async () => {
+        await userRepository.updateAddress(user.id, userAddress);
+        expect(mockUpdateSubCollectionItem).toHaveBeenCalled();
     });
     it('should call getAddress correctly', async () => {
         const addressResponse = await userRepository.getAddress(

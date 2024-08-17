@@ -1,7 +1,7 @@
 import { AuthenticatorManager } from '../../../../shared/services/authentication';
 import { USER_ROLES } from '../../../../shared/services/authentication/interfaces';
 import { API_ERROR_MESSAGES } from '../../apiErrorMessages';
-import { UserAddressType } from '../../entities/UserAddress';
+// import { UserAddressType } from '../../entities/UserAddress';
 import { UserRepository } from '../../repository/UserRepository';
 import { UpdateAddressUseCase } from '../UpdateAddressUseCase';
 import { USER_ERROR_MESSAGES } from '../constants/errorMessages';
@@ -14,15 +14,15 @@ const unauthorizedToken = 'unauthorizedToken';
 const userId = 'userId';
 const userNotFoundId = 'userNotFoundId';
 
-const address: UserAddressType = {
-    id: addressId,
-    city: 'BH',
-    complement: 'Complement',
-    state: 'State',
-    streetName: 'StreetName',
-    streetNumber: 'streetNumber',
-    zone: 'zone',
-};
+// const address: UserAddressType = {
+//     id: addressId,
+//     city: 'BH',
+//     complement: 'Complement',
+//     state: 'State',
+//     streetName: 'StreetName',
+//     streetNumber: 'streetNumber',
+//     zone: 'zone',
+// };
 
 const mockCheckToken = jest.fn().mockImplementation((token: string) => {
     if (token === invalidToken) throw new Error('foo');
@@ -43,8 +43,8 @@ jest.mock('../../../../logger', () => ({
 
 const mockUpdateAddress = jest
     .fn()
-    .mockImplementation((userId: string, addressId: string) => {
-        if (addressId === addressNotFoundId) return undefined;
+    .mockImplementation((userId: string, address) => {
+        if (address.id === addressNotFoundId) return undefined;
         return address;
     });
 
@@ -84,8 +84,7 @@ describe('UpdateAddressUseCase test suite', () => {
             input.userId,
             USER_ROLES.USER
         );
-        expect(mockUpdateAddress).toHaveBeenCalled();
-        // TODO: Implement updateAddress on UserRepository to keep working here
+        expect(mockUpdateAddress).toHaveBeenCalledWith(userId, input);
     });
     it('should throw error by unauthorized token', async () => {
         const input = {
@@ -122,8 +121,24 @@ describe('UpdateAddressUseCase test suite', () => {
     it('should throw an error by address not found', async () => {
         const input = {
             userId,
+            addressId,
+            city: 'city',
+        };
+        try {
+            await useCase.execute(input, token);
+        } catch (e) {
+            expect(mockErrorLog).toHaveBeenCalledWith(
+                USER_ERROR_MESSAGES.NOT_FOUND
+            );
+            expect(e.message).toBe(API_ERROR_MESSAGES.USER_NOT_FOUND);
+        }
+    });
+    it('should throw an error by address not found', async () => {
+        const input = {
+            userId,
             addressId: addressNotFoundId,
             city: 'city',
+            getUserAddress: () => jest.fn(),
         };
         try {
             await useCase.execute(input, token);

@@ -39,7 +39,7 @@ export class UpdateAddressUseCase {
     ): Promise<AddressResponse> {
         const address = await this.userRepository.updateAddress(
             input.userId,
-            input.addressId
+            input
         );
         if (!address) {
             throw new Error(USER_ERROR_MESSAGES.ADDRESS_NOT_FOUND);

@@ -4,6 +4,7 @@ import { DatabaseContext } from '../../../shared/database/context';
 import { User } from '../entities/User';
 import { USER_COLLECTIONS } from './interfaces';
 import { UserAddress } from '../entities/UserAddress';
+import { UpdateAddressInput } from '../controllers/inputs/UpdateAddressInput';
 
 @Service()
 export class UserRepository extends Database {
@@ -125,13 +126,13 @@ export class UserRepository extends Database {
 
     async updateAddress(
         userId: string,
-        addressId: string
+        userAddress: UpdateAddressInput
     ): Promise<UserAddress | void> {
-        console.log(
-            '🚀 ~ UserRepository ~ updateAddress ~ addressId:',
-            addressId
+        return await this.updateSubCollectionItem(
+            USER_COLLECTIONS.USER_ADDRESS,
+            userId,
+            userAddress
         );
-        console.log('🚀 ~ UserRepository ~ updateAddress ~ userId:', userId);
     }
 
     async updateUserAddressFlag(

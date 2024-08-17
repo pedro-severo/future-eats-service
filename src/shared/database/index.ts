@@ -59,6 +59,31 @@ export abstract class Database {
         }
     }
 
+    protected async updateSubCollectionItem(
+        subCollection: string,
+        mainItemId: string,
+        itemToAdd: any
+    ) {
+        try {
+            const data = this.removeUndefinedValuesFromObject(itemToAdd);
+            const { id } = data as { id: string };
+            await this.db
+                // istanbul ignore next
+                ?.doc(mainItemId)
+                // istanbul ignore next
+                ?.collection(subCollection)
+                // istanbul ignore next
+                ?.doc(id)
+                // istanbul ignore next
+                ?.update({
+                    ...data,
+                });
+        } catch (e) {
+            // istanbul ignore next
+            throw new Error(e.message);
+        }
+    }
+
     protected async checkDataExistenceByField(
         field: string,
         value: any
