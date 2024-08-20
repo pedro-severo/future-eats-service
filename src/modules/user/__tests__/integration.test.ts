@@ -28,6 +28,15 @@ const registerAddressInput = {
     zone: 'Barreiro',
 };
 
+const updateAddressInput = {
+    city: 'Sao Paulo',
+    complement: '2D',
+    state: 'SP',
+    streetNumber: '12334',
+    streetName: 'Rio Espera',
+    zone: 'Pinheiros',
+};
+
 describe('Integration tests', () => {
     let userId: string;
     let token: string;
@@ -193,6 +202,39 @@ describe('Integration tests', () => {
             // @ts-expect-error possible undefined
             expect(result?.errors[0].message).toBe(
                 API_ERROR_MESSAGES.REGISTER_ADDRESS_GENERIC_ERROR_MESSAGE
+            );
+        });
+    });
+    describe('updateAddress mutation', () => {
+        it('should update address correctly', async () => {
+            const result = await server.executeOperation(
+                {
+                    query: updateAddress,
+                    variables: { ...updateAddressInput, userId, addressId },
+                },
+                { token }
+            );
+            expect(result?.data?.updateAddress?.status).toBe(
+                StatusCodes.CREATED
+            );
+            expect(typeof result?.data?.updateAddress?.data.id).toBe('string');
+            expect(result?.data?.updateAddress?.data.city).toBe(
+                registerAddressInput.city
+            );
+            expect(result?.data?.updateAddress?.data.complement).toBe(
+                registerAddressInput.complement
+            );
+            expect(result?.data?.updateAddress?.data.state).toBe(
+                registerAddressInput.state
+            );
+            expect(result?.data?.updateAddress?.data.streetNumber).toBe(
+                registerAddressInput.streetNumber
+            );
+            expect(result?.data?.updateAddress?.data.streetName).toBe(
+                registerAddressInput.streetName
+            );
+            expect(result?.data?.updateAddress?.data.zone).toBe(
+                registerAddressInput.zone
             );
         });
     });
@@ -423,6 +465,43 @@ const registerAddressQuery = gql`
         registerAddress(
             input: {
                 userId: $userId
+                city: $city
+                complement: $complement
+                state: $state
+                streetName: $streetName
+                streetNumber: $streetNumber
+                zone: $zone
+            }
+        ) {
+            status
+            data {
+                city
+                complement
+                state
+                streetNumber
+                zone
+                streetName
+                id
+            }
+        }
+    }
+`;
+
+const updateAddress = gql`
+    mutation updateAddress(
+        $userId: String!
+        $addressId: String!
+        $city: String
+        $complement: String
+        $state: String
+        $streetName: String
+        $streetNumber: String
+        $zone: String
+    ) {
+        updateAddress(
+            input: {
+                userId: $userId
+                addressId: $addressId
                 city: $city
                 complement: $complement
                 state: $state

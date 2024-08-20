@@ -15,6 +15,7 @@ jest.mock('firebase-admin/firestore', () => ({
                 collection: jest.fn(() => ({
                     doc: jest.fn(() => ({
                         set: jest.fn(),
+                        update: jest.fn(),
                     })),
                 })),
             })),
@@ -41,7 +42,11 @@ const mockCollection = {
             update: jest.fn(),
             collection: jest.fn(() => {
                 return {
-                    doc: jest.fn(() => ({ set: jest.fn(), get: jest.fn() })),
+                    doc: jest.fn(() => ({
+                        set: jest.fn(),
+                        get: jest.fn(),
+                        update: jest.fn(),
+                    })),
                 };
             }),
         };
@@ -121,6 +126,15 @@ describe('Database', () => {
         await database.insertSubCollectionItem('subCollection', user.id, user);
         expect(database.db.doc).toHaveBeenCalled();
         expect(database.db.doc).toHaveBeenCalledWith(user.id);
+    });
+    it('should call updateSubCollection correctly', async () => {
+        await database.updateSubCollectionItem(
+            'subCollection',
+            user.id,
+            'subCollectionItemId',
+            'address'
+        );
+        expect(database.db.doc).toHaveBeenCalled();
     });
     it('should call checkDataExistenceByField method', async () => {
         await database.checkDataExistenceByField('email', user.email);
